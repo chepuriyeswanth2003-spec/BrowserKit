@@ -1,0 +1,365 @@
+import { ToolType } from '../types';
+
+export interface ProgrammaticToolRoute {
+  slug: string;
+  toolType: ToolType;
+  presetFormat?: string;
+  sourceFormat: string;
+  targetFormat: string;
+  toolCategory: string;
+  metaTitle: string;
+  metaDescription: string;
+  h1: string;
+  primaryBenefits: string[];
+  steps: string[];
+}
+
+export const PROGRAMMATIC_ROUTES: ProgrammaticToolRoute[] = [
+  {
+    slug: 'heic-to-jpg',
+    toolType: 'converter',
+    presetFormat: 'image/jpeg',
+    sourceFormat: 'HEIC',
+    targetFormat: 'JPG',
+    toolCategory: 'Image Converter',
+    metaTitle: 'Convert HEIC to JPG Online - 100% Private & Free | BrowserKit',
+    metaDescription: 'Convert iPhone HEIC photos to JPG format entirely in your browser. Fast, free, and zero file uploads required.',
+    h1: 'Convert HEIC to JPG Securely in Your Browser',
+    primaryBenefits: [
+      'No server upload required — zero privacy risk.',
+      'Preserves image resolution and EXIF data locally.',
+      'Instant batch processing using browser-native APIs.',
+    ],
+    steps: [
+      'Select or drag your HEIC files into the dropzone above.',
+      'Auto-detection automatically configures optimal JPG output.',
+      'Click Download to save your high-resolution JPG images directly to your local disk.',
+    ],
+  },
+  {
+    slug: 'png-to-webp',
+    toolType: 'converter',
+    presetFormat: 'image/webp',
+    sourceFormat: 'PNG',
+    targetFormat: 'WebP',
+    toolCategory: 'Image Converter',
+    metaTitle: 'Convert PNG to WebP Online - 30-50% File Size Reduction | BrowserKit',
+    metaDescription: 'Convert PNG images to modern WebP format online for free. Retain transparent backgrounds with zero server uploads.',
+    h1: 'Convert PNG to WebP On-Device with Zero Server Uploads',
+    primaryBenefits: [
+      'Preserves full alpha channel transparency without pixelation.',
+      'Reduces image weight by 30% to 50% for instant website loading.',
+      'Runs 100% client-side in WebAssembly/Canvas.',
+    ],
+    steps: [
+      'Drop your PNG images or transparent graphics into the converter.',
+      'Choose WebP as your target export format.',
+      'Download individual WebP files or a combined batch ZIP package.',
+    ],
+  },
+  {
+    slug: 'svg-to-png',
+    toolType: 'converter',
+    presetFormat: 'image/png',
+    sourceFormat: 'SVG',
+    targetFormat: 'PNG',
+    toolCategory: 'Vector Utility',
+    metaTitle: 'Convert SVG to High-DPI PNG Online - 100% Private | BrowserKit',
+    metaDescription: 'Rasterize SVG vector graphics into crisp, high-resolution PNG images in your browser. Free, fast, and completely secure.',
+    h1: 'Convert SVG to PNG Vector Rasterizer',
+    primaryBenefits: [
+      'Renders scalable vector graphics at high DPI precision.',
+      'Preserves transparent alpha backgrounds cleanly.',
+      '100% browser-based with zero file transfers.',
+    ],
+    steps: [
+      'Upload or paste your SVG vector files.',
+      'Select PNG export mode with transparent canvas retention.',
+      'Save your rasterized PNG images instantly.',
+    ],
+  },
+  {
+    slug: 'merge-pdf-offline',
+    toolType: 'pdf-merger',
+    sourceFormat: 'PDF',
+    targetFormat: 'PDF',
+    toolCategory: 'PDF Suite',
+    metaTitle: 'Merge PDF Files Offline - Browser-Based PDF Joiner | BrowserKit',
+    metaDescription: 'Combine multiple PDF files into one document locally. 100% client-side execution ensures complete document privacy.',
+    h1: 'Merge PDF Documents Locally Without Uploading',
+    primaryBenefits: [
+      'Documents never leave your local device storage.',
+      'Reorder pages with drag-and-drop client-side interface.',
+      'No file size caps or daily conversion limits.',
+    ],
+    steps: [
+      'Select or drag your PDF documents into the queue.',
+      'Arrange page and document order using simple Up/Down buttons.',
+      'Click Merge PDF to assemble into a single document and download.',
+    ],
+  },
+  {
+    slug: 'split-pdf-pages',
+    toolType: 'pdf-splitter',
+    sourceFormat: 'PDF',
+    targetFormat: 'PDF',
+    toolCategory: 'PDF Suite',
+    metaTitle: 'Split PDF Pages & Extract Selected Pages Free | BrowserKit',
+    metaDescription: 'Extract specific page numbers or ranges from PDF files online for free. Secure client-side PDF document page extraction.',
+    h1: 'Split & Extract PDF Pages On-Device',
+    primaryBenefits: [
+      'Specify custom page ranges (e.g. 1, 3, 5-8) with instant split.',
+      'Strict client-side WebAssembly execution keeps sensitive records private.',
+      'No registration, paywalls, or daily document limits.',
+    ],
+    steps: [
+      'Upload your PDF document into the browser vault.',
+      'Enter the specific page numbers or ranges you wish to extract.',
+      'Export the extracted page selection as a new standalone PDF.',
+    ],
+  },
+  {
+    slug: 'compress-png-online',
+    toolType: 'compressor',
+    sourceFormat: 'PNG',
+    targetFormat: 'PNG',
+    toolCategory: 'Image Compressor',
+    metaTitle: 'Compress PNG Images Online - Lossless & Lossy Shrink | BrowserKit',
+    metaDescription: 'Reduce PNG image file sizes by up to 80% without destroying quality. Target KB sizes and batch download directly.',
+    h1: 'Compress PNG Images On-Device Without Server Uploads',
+    primaryBenefits: [
+      'Smart palette quantization and DEFLATE compression.',
+      'Target specific file sizes (e.g. compress under 100 KB).',
+      'Real-time before vs after file size comparison.',
+    ],
+    steps: [
+      'Drag & drop PNG photos or screenshots into the compressor.',
+      'Adjust the quality slider or set a target KB threshold.',
+      'Download compressed PNGs individually or in a batch ZIP file.',
+    ],
+  },
+  {
+    slug: 'compress-jpg-online',
+    toolType: 'compressor',
+    sourceFormat: 'JPG',
+    targetFormat: 'JPG',
+    toolCategory: 'Image Compressor',
+    metaTitle: 'Compress JPG & JPEG Photos Free - 100% Client Side | BrowserKit',
+    metaDescription: 'Compress JPEG image file sizes instantly in your browser. Live preview before/after comparison with zero server uploads.',
+    h1: 'Compress JPG Images Securely in Your Browser',
+    primaryBenefits: [
+      'Intelligent JPEG compression reduces payload up to 90%.',
+      'Set exact target KB sizes for email and form upload requirements.',
+      '100% private local processing guarantees confidential photo safety.',
+    ],
+    steps: [
+      'Select your JPEG/JPG photos.',
+      'Set desired visual quality or target maximum file size.',
+      'Download optimized JPG files directly.',
+    ],
+  },
+  {
+    slug: 'remove-bg-free',
+    toolType: 'bg-remover',
+    sourceFormat: 'JPG / PNG',
+    targetFormat: 'PNG',
+    toolCategory: 'AI Background Remover',
+    metaTitle: 'Free AI Background Remover - Transparent PNG Creator | BrowserKit',
+    metaDescription: 'Remove image backgrounds automatically in seconds. Local browser segmentation creates transparent PNGs with zero server uploads.',
+    h1: 'Free AI Background Remover & Transparent PNG Creator',
+    primaryBenefits: [
+      'Instant subject isolation using client-side edge segmentation.',
+      'Refine edge tolerance and replace backgrounds with solid colors.',
+      'Zero server processing keeps your private photos off remote cloud servers.',
+    ],
+    steps: [
+      'Drop any photo into the AI background remover.',
+      'Watch as background pixels are automatically erased.',
+      'Download clean transparent PNG images.',
+    ],
+  },
+  {
+    slug: 'extract-audio-mp4',
+    toolType: 'audio-tools',
+    sourceFormat: 'MP4 / Video',
+    targetFormat: 'WAV / Audio',
+    toolCategory: 'Audio Utility',
+    metaTitle: 'Extract Audio from Video Online - 100% Private | BrowserKit',
+    metaDescription: 'Extract audio tracks, voiceover, or sound effects from MP4, WebM, or MOV video files locally inside your web browser.',
+    h1: 'Extract Audio from Video On-Device',
+    primaryBenefits: [
+      'Extract high-fidelity audio without re-encoding video streams.',
+      'Uses native HTML5 Web Audio APIs for super-fast conversion.',
+      'Large video files stay 100% on your device.',
+    ],
+    steps: [
+      'Select your video file.',
+      'Click Extract Audio to decode sound channels in browser RAM.',
+      'Download uncompressed WAV audio file.',
+    ],
+  },
+  {
+    slug: 'encrypt-file-password',
+    toolType: 'file-encryptor',
+    sourceFormat: 'Any File',
+    targetFormat: 'Encrypted Vault',
+    toolCategory: 'Security Vault',
+    metaTitle: 'Password Encrypt Files Online - Military-Grade AES-256 | BrowserKit',
+    metaDescription: 'Encrypt photos, videos, PDFs, and ZIP files with password protection online for free. AES-256-GCM vault with zero server uploads.',
+    h1: 'Encrypt Files & Documents with Password Vault',
+    primaryBenefits: [
+      'AES-256-GCM authenticated encryption with PBKDF2 key derivation.',
+      'Protect confidential PDFs, private images, videos, and archives.',
+      'Keys and files never touch any external server or network.',
+    ],
+    steps: [
+      'Select any file or archive from your computer.',
+      'Enter a strong master password.',
+      'Download your encrypted file vault safely.',
+    ],
+  },
+  {
+    slug: 'create-zip-archive',
+    toolType: 'zip-archiver',
+    sourceFormat: 'Multiple Files',
+    targetFormat: 'ZIP',
+    toolCategory: 'ZIP Suite',
+    metaTitle: 'Create ZIP Files Online Free - Batch Compression | BrowserKit',
+    metaDescription: 'Pack images, documents, and videos into a compressed .zip archive directly in your browser. Fast client-side DEFLATE archiver.',
+    h1: 'Create & Compress ZIP Archives On-Device',
+    primaryBenefits: [
+      'Compress multiple files and full folder hierarchies into one .zip file.',
+      'High-speed JSZip client-side compression.',
+      'Unlimited file sizes bounded only by your device memory.',
+    ],
+    steps: [
+      'Drag and drop files or folders into the queue.',
+      'Name your custom archive file.',
+      'Click Create ZIP Archive to compress and download.',
+    ],
+  },
+  {
+    slug: 'extract-zip-online',
+    toolType: 'zip-extractor',
+    sourceFormat: 'ZIP',
+    targetFormat: 'Extracted Files',
+    toolCategory: 'ZIP Suite',
+    metaTitle: 'Extract ZIP Files Online Free - Inspect & Unzip | BrowserKit',
+    metaDescription: 'Unzip and extract files from .zip archives online for free. Inspect zip contents and download files individually or all at once.',
+    h1: 'Unzip & Extract Files from ZIP Archives',
+    primaryBenefits: [
+      'Inspect archive contents, file trees, and file sizes before unzipping.',
+      'Selectively extract individual files or download everything.',
+      '100% private local extraction.',
+    ],
+    steps: [
+      'Drop your .zip archive into the viewer.',
+      'Inspect the file directory and contents.',
+      'Click Extract All Files or download individual items.',
+    ],
+  },
+  {
+    slug: 'convert-images-to-pdf',
+    toolType: 'images-to-pdf',
+    sourceFormat: 'JPG / PNG / WebP',
+    targetFormat: 'PDF',
+    toolCategory: 'PDF Suite',
+    metaTitle: 'Convert Images to PDF Online Free - JPG & PNG to PDF | BrowserKit',
+    metaDescription: 'Convert images (JPG, PNG, WebP) into PDF documents online for free. Custom page layouts, A4/Letter size options, and orientation controls.',
+    h1: 'Convert Images to PDF Documents On-Device',
+    primaryBenefits: [
+      'Combine multiple scanned documents or photos into a structured PDF.',
+      'Set custom page size presets (A4, Letter, Auto-Fit) and margins.',
+      'Reorder image sequence before assembling.',
+    ],
+    steps: [
+      'Select photos or scanned images.',
+      'Choose page orientation (Portrait/Landscape) and page dimensions.',
+      'Click Generate PDF to download.',
+    ],
+  },
+  {
+    slug: 'resize-image-social',
+    toolType: 'resizer',
+    sourceFormat: 'Any Image',
+    targetFormat: 'Resized Image',
+    toolCategory: 'Image Resizer',
+    metaTitle: 'Resize & Crop Images Free - Instagram, Passport & Favicon | BrowserKit',
+    metaDescription: 'Crop and resize images to exact dimensions or social media presets (Instagram, Passport photo, Favicon, YouTube). 100% free and private.',
+    h1: 'Resize & Crop Images for Social Media & Web',
+    primaryBenefits: [
+      'Built-in dimension presets for Instagram, YouTube, Twitter, and Favicons.',
+      'Aspect ratio locking and custom pixel size controls.',
+      'Instant canvas scaling without quality distortion.',
+    ],
+    steps: [
+      'Upload your image.',
+      'Select a social media preset or type custom pixel dimensions.',
+      'Download resized or cropped image.',
+    ],
+  },
+  {
+    slug: 'extract-video-frames',
+    toolType: 'video-to-gif',
+    sourceFormat: 'MP4 / WebM',
+    targetFormat: 'PNG Snapshots',
+    toolCategory: 'Video Utility',
+    metaTitle: 'Extract Video Frames & High-Res Snapshots Free | BrowserKit',
+    metaDescription: 'Extract high quality PNG/JPG image frames from videos online for free. Capture precise video snapshots at custom frame rates directly in your browser.',
+    h1: 'Extract Video Frames & Snapshots On-Device',
+    primaryBenefits: [
+      'Capture exact video frame snapshots at full native resolution.',
+      'Extract continuous frame sequences at custom FPS intervals.',
+      'Download frame snapshots individually or as a ZIP package.',
+    ],
+    steps: [
+      'Select your MP4 or WebM video file.',
+      'Scrub to desired timestamps or set continuous extraction FPS.',
+      'Save PNG image snapshots to disk.',
+    ],
+  },
+  {
+    slug: 'meme-generator-online',
+    toolType: 'meme',
+    sourceFormat: 'Image / Template',
+    targetFormat: 'Meme PNG',
+    toolCategory: 'Meme Generator',
+    metaTitle: 'Free Meme Generator Online - Classic Templates & Text | BrowserKit',
+    metaDescription: 'Create custom memes with draggable text boxes, classic fonts, stroke outlines, and built-in templates. Export high-res PNG memes with zero watermarks.',
+    h1: 'Free Meme Generator & Custom Text Overlay',
+    primaryBenefits: [
+      'Choose from classic meme templates or upload custom photos.',
+      'Add draggable, resizable text layers with impact fonts and outlines.',
+      '100% free with zero forced watermarks.',
+    ],
+    steps: [
+      'Pick a template or upload your own image.',
+      'Customize top and bottom text overlay captions.',
+      'Download high-res meme image.',
+    ],
+  },
+  {
+    slug: 'svg-cleaner-optimizer',
+    toolType: 'svg-optimizer',
+    sourceFormat: 'SVG',
+    targetFormat: 'Clean SVG / PNG',
+    toolCategory: 'Vector Utility',
+    metaTitle: 'Free SVG Cleaner & Code Optimizer Online | BrowserKit',
+    metaDescription: 'Clean and optimize SVG code online for free. Minify SVG markup, preview vector art, strip editor metadata, and convert SVG to PNG.',
+    h1: 'SVG Code Cleaner, Optimizer & Vector Renderer',
+    primaryBenefits: [
+      'Strips unnecessary editor metadata, comments, and XML namespaces.',
+      'Minifies raw SVG markup for smaller web payloads.',
+      'Renders clean vector art to high-res PNG format.',
+    ],
+    steps: [
+      'Paste SVG code or upload vector file.',
+      'Click Clean & Optimize to minify XML markup.',
+      'Copy clean code or download rasterized PNG.',
+    ],
+  },
+];
+
+export function findRouteBySlug(slug: string): ProgrammaticToolRoute | undefined {
+  return PROGRAMMATIC_ROUTES.find((r) => r.slug === slug || slug.endsWith(`/${r.slug}`));
+}

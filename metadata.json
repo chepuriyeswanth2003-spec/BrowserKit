@@ -1,0 +1,6 @@
+{
+  "name": "BrowserKit",
+  "description": "Client-Side Privacy-First Web Media Utility Toolkit with zero server uploads.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
