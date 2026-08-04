@@ -1,0 +1,21 @@
+{
+  "name": "BrowserKit",
+  "short_name": "BrowserKit",
+  "description": "100% Private Client-Side Media Utilities Suite",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#090d16",
+  "background_color": "#090d16",
+  "display": "standalone"
+}
