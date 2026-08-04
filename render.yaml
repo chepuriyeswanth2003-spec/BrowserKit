@@ -9,7 +9,7 @@ services:
       - key: NODE_VERSION
         value: 20.11.0
       - key: VITE_ADSENSE_CLIENT_ID
-        sync: false
+        value: ca-pub-8087434803774295
       - key: VITE_ADSENSE_SLOT_HEADER
         sync: false
       - key: VITE_ADSENSE_SLOT_SIDEBAR

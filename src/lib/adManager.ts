@@ -16,7 +16,7 @@ export function getAdSenseClientId(): string {
   if (typeof window !== 'undefined' && import.meta.env?.VITE_ADSENSE_CLIENT_ID) {
     return import.meta.env.VITE_ADSENSE_CLIENT_ID;
   }
-  return 'ca-pub-0000000000000000';
+  return 'ca-pub-8087434803774295';
 }
 
 export function initGoogleAdSense(publisherId?: string) {
