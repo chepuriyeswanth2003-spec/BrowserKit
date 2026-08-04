@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { pushAdSenseSlot, getAdSenseClientId } from '../lib/adManager';
 
 interface AdSlotProps {
@@ -9,6 +9,7 @@ interface AdSlotProps {
   responsive?: boolean;
   layoutKey?: string;
   className?: string;
+  showPlaceholderInDev?: boolean;
 }
 
 export const AdSlot: React.FC<AdSlotProps> = ({
@@ -19,11 +20,14 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   responsive = true,
   layoutKey,
   className = '',
+  showPlaceholderInDev = false,
 }) => {
-  const [adBlocked, setAdBlocked] = useState<boolean>(false);
+  const insRef = useRef<HTMLModElement | null>(null);
+  const [adStatus, setAdStatus] = useState<'loading' | 'filled' | 'unfilled' | 'blocked'>('loading');
 
   // Environment fallback resolution
   const resolvedClient = client || getAdSenseClientId();
+  const isDemoClient = resolvedClient === 'ca-pub-0000000000000000';
 
   const getFallbackSlotId = () => {
     if (slot) return slot;
@@ -48,30 +52,77 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   const resolvedSlot = getFallbackSlotId();
 
   useEffect(() => {
+    // Push ad slot after DOM render
     const timer = setTimeout(() => {
       pushAdSenseSlot();
     }, 150);
 
-    return () => clearTimeout(timer);
-  }, [type, resolvedSlot]);
+    const insNode = insRef.current;
+    if (!insNode) return () => clearTimeout(timer);
+
+    // Observe Google AdSense data-ad-status attribute changes
+    const observer = new MutationObserver(() => {
+      const status = insNode.getAttribute('data-ad-status');
+      if (status === 'filled') {
+        setAdStatus('filled');
+      } else if (status === 'unfilled') {
+        setAdStatus('unfilled');
+      } else if (insNode.children.length > 0 || insNode.offsetHeight > 0) {
+        setAdStatus('filled');
+      }
+    });
+
+    observer.observe(insNode, {
+      attributes: true,
+      attributeFilter: ['data-ad-status', 'style'],
+      childList: true,
+      subtree: true,
+    });
+
+    // Fallback status check after 2 seconds
+    const fallbackTimer = setTimeout(() => {
+      const currentStatus = insNode.getAttribute('data-ad-status');
+      if (currentStatus === 'filled' || insNode.children.length > 0) {
+        setAdStatus('filled');
+      } else if (currentStatus === 'unfilled') {
+        setAdStatus('unfilled');
+      } else if (isDemoClient && !showPlaceholderInDev) {
+        setAdStatus('unfilled');
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(fallbackTimer);
+      observer.disconnect();
+    };
+  }, [type, resolvedSlot, isDemoClient, showPlaceholderInDev]);
+
+  // If ad is unfilled/blocked and dev placeholders are disabled, disappear completely (return null)
+  if ((adStatus === 'unfilled' || adStatus === 'blocked') && !showPlaceholderInDev) {
+    return null;
+  }
+
+  // Collapse demo client ID slots when dev placeholders are disabled
+  if (isDemoClient && !showPlaceholderInDev && adStatus !== 'filled') {
+    return null;
+  }
 
   const getContainerStyle = () => {
     switch (type) {
       case 'header-banner':
-        return 'w-full max-w-4xl min-h-[90px] my-3 mx-auto';
+        return 'w-full max-w-4xl my-3 mx-auto min-h-[90px]';
       case 'sidebar':
-        return 'w-full min-h-[250px] lg:min-h-[600px] my-4';
+        return 'w-full my-4 min-h-[250px]';
       case 'below-tool':
-        return 'w-full max-w-4xl min-h-[120px] my-6 mx-auto';
+        return 'w-full max-w-4xl my-6 mx-auto min-h-[100px]';
       case 'modal':
-        return 'w-full min-h-[180px] my-3';
+        return 'w-full my-3 min-h-[150px]';
       case 'in-flow':
       default:
-        return 'w-full min-h-[100px] my-4';
+        return 'w-full my-4 min-h-[90px]';
     }
   };
-
-  const isDemoClient = resolvedClient === 'ca-pub-0000000000000000';
 
   return (
     <div
@@ -84,6 +135,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
 
       {/* Production Google AdSense Ins element */}
       <ins
+        ref={insRef}
         className="adsbygoogle"
         style={{ display: 'block', width: '100%', height: '100%' }}
         data-ad-client={resolvedClient}
@@ -93,15 +145,15 @@ export const AdSlot: React.FC<AdSlotProps> = ({
         {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
       ></ins>
 
-      {/* Visual Ad Unit Placeholder for Dev / Unconfigured AdSense state */}
-      {isDemoClient && (
+      {/* Visual placeholder only shown if explicitly requested via showPlaceholderInDev */}
+      {isDemoClient && showPlaceholderInDev && (
         <div className="flex flex-col items-center justify-center gap-1.5 py-4 px-3 text-slate-400 dark:text-slate-500 select-none">
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             AdSense Display Ad Slot ({type})
           </div>
           <p className="text-[11px] max-w-xs opacity-75 leading-tight">
-            Configured for <code className="font-mono text-[10px] text-emerald-500">{resolvedClient}</code>. Helps keep BrowserKit 100% free with unlimited client processing.
+            Configured for <code className="font-mono text-[10px] text-emerald-500">{resolvedClient}</code>.
           </p>
         </div>
       )}
