@@ -10,6 +10,7 @@ interface AdSlotProps {
   layoutKey?: string;
   className?: string;
   showPlaceholderInDev?: boolean;
+  onStatusChange?: (isFilled: boolean) => void;
 }
 
 export const AdSlot: React.FC<AdSlotProps> = ({
@@ -21,6 +22,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   layoutKey,
   className = '',
   showPlaceholderInDev = false,
+  onStatusChange,
 }) => {
   const insRef = useRef<HTMLModElement | null>(null);
   const [adStatus, setAdStatus] = useState<'loading' | 'filled' | 'unfilled' | 'blocked'>('loading');
@@ -60,15 +62,22 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     const insNode = insRef.current;
     if (!insNode) return () => clearTimeout(timer);
 
+    const updateStatus = (newStatus: 'filled' | 'unfilled' | 'blocked') => {
+      setAdStatus(newStatus);
+      if (onStatusChange) {
+        onStatusChange(newStatus === 'filled');
+      }
+    };
+
     // Observe Google AdSense data-ad-status attribute changes
     const observer = new MutationObserver(() => {
       const status = insNode.getAttribute('data-ad-status');
       if (status === 'filled') {
-        setAdStatus('filled');
+        updateStatus('filled');
       } else if (status === 'unfilled') {
-        setAdStatus('unfilled');
-      } else if (insNode.children.length > 0 || insNode.offsetHeight > 0) {
-        setAdStatus('filled');
+        updateStatus('unfilled');
+      } else if (insNode.children.length > 0 && insNode.offsetHeight > 0) {
+        updateStatus('filled');
       }
     });
 
@@ -79,33 +88,41 @@ export const AdSlot: React.FC<AdSlotProps> = ({
       subtree: true,
     });
 
-    // Fallback status check after 2 seconds
+    // Fallback status check after 2.5 seconds
     const fallbackTimer = setTimeout(() => {
       const currentStatus = insNode.getAttribute('data-ad-status');
-      if (currentStatus === 'filled' || insNode.children.length > 0) {
-        setAdStatus('filled');
-      } else if (currentStatus === 'unfilled') {
-        setAdStatus('unfilled');
-      } else if (isDemoClient && !showPlaceholderInDev) {
-        setAdStatus('unfilled');
+      if (currentStatus === 'filled' || (insNode.children.length > 0 && insNode.offsetHeight > 0)) {
+        updateStatus('filled');
+      } else {
+        updateStatus('unfilled');
       }
-    }, 2000);
+    }, 2500);
 
     return () => {
       clearTimeout(timer);
       clearTimeout(fallbackTimer);
       observer.disconnect();
     };
-  }, [type, resolvedSlot, isDemoClient, showPlaceholderInDev]);
+  }, [type, resolvedSlot, isDemoClient, showPlaceholderInDev, onStatusChange]);
 
-  // If ad is unfilled/blocked and dev placeholders are disabled, disappear completely (return null)
-  if ((adStatus === 'unfilled' || adStatus === 'blocked') && !showPlaceholderInDev) {
-    return null;
-  }
+  const isFilled = adStatus === 'filled' || (isDemoClient && showPlaceholderInDev);
 
-  // Collapse demo client ID slots when dev placeholders are disabled
-  if (isDemoClient && !showPlaceholderInDev && adStatus !== 'filled') {
-    return null;
+  // If ad is not filled and showPlaceholderInDev is false, return null (completely hide element & margins)
+  if (!isFilled) {
+    return (
+      <div className="hidden" aria-hidden="true">
+        <ins
+          ref={insRef}
+          className="adsbygoogle"
+          style={{ display: 'none' }}
+          data-ad-client={resolvedClient}
+          data-ad-slot={resolvedSlot}
+          data-ad-format={format}
+          data-full-width-responsive={responsive ? 'true' : 'false'}
+          {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
+        ></ins>
+      </div>
+    );
   }
 
   const getContainerStyle = () => {

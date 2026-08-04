@@ -40,6 +40,7 @@ export default function App() {
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [currentSlug, setCurrentSlug] = useState<string>('');
   const [isDark, setIsDark] = useState<boolean>(true);
+  const [sidebarAdFilled, setSidebarAdFilled] = useState<boolean>(false);
 
   // Post Download Ad Modal
   const [downloadModalOpen, setDownloadModalOpen] = useState<boolean>(false);
@@ -182,18 +183,18 @@ export default function App() {
         {/* Top Header Banner Ad Slot */}
         <AdSlot type="header-banner" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className={sidebarAdFilled ? "grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" : "w-full"}>
           {/* Main Workspace Column */}
-          <main className="lg:col-span-9 w-full min-w-0 space-y-8">
+          <main className={sidebarAdFilled ? "lg:col-span-9 w-full min-w-0 space-y-8" : "w-full min-w-0 space-y-8"}>
             {renderCurrentPage()}
             {/* Below Tool Ad Slot */}
             {activePage !== 'home' && <AdSlot type="below-tool" />}
           </main>
 
           {/* Sidebar Column (Desktop Display Ads & Quick Tools) */}
-          <aside className="hidden lg:block lg:col-span-3 space-y-6 sticky top-20">
+          <aside className={sidebarAdFilled ? "hidden lg:block lg:col-span-3 space-y-6 sticky top-20" : "hidden"}>
             {/* Desktop Sidebar Ad Slot */}
-            <AdSlot type="sidebar" />
+            <AdSlot type="sidebar" onStatusChange={setSidebarAdFilled} />
           </aside>
         </div>
       </div>
