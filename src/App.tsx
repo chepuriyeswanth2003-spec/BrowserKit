@@ -5,6 +5,8 @@ import { Footer } from './components/Footer';
 import { AdSlot } from './components/AdSlot';
 import { CookieConsent } from './components/CookieConsent';
 import { PostDownloadAdModal, ProcessedFileItem } from './components/PostDownloadAdModal';
+import { initGoogleAdSense } from './lib/adManager';
+import { startKeepAlive } from './lib/keepAlive';
 
 // Views and Tools
 import { HomeView } from './components/views/HomeView';
@@ -32,7 +34,7 @@ import { AudioToolsTool } from './components/tools/AudioToolsTool';
 import { SvgOptimizerTool } from './components/tools/SvgOptimizerTool';
 import { FileEncryptorTool } from './components/tools/FileEncryptorTool';
 
-import { findRouteBySlug, PROGRAMMATIC_ROUTES } from './data/toolsData';
+import { findRouteBySlug } from './data/toolsData';
 
 export default function App() {
   const [activePage, setActivePage] = useState<ActivePage>('home');
@@ -46,6 +48,12 @@ export default function App() {
   const [processedFiles, setProcessedFiles] = useState<ProcessedFileItem[]>([]);
 
   useEffect(() => {
+    // Initialize Google AdSense
+    initGoogleAdSense();
+
+    // Start 40-second Keep-Alive auto-ping service (prevents Render 50s spin down)
+    startKeepAlive(40000);
+
     // Read theme preference or default to dark theme
     const savedTheme = localStorage.getItem('browserkit_theme') || localStorage.getItem('mediacraft_theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -170,10 +178,17 @@ export default function App() {
       />
 
       {/* Main Layout Container */}
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* Top Header Banner Ad Slot */}
+        <AdSlot type="header-banner" />
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Workspace Column */}
-          <main className="lg:col-span-9 w-full min-w-0">{renderCurrentPage()}</main>
+          <main className="lg:col-span-9 w-full min-w-0 space-y-8">
+            {renderCurrentPage()}
+            {/* Below Tool Ad Slot */}
+            {activePage !== 'home' && <AdSlot type="below-tool" />}
+          </main>
 
           {/* Sidebar Column (Desktop Display Ads & Quick Tools) */}
           <aside className="hidden lg:block lg:col-span-3 space-y-6 sticky top-20">

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: browserkit
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.0
+      - key: VITE_ADSENSE_CLIENT_ID
+        sync: false
+      - key: VITE_ADSENSE_SLOT_HEADER
+        sync: false
+      - key: VITE_ADSENSE_SLOT_SIDEBAR
+        sync: false
+      - key: VITE_ADSENSE_SLOT_BELOW_TOOL
+        sync: false
+      - key: VITE_ADSENSE_SLOT_MODAL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
