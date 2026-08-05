@@ -29,8 +29,27 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy', uptime: process.uptime() });
 });
 
-// Serve static assets from Vite build dist directory
 const distPath = path.join(__dirname, 'dist');
+
+// Dedicated route for sitemap.xml with explicit application/xml header
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml');
+  res.sendFile(path.join(distPath, 'sitemap.xml'));
+});
+
+// Dedicated route for robots.txt with explicit text/plain header
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.sendFile(path.join(distPath, 'robots.txt'));
+});
+
+// Dedicated route for ads.txt with explicit text/plain header
+app.get('/ads.txt', (req, res) => {
+  res.type('text/plain');
+  res.sendFile(path.join(distPath, 'ads.txt'));
+});
+
+// Serve static assets from Vite build dist directory
 app.use(express.static(distPath));
 
 // Fallback all SPA routes to index.html
