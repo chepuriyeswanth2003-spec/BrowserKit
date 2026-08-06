@@ -84,9 +84,6 @@ export default function App() {
     setIsDark(nextDark);
     localStorage.setItem('browserkit_theme', nextDark ? 'dark' : 'light');
 
-    // Briefly enable theme transition class to prevent lag & layout thrashing
-    document.documentElement.classList.add('theme-transition');
-
     if (nextDark) {
       document.documentElement.classList.add('dark');
       document.documentElement.style.colorScheme = 'dark';
@@ -94,10 +91,6 @@ export default function App() {
       document.documentElement.classList.remove('dark');
       document.documentElement.style.colorScheme = 'light';
     }
-
-    setTimeout(() => {
-      document.documentElement.classList.remove('theme-transition');
-    }, 300);
   };
 
   const handleNavigateRoute = (slug: string) => {
