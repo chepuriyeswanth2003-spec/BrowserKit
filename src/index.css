@@ -1,27 +1,12 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   html {
-    @apply bg-slate-100 text-slate-900 antialiased;
-    background-color: #f8fafc;
+    @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
   }
   body {
-    @apply bg-slate-100 text-slate-900 min-h-screen antialiased;
-    background-color: #f8fafc;
-  }
-
-  button,
-  a,
-  [role="button"],
-  input[type="submit"],
-  input[type="button"],
-  input[type="reset"],
-  input[type="file"],
-  input[type="checkbox"],
-  input[type="radio"],
-  select,
-  label[for],
-  .clickable {
-    cursor: pointer !important;
+    @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen antialiased;
   }
 }

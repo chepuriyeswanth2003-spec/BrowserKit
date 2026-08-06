@@ -39,6 +39,7 @@ import { findRouteBySlug } from './data/toolsData';
 export default function App() {
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [currentSlug, setCurrentSlug] = useState<string>('');
+  const [isDark, setIsDark] = useState<boolean>(true);
   const [sidebarAdFilled, setSidebarAdFilled] = useState<boolean>(false);
 
   // Post Download Ad Modal
@@ -54,9 +55,19 @@ export default function App() {
     // Start 40-second Keep-Alive auto-ping service (prevents Render 50s spin down)
     startKeepAlive(40000);
 
-    // Clean up any legacy dark mode class on root element
-    document.documentElement.classList.remove('dark');
-    document.documentElement.style.colorScheme = 'light';
+    // Read theme preference or default to dark theme
+    const savedTheme = localStorage.getItem('browserkit_theme') || localStorage.getItem('mediacraft_theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldBeDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+
+    setIsDark(shouldBeDark);
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
+    }
 
     // Check URL path for programmatic route matching
     const path = window.location.pathname.replace(/^\/+/, '');
@@ -67,6 +78,20 @@ export default function App() {
       }
     }
   }, []);
+
+  const toggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    localStorage.setItem('browserkit_theme', nextDark ? 'dark' : 'light');
+
+    if (nextDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
+    }
+  };
 
   const handleNavigateRoute = (slug: string) => {
     setCurrentSlug(slug);
@@ -148,12 +173,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-900">
       {/* Top Header Navbar */}
       <Navbar
         activePage={activePage}
         setActivePage={(p) => { setCurrentSlug(''); setActivePage(p); }}
         onNavigateRoute={handleNavigateRoute}
+        isDark={isDark}
+        toggleTheme={toggleTheme}
       />
 
       {/* Main Layout Container */}
