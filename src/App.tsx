@@ -83,6 +83,10 @@ export default function App() {
     const nextDark = !isDark;
     setIsDark(nextDark);
     localStorage.setItem('browserkit_theme', nextDark ? 'dark' : 'light');
+
+    // Briefly enable theme transition class to prevent lag & layout thrashing
+    document.documentElement.classList.add('theme-transition');
+
     if (nextDark) {
       document.documentElement.classList.add('dark');
       document.documentElement.style.colorScheme = 'dark';
@@ -90,6 +94,10 @@ export default function App() {
       document.documentElement.classList.remove('dark');
       document.documentElement.style.colorScheme = 'light';
     }
+
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 300);
   };
 
   const handleNavigateRoute = (slug: string) => {
@@ -172,7 +180,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-900">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-900">
       {/* Top Header Navbar */}
       <Navbar
         activePage={activePage}

@@ -2,13 +2,16 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  *, ::before, ::after {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 200ms;
-  }
+/* Smooth, lag-free theme transition (active ONLY during theme toggle action) */
+.theme-transition,
+.theme-transition *,
+.theme-transition ::before,
+.theme-transition ::after {
+  transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out !important;
+  transition-delay: 0s !important;
+}
 
+@layer base {
   html {
     @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
   }
