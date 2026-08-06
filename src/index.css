@@ -3,8 +3,14 @@
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  *, ::before, ::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
   html {
-    @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200;
+    @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
   }
   body {
     @apply bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen antialiased;

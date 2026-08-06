@@ -63,8 +63,10 @@ export default function App() {
     setIsDark(shouldBeDark);
     if (shouldBeDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
     }
 
     // Check URL path for programmatic route matching
@@ -83,8 +85,10 @@ export default function App() {
     localStorage.setItem('browserkit_theme', nextDark ? 'dark' : 'light');
     if (nextDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
     }
   };
 
