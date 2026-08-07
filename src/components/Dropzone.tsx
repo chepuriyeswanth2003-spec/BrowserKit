@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Upload, Camera, ImagePlus, FileCheck, Clipboard, FolderPlus, Sparkles } from 'lucide-react';
+import { Upload, ImagePlus, FileCheck, Clipboard, FolderPlus, Sparkles } from 'lucide-react';
 
 interface DropzoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -81,7 +81,6 @@ export const Dropzone: React.FC<DropzoneProps> = ({
   const [isGlobalDragOver, setIsGlobalDragOver] = useState(false);
   const [justPasted, setJustPasted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef<number>(0);
 
   // Global window drag-and-drop listener
@@ -284,15 +283,6 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           className="hidden"
         />
 
-        <input
-          ref={cameraInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleInputChange}
-          className="hidden"
-        />
-
         {/* Local Dragover Visual Overlay */}
         {isDragOver && (
           <div className="absolute inset-0 bg-slate-950/90 text-white flex flex-col items-center justify-center p-6 z-20 animate-fade-in backdrop-blur-xs">
@@ -322,23 +312,15 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           </div>
 
           <div
-            className="flex flex-wrap items-center justify-center gap-2.5 mt-2"
+            className="flex items-center justify-center gap-2.5 mt-2"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm flex items-center gap-1.5 transition-all active:scale-95"
+              className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm flex items-center gap-2 transition-all active:scale-95"
             >
               <ImagePlus className="w-4 h-4 text-white dark:text-slate-900" /> Browse Files
-            </button>
-
-            <button
-              type="button"
-              onClick={() => cameraInputRef.current?.click()}
-              className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-xs flex items-center gap-1.5 transition-all active:scale-95"
-            >
-              <Camera className="w-4 h-4" /> Camera
             </button>
           </div>
 
@@ -358,5 +340,3 @@ export const Dropzone: React.FC<DropzoneProps> = ({
     </div>
   );
 };
-
-
