@@ -86,9 +86,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     },
   ];
 
-  // All searchable tool items (including SEO programmatic landing pages)
+  // All searchable tool items
   const allSearchableTools = [
-    // Standard Tools
     ...Object.entries(TOOL_METADATA).map(([key, meta]) => ({
       id: key,
       type: 'tool',
@@ -98,7 +97,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       slug: '',
       toolType: key as ActivePage,
     })),
-    // Programmatic Landing Pages
     ...PROGRAMMATIC_ROUTES.map((route) => ({
       id: route.slug,
       type: 'route',
@@ -205,12 +203,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </div>
 
-        {/* Desktop Navigation Category Dropdowns */}
+        {/* Desktop Navigation Category Dropdowns with Continuous Hover Bridge */}
         <nav className="hidden lg:flex items-center gap-1">
           {categories.map((cat) => (
             <div
               key={cat.title}
-              className="relative"
+              className="relative py-2"
               onMouseEnter={() => setActiveDropdown(cat.title)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
@@ -220,25 +218,27 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {activeDropdown === cat.title && (
-                <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-2xl border border-slate-200 shadow-xl p-2 z-50 space-y-1 animate-fade-in">
-                  {cat.tools.map((tool) => (
-                    <button
-                      key={tool.id}
-                      onClick={() => {
-                        if (onNavigateRoute) onNavigateRoute('');
-                        setActivePage(tool.id);
-                        setActiveDropdown(null);
-                      }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-                        activePage === tool.id
-                          ? 'bg-slate-900 text-white font-bold'
-                          : 'text-slate-700 hover:bg-slate-100'
-                      }`}
-                    >
-                      {tool.icon}
-                      <span>{tool.label}</span>
-                    </button>
-                  ))}
+                <div className="absolute top-full left-0 pt-0.5 w-56 z-50">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-xl p-2 space-y-1 animate-fade-in">
+                    {cat.tools.map((tool) => (
+                      <button
+                        key={tool.id}
+                        onClick={() => {
+                          if (onNavigateRoute) onNavigateRoute('');
+                          setActivePage(tool.id);
+                          setActiveDropdown(null);
+                        }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
+                          activePage === tool.id
+                            ? 'bg-slate-900 text-white font-bold'
+                            : 'text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        {tool.icon}
+                        <span>{tool.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
