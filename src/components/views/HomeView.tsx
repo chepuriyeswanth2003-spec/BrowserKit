@@ -20,12 +20,14 @@ import {
   ArrowRight,
   Search,
   CheckCircle2,
+  Filter,
+  Wrench,
+  Image,
 } from 'lucide-react';
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
 import { PROGRAMMATIC_ROUTES } from '../../data/toolsData';
 import { PrivacyBadge } from '../PrivacyBadge';
-import { AdSlot } from '../AdSlot';
 
 interface HomeViewProps {
   setActivePage: (page: ActivePage) => void;
@@ -68,6 +70,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     return matchesCategory && matchesSearch;
   });
 
+  const categories = [
+    { id: 'all', label: 'All Tools', icon: <Wrench className="w-4 h-4" />, count: allTools.length },
+    { id: 'image', label: 'Image Suite', icon: <Image className="w-4 h-4" />, count: allTools.filter(t => t.category === 'image').length },
+    { id: 'pdf', label: 'PDF Tools', icon: <FileText className="w-4 h-4" />, count: allTools.filter(t => t.category === 'pdf').length },
+    { id: 'video', label: 'Video & Audio', icon: <Video className="w-4 h-4" />, count: allTools.filter(t => t.category === 'video' || t.category === 'audio').length },
+    { id: 'zip', label: 'Archive & Vault', icon: <Archive className="w-4 h-4" />, count: allTools.filter(t => t.category === 'zip').length },
+  ] as const;
+
   return (
     <div className="space-y-10">
       {/* Hero Header Section */}
@@ -99,81 +109,116 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
         </div>
       </section>
 
-      {/* Search & Category Filter Toolbar */}
-      <section className="space-y-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            {(
-              [
-                { id: 'all', label: 'All Tools' },
-                { id: 'image', label: 'Image Suite' },
-                { id: 'pdf', label: 'PDF Tools' },
-                { id: 'video', label: 'Video & Audio' },
-                { id: 'zip', label: 'Archive & Vault' },
-              ] as const
-            ).map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  selectedCategory === cat.id
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+      {/* Prominent Search & Category Filter Toolbar */}
+      <section className="space-y-5 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+              <Filter className="w-4 h-4 text-emerald-700" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-slate-900">Explore & Filter Tools</h2>
+              <p className="text-xs text-slate-500">Filter tools by category or search by keywords</p>
+            </div>
           </div>
 
           {/* Inline Filter Search Input */}
-          <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <div className="relative w-full md:w-72">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Filter tools..."
-              className="w-full pl-9 pr-4 py-2 text-xs bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 text-slate-900 placeholder:text-slate-400"
+              placeholder="Search tools (e.g. compress, unlock)..."
+              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 rounded-2xl border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 text-slate-900 placeholder:text-slate-400 transition-all"
             />
           </div>
         </div>
 
+        {/* High-Visibility Larger Category Filter Pills */}
+        <div className="flex flex-wrap items-center gap-2.5 pt-1">
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id as any)}
+                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 scale-[1.02]'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200/80 hover:border-slate-300'
+                }`}
+              >
+                <span className={isSelected ? 'text-emerald-400' : 'text-slate-500'}>
+                  {cat.icon}
+                </span>
+                <span>{cat.label}</span>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[11px] font-mono ${
+                    isSelected
+                      ? 'bg-slate-800 text-emerald-300 border border-slate-700'
+                      : 'bg-white text-slate-600 border border-slate-200'
+                  }`}
+                >
+                  {cat.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Tools Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTools.map((tool) => (
-            <div
-              key={tool.id}
-              onClick={() => setActivePage(tool.id)}
-              className="group relative p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-xl bg-slate-100 text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                    {toolIcons[tool.id]}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+          {filteredTools.length > 0 ? (
+            filteredTools.map((tool) => (
+              <div
+                key={tool.id}
+                onClick={() => setActivePage(tool.id)}
+                className="group relative p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 rounded-xl bg-slate-100 text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                      {toolIcons[tool.id]}
+                    </div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                      {tool.badge}
+                    </span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                    {tool.badge}
-                  </span>
+
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
+                      {tool.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                      {tool.subtitle}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                    {tool.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                    {tool.subtitle}
-                  </p>
+                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-900">
+                  <span>Launch Tool</span>
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
-
-              <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-900">
-                <span>Launch Tool</span>
-                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+            ))
+          ) : (
+            <div className="col-span-full py-12 text-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                <Search className="w-6 h-6" />
               </div>
+              <p className="text-sm font-bold text-slate-800">No tools match "{searchFilter}"</p>
+              <button
+                onClick={() => {
+                  setSearchFilter('');
+                  setSelectedCategory('all');
+                }}
+                className="text-xs text-emerald-700 hover:underline font-semibold cursor-pointer"
+              >
+                Reset Filter
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </section>
 
