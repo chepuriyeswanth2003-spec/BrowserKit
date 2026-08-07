@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ActivePage } from './types';
+import { ActivePage, ToolType } from './types';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { AdSlot } from './components/AdSlot';
@@ -38,6 +38,69 @@ import { FileEncryptorTool } from './components/tools/FileEncryptorTool';
 
 import { findRouteBySlug } from './data/toolsData';
 
+// Helper to map any URL path to ActivePage and currentSlug
+function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
+  const path = rawPath.replace(/^\/+/, '').replace(/\/$/, '').trim();
+
+  if (!path || path === 'home') {
+    return { page: 'home', slug: '' };
+  }
+
+  // 1. Check Programmatic SEO routes first
+  const programmaticRoute = findRouteBySlug(path);
+  if (programmaticRoute) {
+    return { page: programmaticRoute.toolType, slug: programmaticRoute.slug };
+  }
+
+  // 2. Check direct ToolType or Static pages
+  const validPages: ActivePage[] = [
+    'compressor',
+    'bg-remover',
+    'converter',
+    'resizer',
+    'palette',
+    'meme',
+    'video-trimmer',
+    'video-to-gif',
+    'pdf-merger',
+    'pdf-splitter',
+    'pdf-password-remover',
+    'images-to-pdf',
+    'zip-archiver',
+    'zip-extractor',
+    'zip-password-remover',
+    'audio-tools',
+    'svg-optimizer',
+    'file-encryptor',
+    'guides',
+    'privacy',
+    'terms',
+  ];
+
+  if (validPages.includes(path as ActivePage)) {
+    return { page: path as ActivePage, slug: '' };
+  }
+
+  // 3. Check alias routes
+  const aliases: Record<string, ActivePage> = {
+    'compress-image': 'compressor',
+    'remove-background': 'bg-remover',
+    'convert-format': 'converter',
+    'resize-image': 'resizer',
+    'color-palette': 'palette',
+    'meme-generator': 'meme',
+    'unlock-pdf': 'pdf-password-remover',
+    'unlock-zip': 'zip-password-remover',
+  };
+
+  if (aliases[path]) {
+    return { page: aliases[path], slug: '' };
+  }
+
+  // Fallback to home
+  return { page: 'home', slug: '' };
+}
+
 export default function App() {
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [currentSlug, setCurrentSlug] = useState<string>('');
@@ -53,30 +116,60 @@ export default function App() {
     // Initialize Google AdSense
     initGoogleAdSense();
 
-    // Start 40-second Keep-Alive auto-ping service (prevents Render 50s spin down)
+    // Start 40-second Keep-Alive auto-ping service
     startKeepAlive(40000);
 
-    // Clean up any legacy dark mode class on root element
+    // Clean up legacy dark mode
     document.documentElement.classList.remove('dark');
     document.documentElement.style.colorScheme = 'light';
 
-    // Check URL path for programmatic route matching
-    const path = window.location.pathname.replace(/^\/+/, '');
-    if (path) {
-      const route = findRouteBySlug(path);
-      if (route) {
-        setCurrentSlug(route.slug);
-      }
-    }
+    // Sync initial state from current window URL path
+    const initialState = parsePathToState(window.location.pathname);
+    setActivePage(initialState.page);
+    setCurrentSlug(initialState.slug);
+
+    // Listen to Browser Back / Forward button navigation
+    const handlePopState = () => {
+      const state = parsePathToState(window.location.pathname);
+      setActivePage(state.page);
+      setCurrentSlug(state.slug);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const handleNavigateRoute = (slug: string) => {
-    setCurrentSlug(slug);
-    if (slug) {
-      const route = findRouteBySlug(slug);
-      if (route) {
-        setActivePage(route.toolType);
+  const navigateToPage = (page: ActivePage, pushToHistory = true) => {
+    setActivePage(page);
+    setCurrentSlug('');
+
+    const targetPath = page === 'home' ? '/' : `/${page}`;
+    if (pushToHistory && window.location.pathname !== targetPath) {
+      window.history.pushState({ page, slug: '' }, '', targetPath);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToRoute = (slug: string, pushToHistory = true) => {
+    if (!slug) {
+      navigateToPage('home', pushToHistory);
+      return;
+    }
+
+    const route = findRouteBySlug(slug);
+    if (route) {
+      setCurrentSlug(route.slug);
+      setActivePage(route.toolType);
+
+      const targetPath = `/${route.slug}`;
+      if (pushToHistory && window.location.pathname !== targetPath) {
+        window.history.pushState({ page: route.toolType, slug: route.slug }, '', targetPath);
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Check if slug maps to a standard page
+      const pageState = parsePathToState(slug);
+      navigateToPage(pageState.page, pushToHistory);
     }
   };
 
@@ -99,7 +192,7 @@ export default function App() {
         <ProgrammaticLandingPage
           route={activeProgrammaticRoute}
           onDownloadTrigger={handleDownloadTrigger}
-          onNavigateRoute={handleNavigateRoute}
+          onNavigateRoute={navigateToRoute}
         />
       );
     }
@@ -142,14 +235,19 @@ export default function App() {
       case 'file-encryptor':
         return <FileEncryptorTool />;
       case 'guides':
-        return <GuidesView setActivePage={(p) => { setCurrentSlug(''); setActivePage(p); }} />;
+        return <GuidesView setActivePage={(p) => navigateToPage(p)} />;
       case 'privacy':
         return <PrivacyView />;
       case 'terms':
         return <TermsView />;
       case 'home':
       default:
-        return <HomeView setActivePage={(p) => { setCurrentSlug(''); setActivePage(p); }} onNavigateRoute={handleNavigateRoute} />;
+        return (
+          <HomeView
+            setActivePage={(p) => navigateToPage(p)}
+            onNavigateRoute={navigateToRoute}
+          />
+        );
     }
   };
 
@@ -158,8 +256,8 @@ export default function App() {
       {/* Top Header Navbar */}
       <Navbar
         activePage={activePage}
-        setActivePage={(p) => { setCurrentSlug(''); setActivePage(p); }}
-        onNavigateRoute={handleNavigateRoute}
+        setActivePage={(p) => navigateToPage(p)}
+        onNavigateRoute={navigateToRoute}
       />
 
       {/* Main Layout Container */}
@@ -185,8 +283,8 @@ export default function App() {
 
       {/* Footer */}
       <Footer
-        setActivePage={(p) => { setCurrentSlug(''); setActivePage(p); }}
-        onNavigateRoute={handleNavigateRoute}
+        setActivePage={(p) => navigateToPage(p)}
+        onNavigateRoute={navigateToRoute}
       />
 
       {/* Dismissible Post Download Ad Modal */}
