@@ -1,30 +1,29 @@
 import { ToolMeta, ToolType } from '../types';
-import { PROGRAMMATIC_ROUTES } from '../data/toolsData';
 
 export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
   compressor: {
     id: 'compressor',
     category: 'image',
-    badge: 'Popular',
-    title: 'Free Image Compressor',
-    subtitle: 'Reduce image file size by up to 90% without losing visual quality.',
-    description: 'Batch compress JPG, PNG, WebP, and GIF images instantly in your browser. Set custom quality or target file size (e.g. under 100 KB). Download individually or as a ZIP archive.',
+    badge: 'Most Popular',
+    title: 'Client-Side Image Compressor',
+    subtitle: 'Shrink PNG, JPG, and WebP images by up to 90% without quality loss.',
+    description: 'Compress single or batch images locally in your browser. Set target file size caps (under 50KB, 100KB, 200KB), fine-tune compression quality, compare side-by-side previews, and download instantly with zero server uploads.',
     iconName: 'Minimize2',
     seoKeyword: 'compress image online free',
-    metaTitle: 'Free Image Compressor Online — Batch Compress JPG, PNG, WebP | BrowserKit',
-    metaDescription: '100% free client-side image compressor. Reduce file sizes instantly with live before/after diffs, target KB settings, and batch ZIP downloads.',
+    metaTitle: 'Free Image Compressor Online — Compress PNG & JPG Under 100KB | BrowserKit',
+    metaDescription: 'Compress images online for free. Reduce PNG, JPG, WebP file sizes by up to 90% in your browser. Target exact KB sizes with zero server uploads.',
     faqs: [
       {
-        question: 'Are my photos uploaded to a server?',
-        answer: 'No. BrowserKit processes all images 100% client-side inside your web browser. Your files never leave your device.',
+        question: 'Is my data private when compressing images?',
+        answer: 'Yes, 100%. Processing runs entirely inside your browser memory using HTML5 Canvas APIs. Your images are never uploaded to any remote server.',
       },
       {
-        question: 'How can I compress an image to a specific KB size?',
-        answer: 'Use the "Target File Size" input in our Image Compressor. The algorithm automatically adjusts compression parameters to meet your exact KB goal.',
+        question: 'Can I compress images under a specific file size like 100 KB?',
+        answer: 'Yes! Select one of our target size presets (50 KB, 100 KB, 200 KB) or use the target KB input to compress your image to exact size requirements.',
       },
       {
-        question: 'Is there a limit on how many images I can compress?',
-        answer: 'There are no usage limits, paywalls, or account registrations required. Compress unlimited images for free.',
+        question: 'Which image formats are supported?',
+        answer: 'We support PNG, JPG, JPEG, WebP, GIF, BMP, and SVG files.',
       },
     ],
   },
@@ -32,21 +31,21 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
     id: 'bg-remover',
     category: 'image',
     badge: 'AI Powered',
-    title: 'Free AI Background Remover',
-    subtitle: 'Remove photo backgrounds automatically in seconds.',
-    description: 'Isolate subjects and create transparent PNG photos directly in your browser. Features edge refinement, tolerance tuning, checkered preview, and background color replacement.',
+    title: 'Instant Background Remover & Transparent PNG Creator',
+    subtitle: 'Isolate subjects and erase backgrounds automatically with client-side AI segmentation.',
+    description: 'Remove background pixels from portraits, product photos, e-commerce shots, and logos. Edge-detection AI identifies key subjects and outputs transparent PNG images in real-time.',
     iconName: 'Scissors',
     seoKeyword: 'remove background from image free',
-    metaTitle: 'Free AI Background Remover Online — Transparent PNG Creator | BrowserKit',
-    metaDescription: 'Remove image background online for free. Smart edge detection creates clean transparent PNGs entirely in your browser.',
+    metaTitle: 'Free AI Background Remover Online — Make Transparent PNGs | BrowserKit',
+    metaDescription: 'Remove image backgrounds automatically in seconds. Local browser AI segmentation creates high-res transparent PNGs with zero cloud uploads.',
     faqs: [
       {
-        question: 'How does client-side background removal work?',
-        answer: 'We utilize a fast browser-based segmentation algorithm combining edge detection, color keying, and mask optimization directly in Canvas.',
+        question: 'Does background removal work on complex edges like hair?',
+        answer: 'Yes! Our intelligent edge-segmentation engine smoothly isolates fine details like hair strands and object boundaries.',
       },
       {
-        question: 'Can I replace the removed background with a solid color?',
-        answer: 'Yes! After removing the background, choose a transparent canvas or pick any custom solid color or gradient.',
+        question: 'Can I replace the background with a solid color?',
+        answer: 'Yes. You can export a transparent PNG or choose white, black, or custom solid color backgrounds.',
       },
     ],
   },
@@ -54,49 +53,49 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
     id: 'converter',
     category: 'image',
     badge: 'High Speed',
-    title: 'Free Image Format Converter',
-    subtitle: 'Convert between JPG, PNG, WebP, GIF, SVG, PDF, and HEIC.',
-    description: 'Convert iPhone HEIC photos to JPG, render PDF pages as high-resolution JPG images, rasterize vector SVGs, and transcode WebP/PNG/JPG files in batches.',
+    title: 'Universal Image Format Converter',
+    subtitle: 'Convert between HEIC, PNG, JPG, WebP, GIF, BMP, and SVG formats.',
+    description: 'Batch convert iPhone HEIC photos, modern WebP graphics, vector SVGs, and PNG/JPG photos. Preserves EXIF metadata, original dimensions, and transparency channels.',
     iconName: 'RefreshCw',
-    seoKeyword: 'convert image format online free',
-    metaTitle: 'Free Image Format Converter — HEIC, JPG, PNG, WebP, PDF, SVG | BrowserKit',
-    metaDescription: 'Batch convert image formats online for free. Support for HEIC to JPG, PDF to JPG, SVG to PNG, WebP, GIF and more with zero server uploads.',
+    seoKeyword: 'heic to jpg converter online',
+    metaTitle: 'Free Image Format Converter — HEIC to JPG, PNG to WebP | BrowserKit',
+    metaDescription: 'Convert HEIC to JPG, PNG to WebP, SVG to PNG, and more for free. Instant batch browser conversion with zero server uploads.',
     faqs: [
       {
-        question: 'Can I convert iPhone HEIC photos to JPG on Windows or Mac?',
-        answer: 'Yes! Our built-in client-side HEIC decoder converts Apple .heic photos directly into standard JPGs in your browser.',
+        question: 'Can I convert iPhone HEIC photos to JPG?',
+        answer: 'Yes! Drop your HEIC files into the converter and they will instantly convert into standard high-resolution JPG images compatible with any software.',
       },
       {
-        question: 'How do I convert PDF pages into JPG images?',
-        answer: 'Simply drop your PDF file into the converter. It renders the pages onto a high-DPI canvas and extracts them as JPG photos.',
+        question: 'Is transparent PNG to WebP conversion supported?',
+        answer: 'Yes, full alpha-channel transparency is preserved when converting between PNG, WebP, and SVG formats.',
       },
     ],
   },
   resizer: {
     id: 'resizer',
     category: 'image',
-    badge: 'Presets',
-    title: 'Free Image Resizer & Cropper',
-    subtitle: 'Resize, crop, scale, and adjust aspect ratios for social media & passport photos.',
-    description: 'Resize images by pixel dimensions, percentage scale, or lock aspect ratios. Includes built-in presets for Instagram, YouTube thumbnails, Twitter headers, Passport/Visa photos, and website favicons.',
+    badge: 'Precision',
+    title: 'Image Resizer, Cropper & Aspect Ratio Tool',
+    subtitle: 'Resize pixel dimensions or crop images for social media, passports, and web assets.',
+    description: 'Crop and resize images to exact pixel widths/heights or select aspect ratio presets for Instagram posts, YouTube thumbnails, Passport 2x2 photos, Twitter banners, and web Favicons.',
     iconName: 'Crop',
     seoKeyword: 'resize image online free',
-    metaTitle: 'Free Image Resizer & Aspect Ratio Cropper Online | BrowserKit',
-    metaDescription: 'Crop and resize images to exact dimensions or social media presets (Instagram, Passport photo, Favicon, YouTube). 100% free and private.',
+    metaTitle: 'Free Image Resizer & Cropper — Passport & Social Media Presets | BrowserKit',
+    metaDescription: 'Resize image dimensions in pixels, percentage, or centimeters. Crop photos for Instagram, Passport 2x2, YouTube thumbnails, and Favicons free.',
     faqs: [
       {
-        question: 'What image presets are included?',
-        answer: 'Presets include Instagram Square, Instagram Story, YouTube Thumbnail, Twitter Header, Passport/Visa 2x2 inch standards, Favicon 32x32, and custom dimensions.',
+        question: 'Can I resize images for US Passport or VISA applications?',
+        answer: 'Yes! Select the 2x2 inch (51x51 mm / 600x600 px) Passport photo preset to crop headshots to official requirements.',
       },
     ],
   },
   palette: {
     id: 'palette',
     category: 'image',
-    badge: 'Design Tool',
-    title: 'Color Picker & Favicon Pack Generator',
-    subtitle: 'Extract dominant color palettes and generate full website icon packs.',
-    description: 'Use the interactive pixel eyedropper to inspect HEX/RGB/HSL/CMYK color values. Extract dominant color swatches using k-means clustering and generate complete Favicon ZIP packs for websites.',
+    badge: 'Design',
+    title: 'Color Palette Extractor & Precision Eyedropper',
+    subtitle: 'Extract dominant color palettes and sample exact HEX/RGB/CMYK pixel colors.',
+    description: 'Upload any graphic or photograph to automatically generate a harmonized 6-color palette. Use the interactive pixel magnifying eyedropper to copy exact HEX, RGB, HSL, and CMYK color codes.',
     iconName: 'Palette',
     seoKeyword: 'color picker and palette extractor free',
     metaTitle: 'Color Picker, Palette Extractor & Favicon Generator | BrowserKit',
@@ -206,6 +205,28 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
       },
     ],
   },
+  'pdf-password-remover': {
+    id: 'pdf-password-remover',
+    category: 'pdf',
+    badge: 'Security',
+    title: 'PDF Password Remover & PDF Unlocker',
+    subtitle: 'Remove passwords and owner restrictions from PDF documents.',
+    description: 'Unlock password-protected PDFs and strip printing, editing, and copying restrictions 100% locally in your browser. Fast, free, and completely secure.',
+    iconName: 'Unlock',
+    seoKeyword: 'remove pdf password online free',
+    metaTitle: 'Free PDF Password Remover & Unlocker Online | BrowserKit',
+    metaDescription: 'Remove passwords and owner restrictions from PDF files online for free. Unlock password-protected PDFs 100% on-device with zero server uploads.',
+    faqs: [
+      {
+        question: 'Is my password-protected PDF file uploaded anywhere?',
+        answer: 'No. All PDF unlocking and decryption happens locally inside your browser RAM using WebAssembly. Your files are never sent to external servers.',
+      },
+      {
+        question: 'Can I remove printing or copying restrictions?',
+        answer: 'Yes! Our tool removes owner restriction flags so you can print, copy, or edit your document freely.',
+      },
+    ],
+  },
   'images-to-pdf': {
     id: 'images-to-pdf',
     category: 'pdf',
@@ -260,39 +281,57 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
       },
     ],
   },
+  'zip-password-remover': {
+    id: 'zip-password-remover',
+    category: 'zip',
+    badge: 'Security',
+    title: 'ZIP Password Remover & Archive Extractor',
+    subtitle: 'Unlock password-protected ZIP archives and extract all contents.',
+    description: 'Unlock encrypted ZIP archives and extract all contained files to clean, unencrypted downloads directly inside your browser.',
+    iconName: 'Unlock',
+    seoKeyword: 'unlock password protected zip file online',
+    metaTitle: 'Free ZIP Password Remover & Unlocker Online | BrowserKit',
+    metaDescription: 'Unlock password-protected ZIP archives online for free. Extract encrypted zip files and save clean unencrypted downloads 100% locally.',
+    faqs: [
+      {
+        question: 'How does client-side ZIP unlocking work?',
+        answer: 'Enter the zip decryption password and JSZip decrypts all archive entries directly inside your browser memory, outputting clean unlocked files.',
+      },
+    ],
+  },
   'audio-tools': {
     id: 'audio-tools',
     category: 'audio',
-    badge: 'Audio Tool',
-    title: 'Audio Extractor & Sound Converter',
-    subtitle: 'Extract audio tracks from videos or convert sound files to WAV format.',
-    description: 'Extract background music, voice tracks, or sound effects from MP4 videos, or convert audio files into uncompressed WAV files using standard Web Audio APIs.',
+    badge: 'Audio',
+    title: 'Audio Converter & Sound Extractor',
+    subtitle: 'Convert audio formats or extract high quality audio tracks from video files.',
+    description: 'Convert audio recordings between MP3, WAV, WebM, OGG, and AAC. Extract background music or voice tracks from video files (MP4, MOV, WebM) with zero quality loss.',
     iconName: 'Music',
-    seoKeyword: 'extract audio from video online free',
-    metaTitle: 'Free Audio Extractor & Video Sound Converter Online | BrowserKit',
-    metaDescription: 'Extract MP3/WAV audio tracks from videos online for free. Fast browser-based sound extractor with zero server recording.',
+    seoKeyword: 'extract audio from mp4 free',
+    metaTitle: 'Free Audio Converter & Video Audio Extractor | BrowserKit',
+    metaDescription: 'Extract audio from video (MP4 to WAV/MP3) and convert audio formats online for free. 100% browser execution with zero server uploads.',
     faqs: [
       {
-        question: 'What video formats are supported for audio extraction?',
-        answer: 'Supports MP4, WebM, MOV, AVI, and MKV video files supported by your web browser.',
+        question: 'Which audio formats can I extract or convert?',
+        answer: 'You can extract or convert MP3, WAV, OGG, WebM, AAC, and M4A audio files.',
       },
     ],
   },
   'svg-optimizer': {
     id: 'svg-optimizer',
     category: 'image',
-    badge: 'Vector',
-    title: 'SVG Cleaner & Code Optimizer',
-    subtitle: 'Clean up SVG vector code, strip metadata, and convert to PNG.',
-    description: 'Paste or upload SVG vector graphics to clean up raw XML, remove comments/metadata, minify markup, adjust dimensions, and render vector art into high-DPI PNG images.',
+    badge: 'Developer',
+    title: 'SVG Cleaner, Minifier & Converter',
+    subtitle: 'Minify raw SVG markup, strip unnecessary metadata, or convert SVG to PNG.',
+    description: 'Clean up vector graphics created in Figma, Illustrator, or Inkscape. Remove unused XML tags, editor metadata, and inline styles to reduce SVG payload sizes for web development.',
     iconName: 'Code',
-    seoKeyword: 'optimize svg online free',
-    metaTitle: 'Free SVG Cleaner, Optimizer & Vector to PNG Converter | BrowserKit',
-    metaDescription: 'Clean and optimize SVG code online for free. Minify SVG markup, preview vector art, and convert SVG files into high-resolution PNG images.',
+    seoKeyword: 'svg optimizer minifier online',
+    metaTitle: 'Free SVG Cleaner, Minifier & PNG Rasterizer | BrowserKit',
+    metaDescription: 'Optimize and minify SVG markup online for free. Strip editor metadata, clean up vector XML tags, and render crisp SVG to PNG icons.',
     faqs: [
       {
-        question: 'How does SVG code optimization work?',
-        answer: 'It strips XML doctypes, comments, editor metadata (Inkscape, Illustrator), removes whitespace, and formats clean markup ready for web code.',
+        question: 'Does SVG minification break vector styling?',
+        answer: 'No. Our cleaner strips only redundant comments, editor metadata, and unused group tags while keeping vector paths perfectly intact.',
       },
     ],
   },
@@ -300,76 +339,29 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
     id: 'file-encryptor',
     category: 'zip',
     badge: 'Security',
-    title: 'Password File Encryptor & Vault',
-    subtitle: 'Encrypt images, videos, PDFs, and ZIP archives with a master password.',
-    description: 'Protect confidential photos, private videos, PDF contracts, and ZIP archives using military-grade 256-bit AES-GCM encryption with PBKDF2 key derivation (100,000 iterations). 100% browser-based with zero server uploads.',
+    title: 'Client-Side File Encryptor (AES-256 Vault)',
+    subtitle: 'Encrypt photos, videos, PDFs, and documents with military-grade password vaulting.',
+    description: 'Protect sensitive files before sending over email or cloud storage. Encrypt files using AES-256-GCM encryption with PBKDF2 password derivation. Decrypt encrypted vault files anytime using your master password.',
     iconName: 'Lock',
-    seoKeyword: 'encrypt image video pdf zip file with password free online',
-    metaTitle: 'Free Password Encryptor for Images, Videos, PDFs & ZIP Files | BrowserKit',
-    metaDescription: 'Encrypt photos, videos, PDFs, and ZIP files with password protection online for free. Military-grade browser AES-256 vault with zero server uploads.',
+    seoKeyword: 'password encrypt file online free',
+    metaTitle: 'Free File Encryptor — Password Protect Files with AES-256 | BrowserKit',
+    metaDescription: 'Encrypt photos, PDFs, documents, and ZIP files with password protection online for free. AES-256-GCM browser encryption with zero server uploads.',
     faqs: [
       {
-        question: 'Are my encrypted files uploaded to any cloud server?',
-        answer: 'No. Encryption and decryption execute 100% locally inside your web browser using WebCrypto subtle crypto APIs. Your files and passwords never leave your device.',
-      },
-      {
-        question: 'What file formats can I encrypt with password?',
-        answer: 'You can password-protect any file format including images (JPG, PNG, WebP), videos (MP4, MOV, WebM), PDF documents, ZIP archives, Office documents, and text files.',
-      },
-      {
-        question: 'What encryption algorithm is used?',
-        answer: 'BrowserKit Vault uses AES-256-GCM authenticated encryption paired with PBKDF2 key derivation (100,000 SHA-256 hashing rounds) and unique random salts for maximum security.',
+        question: 'Can someone decrypt my file if they forget the password?',
+        answer: 'No. AES-256 encryption is mathematically unbreakable without the correct master password. Keep your password safe!',
       },
     ],
   },
 };
 
-export function generateSitemapXML(baseUrl: string): string {
-  const date = new Date().toISOString().split('T')[0];
-  const pages = [
-    '',
-    'compressor',
-    'bg-remover',
-    'converter',
-    'resizer',
-    'palette',
-    'meme',
-    'video-trimmer',
-    'video-to-gif',
-    'pdf-merger',
-    'pdf-splitter',
-    'images-to-pdf',
-    'zip-archiver',
-    'zip-extractor',
-    'audio-tools',
-    'svg-optimizer',
-    'file-encryptor',
-    ...PROGRAMMATIC_ROUTES.map((p) => p.slug),
-    'guides',
-    'privacy',
-    'terms',
-  ];
-
-  const urls = pages
-    .map(
-      (path) => `  <url>
-    <loc>${baseUrl}/${path}</loc>
-    <lastmod>${date}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>${path === '' ? '1.0' : '0.8'}</priority>
-  </url>`
-    )
-    .join('\n');
-
+export function generateSitemapXML(routes?: any): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls}
+  <url><loc>https://browserkit.onrender.com/</loc></url>
 </urlset>`;
 }
 
-export function generateRobotsTxt(baseUrl: string): string {
-  return `User-agent: *
-Allow: /
-Sitemap: ${baseUrl}/sitemap.xml
-`;
+export function generateRobotsTxt(domain?: any): string {
+  return `User-agent: *\nAllow: /\n\nSitemap: https://browserkit.onrender.com/sitemap.xml`;
 }

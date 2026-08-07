@@ -27,9 +27,11 @@ import { VideoTrimmerTool } from './components/tools/VideoTrimmerTool';
 import { VideoFrameExtractorTool } from './components/tools/VideoFrameExtractorTool';
 import { PdfMergerTool } from './components/tools/PdfMergerTool';
 import { PdfSplitterTool } from './components/tools/PdfSplitterTool';
+import { PdfPasswordRemoverTool } from './components/tools/PdfPasswordRemoverTool';
 import { ImagesToPdfTool } from './components/tools/ImagesToPdfTool';
 import { ZipArchiverTool } from './components/tools/ZipArchiverTool';
 import { ZipExtractorTool } from './components/tools/ZipExtractorTool';
+import { ZipPasswordRemoverTool } from './components/tools/ZipPasswordRemoverTool';
 import { AudioToolsTool } from './components/tools/AudioToolsTool';
 import { SvgOptimizerTool } from './components/tools/SvgOptimizerTool';
 import { FileEncryptorTool } from './components/tools/FileEncryptorTool';
@@ -39,7 +41,6 @@ import { findRouteBySlug } from './data/toolsData';
 export default function App() {
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [currentSlug, setCurrentSlug] = useState<string>('');
-  const [isDark, setIsDark] = useState<boolean>(true);
   const [sidebarAdFilled, setSidebarAdFilled] = useState<boolean>(false);
 
   // Post Download Ad Modal
@@ -55,19 +56,9 @@ export default function App() {
     // Start 40-second Keep-Alive auto-ping service (prevents Render 50s spin down)
     startKeepAlive(40000);
 
-    // Read theme preference or default to dark theme
-    const savedTheme = localStorage.getItem('browserkit_theme') || localStorage.getItem('mediacraft_theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const shouldBeDark = savedTheme ? savedTheme === 'dark' : prefersDark;
-
-    setIsDark(shouldBeDark);
-    if (shouldBeDark) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.colorScheme = 'dark';
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
-    }
+    // Clean up any legacy dark mode class on root element
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = 'light';
 
     // Check URL path for programmatic route matching
     const path = window.location.pathname.replace(/^\/+/, '');
@@ -78,20 +69,6 @@ export default function App() {
       }
     }
   }, []);
-
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    localStorage.setItem('browserkit_theme', nextDark ? 'dark' : 'light');
-
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.colorScheme = 'dark';
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
-    }
-  };
 
   const handleNavigateRoute = (slug: string) => {
     setCurrentSlug(slug);
@@ -148,12 +125,16 @@ export default function App() {
         return <PdfMergerTool />;
       case 'pdf-splitter':
         return <PdfSplitterTool />;
+      case 'pdf-password-remover':
+        return <PdfPasswordRemoverTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'images-to-pdf':
         return <ImagesToPdfTool />;
       case 'zip-archiver':
         return <ZipArchiverTool />;
       case 'zip-extractor':
         return <ZipExtractorTool />;
+      case 'zip-password-remover':
+        return <ZipPasswordRemoverTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'audio-tools':
         return <AudioToolsTool />;
       case 'svg-optimizer':
@@ -173,14 +154,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-slate-900 selection:text-white">
       {/* Top Header Navbar */}
       <Navbar
         activePage={activePage}
         setActivePage={(p) => { setCurrentSlug(''); setActivePage(p); }}
         onNavigateRoute={handleNavigateRoute}
-        isDark={isDark}
-        toggleTheme={toggleTheme}
       />
 
       {/* Main Layout Container */}

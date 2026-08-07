@@ -5,7 +5,7 @@ export async function mergePDFs(pdfFiles: File[]): Promise<Blob> {
 
   for (const file of pdfFiles) {
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await PDFDocument.load(arrayBuffer);
+    const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
     const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
     copiedPages.forEach((page) => mergedPdf.addPage(page));
   }
@@ -22,7 +22,7 @@ export async function getPDFPageCount(pdfFile: File): Promise<number> {
 
 export async function splitPDF(pdfFile: File, pageNumbers: number[]): Promise<Blob> {
   const arrayBuffer = await pdfFile.arrayBuffer();
-  const pdf = await PDFDocument.load(arrayBuffer);
+  const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
   const newPdf = await PDFDocument.create();
 
   // pageNumbers are 1-based
@@ -41,6 +41,42 @@ export async function splitPDF(pdfFile: File, pageNumbers: number[]): Promise<Bl
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
+export async function checkIfPDFEncrypted(pdfFile: File): Promise<boolean> {
+  try {
+    const arrayBuffer = await pdfFile.arrayBuffer();
+    const pdfDoc = await PDFDocument.load(arrayBuffer);
+    return pdfDoc.isEncrypted;
+  } catch {
+    return true;
+  }
+}
+
+export async function removePDFPassword(pdfFile: File, password?: string): Promise<Blob> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+  let pdfDoc;
+
+  try {
+    if (password) {
+      pdfDoc = await PDFDocument.load(arrayBuffer, { password } as any);
+    } else {
+      pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+    }
+  } catch {
+    try {
+      pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+    } catch {
+      throw new Error('Password required. Please enter the correct password to unlock this PDF.');
+    }
+  }
+
+  const unlockedPdf = await PDFDocument.create();
+  const copiedPages = await unlockedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+  copiedPages.forEach((page) => unlockedPdf.addPage(page));
+
+  const pdfBytes = await unlockedPdf.save();
+  return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+
 export async function imagesToPDF(
   imageFiles: File[],
   pageSize: 'a4' | 'letter' | 'fit' = 'a4',
@@ -56,11 +92,9 @@ export async function imagesToPDF(
     if (file.type.includes('png')) {
       embeddedImage = await pdfDoc.embedPng(arrayBuffer);
     } else {
-      // JPEG / WebP / standard image fallback via canvas JPEG conversion
       try {
         embeddedImage = await pdfDoc.embedJpg(arrayBuffer);
       } catch {
-        // Fallback: draw image to canvas then embed as PNG
         const blobUrl = URL.createObjectURL(file);
         const img = new Image();
         img.src = blobUrl;
@@ -84,8 +118,8 @@ export async function imagesToPDF(
 
     const { width: imgWidth, height: imgHeight } = embeddedImage;
 
-    let pageWidth = 595.28; // A4 portrait width in points
-    let pageHeight = 841.89; // A4 portrait height in points
+    let pageWidth = 595.28;
+    let pageHeight = 841.89;
 
     if (pageSize === 'letter') {
       pageWidth = 612;
@@ -103,7 +137,6 @@ export async function imagesToPDF(
 
     const page = pdfDoc.addPage([pageWidth, pageHeight]);
 
-    // Calculate scaled dimensions to fit within margins
     const maxDrawWidth = pageWidth - margin * 2;
     const maxDrawHeight = pageHeight - margin * 2;
 

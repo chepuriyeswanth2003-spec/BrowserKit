@@ -9,9 +9,11 @@ export type ToolType =
   | 'video-to-gif'
   | 'pdf-merger'
   | 'pdf-splitter'
+  | 'pdf-password-remover'
   | 'images-to-pdf'
   | 'zip-archiver'
   | 'zip-extractor'
+  | 'zip-password-remover'
   | 'audio-tools'
   | 'svg-optimizer'
   | 'file-encryptor';
