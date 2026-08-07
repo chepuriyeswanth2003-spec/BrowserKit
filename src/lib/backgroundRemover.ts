@@ -130,7 +130,7 @@ export async function removeBackground(
       const finalCanvas = document.createElement('canvas');
       finalCanvas.width = origW;
       finalCanvas.height = origH;
-      const finalCtx = finalCanvas.getContext('2d');
+      const finalCtx = finalCanvas.getContext('2d', { willReadFrequently: true });
       if (!finalCtx) {
         reject(new Error('Could not create output canvas'));
         return;

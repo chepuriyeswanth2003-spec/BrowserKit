@@ -58,7 +58,7 @@ export const SvgOptimizerTool: React.FC = () => {
       const canvas = document.createElement('canvas');
       canvas.width = (img.naturalWidth || 800) * 2;
       canvas.height = (img.naturalHeight || 800) * 2;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (ctx) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const pngUrl = canvas.toDataURL('image/png');

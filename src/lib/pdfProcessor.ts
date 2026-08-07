@@ -107,7 +107,7 @@ export async function imagesToPDF(
         const canvas = document.createElement('canvas');
         canvas.width = img.naturalWidth || img.width;
         canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         ctx?.drawImage(img, 0, 0);
 
         const pngDataUrl = canvas.toDataURL('image/png');

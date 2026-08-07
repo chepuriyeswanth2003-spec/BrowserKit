@@ -76,7 +76,7 @@ export async function extractColorPalette(
       const sampleSize = 100; // downsample for performance
       canvas.width = sampleSize;
       canvas.height = sampleSize;
-      const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) {
         resolve([]);
         return;
@@ -200,7 +200,7 @@ export async function generateFaviconPackZip(imageSrc: string): Promise<Blob> {
     const canvas = document.createElement('canvas');
     canvas.width = item.size;
     canvas.height = item.size;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (ctx) {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';

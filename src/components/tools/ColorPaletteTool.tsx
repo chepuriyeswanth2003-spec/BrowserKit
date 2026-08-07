@@ -59,7 +59,7 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
     const canvas = canvasRef.current || document.createElement('canvas');
     canvas.width = rect.width;
     canvas.height = rect.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (ctx) {
       ctx.drawImage(imageRef.current, 0, 0, rect.width, rect.height);
       const p = ctx.getImageData(x, y, 1, 1).data;

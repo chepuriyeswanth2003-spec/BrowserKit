@@ -127,7 +127,7 @@ async function checkImageHasTransparency(file: File): Promise<boolean> {
         const h = Math.min(img.height, 200);
         canvas.width = w;
         canvas.height = h;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (!ctx) {
           resolve(true);
           return;
@@ -202,7 +202,7 @@ export async function convertImageFormat(
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
         canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (!ctx) {
           reject(new Error('Canvas context not available'));
           return;

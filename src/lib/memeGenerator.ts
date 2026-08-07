@@ -45,13 +45,15 @@ export async function renderMemeCanvas(
 ): Promise<{ url: string; blob: Blob }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onerror = () => reject(new Error('Failed to load base meme image'));
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) {
         reject(new Error('Canvas context unavailable'));
         return;

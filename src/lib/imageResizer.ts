@@ -42,13 +42,15 @@ export async function processResizeCrop(
 ): Promise<{ url: string; blob: Blob; width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onerror = () => reject(new Error('Failed to load image for resizing'));
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = options.targetWidth;
       canvas.height = options.targetHeight;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) {
         reject(new Error('Canvas 2d context unavailable'));
         return;
