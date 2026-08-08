@@ -336,10 +336,10 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
 export function generateSitemapXML(routes?: any): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://browserkit.onrender.com/</loc></url>
+  <url><loc>https://browserkit.co.in/</loc></url>
 </urlset>`;
 }
 
 export function generateRobotsTxt(domain?: any): string {
-  return `User-agent: *\nAllow: /\n\nSitemap: https://browserkit.onrender.com/sitemap.xml`;
+  return `User-agent: *\nAllow: /\n\nSitemap: https://browserkit.co.in/sitemap.xml`;
 }
