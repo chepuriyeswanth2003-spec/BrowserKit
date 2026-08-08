@@ -40,7 +40,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
 
   const toolIcons: Record<ToolType, React.ReactNode> = {
     compressor: <Minimize2 className="w-5 h-5" />,
-    'bg-remover': <Scissors className="w-5 h-5" />,
     converter: <RefreshCw className="w-5 h-5" />,
     resizer: <Crop className="w-5 h-5" />,
     palette: <Palette className="w-5 h-5" />,

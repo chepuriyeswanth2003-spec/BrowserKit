@@ -27,28 +27,6 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
       },
     ],
   },
-  'bg-remover': {
-    id: 'bg-remover',
-    category: 'image',
-    badge: 'AI Powered',
-    title: 'Instant Background Remover & Transparent PNG Creator',
-    subtitle: 'Isolate subjects and erase backgrounds automatically with client-side AI segmentation.',
-    description: 'Remove background pixels from portraits, product photos, e-commerce shots, and logos. Edge-detection AI identifies key subjects and outputs transparent PNG images in real-time.',
-    iconName: 'Scissors',
-    seoKeyword: 'remove background from image free',
-    metaTitle: 'Free AI Background Remover Online — Make Transparent PNGs | BrowserKit',
-    metaDescription: 'Remove image backgrounds automatically in seconds. Local browser AI segmentation creates high-res transparent PNGs with zero cloud uploads.',
-    faqs: [
-      {
-        question: 'Does background removal work on complex edges like hair?',
-        answer: 'Yes! Our intelligent edge-segmentation engine smoothly isolates fine details like hair strands and object boundaries.',
-      },
-      {
-        question: 'Can I replace the background with a solid color?',
-        answer: 'Yes. You can export a transparent PNG or choose white, black, or custom solid color backgrounds.',
-      },
-    ],
-  },
   converter: {
     id: 'converter',
     category: 'image',

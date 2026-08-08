@@ -1,6 +1,5 @@
 export type ToolType =
   | 'compressor'
-  | 'bg-remover'
   | 'converter'
   | 'resizer'
   | 'palette'

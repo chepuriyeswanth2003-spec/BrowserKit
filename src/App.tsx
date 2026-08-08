@@ -16,7 +16,6 @@ import { TermsView } from './components/views/TermsView';
 import { ProgrammaticLandingPage } from './components/views/ProgrammaticLandingPage';
 
 import { CompressorTool } from './components/tools/CompressorTool';
-import { BackgroundRemoverTool } from './components/tools/BackgroundRemoverTool';
 import { FormatConverterTool } from './components/tools/FormatConverterTool';
 import { ResizerCropperTool } from './components/tools/ResizerCropperTool';
 import { ColorPaletteTool } from './components/tools/ColorPaletteTool';
@@ -55,7 +54,6 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
   // 2. Check direct ToolType or Static pages
   const validPages: ActivePage[] = [
     'compressor',
-    'bg-remover',
     'converter',
     'resizer',
     'palette',
@@ -84,7 +82,6 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
   // 3. Check alias routes
   const aliases: Record<string, ActivePage> = {
     'compress-image': 'compressor',
-    'remove-background': 'bg-remover',
     'convert-format': 'converter',
     'resize-image': 'resizer',
     'color-palette': 'palette',
@@ -200,8 +197,6 @@ export default function App() {
     switch (activePage) {
       case 'compressor':
         return <CompressorTool onDownloadTrigger={handleDownloadTrigger} />;
-      case 'bg-remover':
-        return <BackgroundRemoverTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'converter':
         return <FormatConverterTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'resizer':

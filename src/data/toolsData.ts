@@ -321,26 +321,6 @@ export const PROGRAMMATIC_ROUTES: ProgrammaticToolRoute[] = [
     ],
   },
   {
-    slug: 'remove-bg-free',
-    toolType: 'bg-remover',
-    sourceFormat: 'JPG / PNG',
-    targetFormat: 'PNG',
-    toolCategory: 'AI Background Remover',
-    metaTitle: 'Free AI Background Remover - Transparent PNG Creator | BrowserKit',
-    metaDescription: 'Remove image backgrounds automatically in seconds. Local browser segmentation creates transparent PNGs with zero server uploads.',
-    h1: 'Free AI Background Remover & Transparent PNG Creator',
-    primaryBenefits: [
-      'Instant subject isolation using client-side edge segmentation.',
-      'Refine edge tolerance and replace backgrounds with solid colors.',
-      'Zero server processing keeps your private photos off remote cloud servers.',
-    ],
-    steps: [
-      'Drop any photo into the AI background remover.',
-      'Watch as background pixels are automatically erased.',
-      'Download clean transparent PNG images.',
-    ],
-  },
-  {
     slug: 'trim-video-without-watermark',
     toolType: 'video-trimmer',
     sourceFormat: 'MP4 / WebM',

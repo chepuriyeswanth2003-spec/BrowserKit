@@ -6,7 +6,6 @@ import { ShieldCheck, Cpu, HardDrive, ArrowRight, CheckCircle2, Lock, Sparkles }
 // Tool components
 import { FormatConverterTool } from '../tools/FormatConverterTool';
 import { CompressorTool } from '../tools/CompressorTool';
-import { BackgroundRemoverTool } from '../tools/BackgroundRemoverTool';
 import { PdfMergerTool } from '../tools/PdfMergerTool';
 import { PdfSplitterTool } from '../tools/PdfSplitterTool';
 import { ImagesToPdfTool } from '../tools/ImagesToPdfTool';
@@ -77,8 +76,6 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
         return <FormatConverterTool onDownloadTrigger={onDownloadTrigger} />;
       case 'compressor':
         return <CompressorTool onDownloadTrigger={onDownloadTrigger} />;
-      case 'bg-remover':
-        return <BackgroundRemoverTool onDownloadTrigger={onDownloadTrigger} />;
       case 'pdf-merger':
         return <PdfMergerTool />;
       case 'pdf-splitter':

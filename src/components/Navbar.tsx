@@ -50,7 +50,6 @@ export const Navbar: React.FC<NavbarProps> = ({
       title: 'Image Tools',
       tools: [
         { id: 'compressor' as ToolType, label: 'Image Compressor', icon: <Minimize2 className="w-4 h-4 text-emerald-600" /> },
-        { id: 'bg-remover' as ToolType, label: 'Background Remover', icon: <Scissors className="w-4 h-4 text-emerald-600" /> },
         { id: 'converter' as ToolType, label: 'Format Converter', icon: <RefreshCw className="w-4 h-4 text-emerald-600" /> },
         { id: 'resizer' as ToolType, label: 'Resize & Crop', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
         { id: 'palette' as ToolType, label: 'Color Extractor', icon: <Palette className="w-4 h-4 text-emerald-600" /> },
