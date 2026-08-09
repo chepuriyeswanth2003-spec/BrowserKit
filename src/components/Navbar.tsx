@@ -84,7 +84,14 @@ export const Navbar: React.FC<NavbarProps> = ({
       title: 'Video Tools',
       tools: [
         { id: 'video-trimmer' as ToolType, label: 'Video Trimmer', icon: <Video className="w-4 h-4 text-blue-600" /> },
-        { id: 'video-to-gif' as ToolType, label: 'Video to GIF', icon: <Film className="w-4 h-4 text-blue-600" /> },
+        { id: 'aspect-ratio-resizer' as ToolType, label: 'Aspect Ratio 9:16', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
+        { id: 'video-to-audio' as ToolType, label: 'Video to MP3 Audio', icon: <Music className="w-4 h-4 text-purple-600" /> },
+        { id: 'audio-cutter' as ToolType, label: 'Audio Cutter / Ringtone', icon: <Scissors className="w-4 h-4 text-rose-600" /> },
+        { id: 'thumbnail-grabber' as ToolType, label: 'Thumbnail Grabber', icon: <ImageIcon className="w-4 h-4 text-amber-600" /> },
+        { id: 'social-video-downloader' as ToolType, label: 'Social Video Downloader', icon: <Video className="w-4 h-4 text-blue-600" /> },
+        { id: 'video-format-swapper' as ToolType, label: 'MOV to MP4 Swapper', icon: <RefreshCw className="w-4 h-4 text-indigo-600" /> },
+        { id: 'gif-maker' as ToolType, label: 'Video to Animated GIF', icon: <Sparkles className="w-4 h-4 text-amber-600" /> },
+        { id: 'video-to-gif' as ToolType, label: 'Frame Extractor', icon: <Film className="w-4 h-4 text-sky-600" /> },
       ],
     },
     {

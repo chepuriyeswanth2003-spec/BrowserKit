@@ -16,6 +16,66 @@ export interface ProgrammaticToolRoute {
 
 export const PROGRAMMATIC_ROUTES: ProgrammaticToolRoute[] = [
   {
+    slug: 'resize-video-aspect-ratio-9-16',
+    toolType: 'aspect-ratio-resizer',
+    sourceFormat: '16:9',
+    targetFormat: '9:16',
+    toolCategory: 'Video Editing',
+    metaTitle: 'Free Video Aspect Ratio Resizer — Convert to 9:16 TikTok & Reels | BrowserKit Studio',
+    metaDescription: 'Convert landscape 16:9 videos into 9:16 vertical shorts for TikTok & Instagram Reels free online.',
+    h1: 'Resize Video Aspect Ratio to 9:16 TikTok & Reels',
+    primaryBenefits: [
+      'Convert 16:9 landscape videos into 9:16 vertical format for TikTok, Reels, and YouTube Shorts.',
+      'Auto-fill side bars with blurred video padding or crop center frame.',
+      '100% private in-browser canvas rendering.',
+    ],
+    steps: [
+      'Upload your video clip.',
+      'Select 9:16 TikTok or 1:1 Instagram preset.',
+      'Export and download your vertical video asset.',
+    ],
+  },
+  {
+    slug: 'convert-video-to-mp3-320kbps',
+    toolType: 'video-to-audio',
+    sourceFormat: 'MP4',
+    targetFormat: 'MP3',
+    toolCategory: 'Audio Conversion',
+    metaTitle: 'Free Video to MP3 Converter — 320kbps Audio Extractor | BrowserKit Studio',
+    metaDescription: 'Extract 320kbps MP3 audio tracks from MP4, WebM, and MOV video files free online.',
+    h1: 'Convert Video to 320kbps MP3 Audio Free',
+    primaryBenefits: [
+      'Extract pristine 320kbps MP3 audio from any MP4, WebM, or MOV video.',
+      'Fast browser-native Web Audio API encoding with zero server uploads.',
+      '100% free with no file size limits.',
+    ],
+    steps: [
+      'Upload your video file.',
+      'Choose 320kbps MP3 or lossless WAV format.',
+      'Download your extracted audio track.',
+    ],
+  },
+  {
+    slug: 'audio-cutter-ringtone-maker',
+    toolType: 'audio-cutter',
+    sourceFormat: 'AUDIO',
+    targetFormat: 'TRIMMED',
+    toolCategory: 'Audio Utilities',
+    metaTitle: 'Free Audio Cutter & Ringtone Maker — Trim MP3 Online | BrowserKit Studio',
+    metaDescription: 'Trim audio clips and make custom MP3 ringtones online for free with visual waveform controls.',
+    h1: 'Free Audio Cutter & Custom Ringtone Maker',
+    primaryBenefits: [
+      'Trim MP3 and WAV audio files to custom start/end timestamps.',
+      'Make custom ringtones for iPhone (M4R) and Android (MP3).',
+      'Visual waveform scrubber with zero server uploads.',
+    ],
+    steps: [
+      'Upload your audio file or song.',
+      'Adjust start and end sliders to choose your trim section.',
+      'Export and download your custom ringtone.',
+    ],
+  },
+  {
     slug: 'passport-size-photo-maker',
     toolType: 'passport-photo-maker',
     sourceFormat: 'PHOTO',

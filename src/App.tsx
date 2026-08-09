@@ -33,6 +33,7 @@ import { PdfSuiteTools } from './components/tools/PdfSuiteTools';
 // Media & Security Tools
 import { VideoTrimmerTool } from './components/tools/VideoTrimmerTool';
 import { VideoFrameExtractorTool } from './components/tools/VideoFrameExtractorTool';
+import { MediaSuiteTools } from './components/tools/MediaSuiteTools';
 import { ZipArchiverTool } from './components/tools/ZipArchiverTool';
 import { ZipExtractorTool } from './components/tools/ZipExtractorTool';
 import { ZipPasswordRemoverTool } from './components/tools/ZipPasswordRemoverTool';
@@ -80,8 +81,18 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'official-size-resizer',
     'social-media-resizer',
     'target-kb-compressor',
+    'social-video-downloader',
+    'social-audio-extractor',
+    'social-batch-downloader',
+    'thumbnail-grabber',
+    'video-to-audio',
+    'video-format-swapper',
+    'gif-maker',
+    'video-codec-transcoder',
     'video-trimmer',
     'video-to-gif',
+    'audio-cutter',
+    'aspect-ratio-resizer',
     'pdf-merger',
     'pdf-splitter',
     'pdf-compressor',
@@ -284,6 +295,17 @@ export default function App() {
         return <VideoTrimmerTool />;
       case 'video-to-gif':
         return <VideoFrameExtractorTool />;
+      case 'social-video-downloader':
+      case 'social-audio-extractor':
+      case 'social-batch-downloader':
+      case 'thumbnail-grabber':
+      case 'video-to-audio':
+      case 'video-format-swapper':
+      case 'gif-maker':
+      case 'video-codec-transcoder':
+      case 'audio-cutter':
+      case 'aspect-ratio-resizer':
+        return <MediaSuiteTools toolType={activePage} onDownloadTrigger={handleDownloadTrigger} />;
 
       // PDF Tools Suite
       case 'pdf-merger':

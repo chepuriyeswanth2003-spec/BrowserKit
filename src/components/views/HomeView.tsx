@@ -27,6 +27,7 @@ import {
   Star,
   CheckCircle2,
   MousePointerClick,
+  Layers,
 } from 'lucide-react';
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
@@ -57,8 +58,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     'official-size-resizer': <UserCheck className="w-5 h-5 text-emerald-600" />,
     'social-media-resizer': <Crop className="w-5 h-5 text-blue-600" />,
     'target-kb-compressor': <Minimize2 className="w-5 h-5 text-emerald-600" />,
+    'social-video-downloader': <Video className="w-5 h-5 text-blue-600" />,
+    'social-audio-extractor': <Music className="w-5 h-5 text-purple-600" />,
+    'social-batch-downloader': <Layers className="w-5 h-5 text-amber-600" />,
+    'thumbnail-grabber': <FileText className="w-5 h-5 text-rose-600" />,
+    'video-to-audio': <Music className="w-5 h-5 text-purple-600" />,
+    'video-format-swapper': <RefreshCw className="w-5 h-5 text-indigo-600" />,
+    'gif-maker': <Sparkles className="w-5 h-5 text-amber-600" />,
+    'video-codec-transcoder': <Code className="w-5 h-5 text-teal-600" />,
     'video-trimmer': <Video className="w-5 h-5 text-blue-600" />,
     'video-to-gif': <Film className="w-5 h-5 text-indigo-600" />,
+    'audio-cutter': <Scissors className="w-5 h-5 text-rose-600" />,
+    'aspect-ratio-resizer': <Crop className="w-5 h-5 text-emerald-600" />,
     'pdf-merger': <FileText className="w-5 h-5 text-red-600" />,
     'pdf-splitter': <Scissors className="w-5 h-5 text-red-600" />,
     'pdf-compressor': <Minimize2 className="w-5 h-5 text-emerald-600" />,
