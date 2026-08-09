@@ -130,10 +130,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'PDF Tools Suite',
       subtitle: 'Merge, Split, Compress, Sign & OCR PDFs',
       count: allTools.filter((t) => t.category === 'pdf').length,
-      icon: <FileText className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />,
-      topBorder: 'border-t-4 border-t-red-500 hover:border-t-red-600',
-      cardBg: 'bg-red-50/40 hover:bg-red-600 hover:text-white border-x border-b border-red-200/80',
-      btnBg: 'bg-red-600 text-white group-hover:bg-white group-hover:text-red-700',
+      icon: <FileText className="w-5 h-5 text-rose-600 group-hover:text-white transition-colors" />,
+      iconBox: 'bg-rose-50 border border-rose-200/80 group-hover:bg-white/10 group-hover:border-white/20',
+      badgeBg: 'bg-rose-100/60 text-rose-800 border border-rose-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
+      btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
       btnText: 'Open 30+ PDF Tools →',
     },
     {
@@ -141,10 +141,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'Image Tools Suite',
       subtitle: 'Compress KB, Passports & HEIC to JPG',
       count: allTools.filter((t) => t.category === 'image').length,
-      icon: <Crop className="w-6 h-6 text-emerald-600 group-hover:text-white transition-colors" />,
-      topBorder: 'border-t-4 border-t-emerald-500 hover:border-t-emerald-600',
-      cardBg: 'bg-emerald-50/40 hover:bg-emerald-600 hover:text-white border-x border-b border-emerald-200/80',
-      btnBg: 'bg-emerald-600 text-white group-hover:bg-white group-hover:text-emerald-700',
+      icon: <Crop className="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" />,
+      iconBox: 'bg-emerald-50 border border-emerald-200/80 group-hover:bg-white/10 group-hover:border-white/20',
+      badgeBg: 'bg-emerald-100/60 text-emerald-800 border border-emerald-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
+      btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
       btnText: 'Open 19 Image Tools →',
     },
     {
@@ -152,10 +152,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'Video & Audio Suite',
       subtitle: 'Video Trimmer, Snapshots & Audio',
       count: allTools.filter((t) => t.category === 'video' || t.category === 'audio').length,
-      icon: <Video className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />,
-      topBorder: 'border-t-4 border-t-blue-500 hover:border-t-blue-600',
-      cardBg: 'bg-blue-50/40 hover:bg-blue-600 hover:text-white border-x border-b border-blue-200/80',
-      btnBg: 'bg-blue-600 text-white group-hover:bg-white group-hover:text-blue-700',
+      icon: <Video className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors" />,
+      iconBox: 'bg-indigo-50 border border-indigo-200/80 group-hover:bg-white/10 group-hover:border-white/20',
+      badgeBg: 'bg-indigo-100/60 text-indigo-800 border border-indigo-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
+      btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
       btnText: 'Open 3 Media Tools →',
     },
     {
@@ -163,10 +163,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'Archive & Vault Suite',
       subtitle: 'ZIP Archiver, Unlock ZIP & AES Vault',
       count: allTools.filter((t) => t.category === 'zip').length,
-      icon: <Archive className="w-6 h-6 text-amber-600 group-hover:text-white transition-colors" />,
-      topBorder: 'border-t-4 border-t-amber-500 hover:border-t-amber-600',
-      cardBg: 'bg-amber-50/40 hover:bg-amber-600 hover:text-white border-x border-b border-amber-200/80',
-      btnBg: 'bg-amber-600 text-white group-hover:bg-white group-hover:text-amber-700',
+      icon: <Archive className="w-5 h-5 text-amber-600 group-hover:text-white transition-colors" />,
+      iconBox: 'bg-amber-50 border border-amber-200/80 group-hover:bg-white/10 group-hover:border-white/20',
+      badgeBg: 'bg-amber-100/60 text-amber-900 border border-amber-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
+      btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
       btnText: 'Open 4 Vault Tools →',
     },
   ];
@@ -174,37 +174,38 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
   return (
     <div className="space-y-6">
       {/* Clean White Hero & Horizontal 4-Column Tool Suite Selection Grid */}
-      <section className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+      <section className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
         {/* Title Header */}
         <div className="space-y-2 border-b border-slate-100 pb-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-mono font-bold shadow-xs">
-              <MousePointerClick className="w-3.5 h-3.5 text-emerald-400 animate-bounce" /> SELECT A CATEGORY BUTTON BELOW
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              SELECTABLE CATEGORY SUITES BELOW
             </span>
-            <span className="text-xs font-mono text-slate-500 font-semibold">100% Private Local Browser Studio</span>
+            <span className="text-xs font-mono text-slate-600 font-semibold">100% Private Local Browser Studio</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            BrowserKit <span className="text-emerald-600">Studio</span>. Select Tool Suite Below.
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            BrowserKit <span className="text-slate-700">Studio</span>. Select Tool Suite Below.
           </h1>
-          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
             Click any suite button below to open its full workspace. Zero cloud uploads.
           </p>
         </div>
 
-        {/* Horizontal Single-Row 4-Column Vibrant Clickable Suite Cards */}
+        {/* Horizontal Single-Row 4-Column Sleek Clickable Suite Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {suites.map((suite) => (
             <button
               key={suite.id}
               onClick={() => setActivePage(suite.id)}
-              className={`group p-5 rounded-2xl ${suite.topBorder} ${suite.cardBg} transition-all cursor-pointer shadow-xs hover:shadow-xl hover:scale-[1.02] text-left flex flex-col justify-between space-y-4`}
+              className="group p-5 rounded-2xl bg-slate-50/80 hover:bg-slate-900 text-slate-900 hover:text-white border border-slate-200/90 hover:border-slate-900 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-xl hover:-translate-y-0.5 text-left flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-2.5 rounded-xl bg-white group-hover:bg-white/20 transition-colors shadow-xs">
+                  <div className={`p-2.5 rounded-xl ${suite.iconBox} transition-colors shadow-xs`}>
                     {suite.icon}
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white text-slate-800 border border-slate-200 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30 transition-colors">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${suite.badgeBg} transition-colors`}>
                     {suite.count} Tools
                   </span>
                 </div>
@@ -213,14 +214,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
                   <h3 className="text-base font-extrabold text-slate-900 group-hover:text-white transition-colors">
                     {suite.title}
                   </h3>
-                  <p className="text-xs text-slate-600 group-hover:text-white/90 mt-1 line-clamp-2 leading-relaxed font-medium">
+                  <p className="text-xs text-slate-600 group-hover:text-slate-300 mt-1 line-clamp-2 leading-relaxed font-medium transition-colors">
                     {suite.subtitle}
                   </p>
                 </div>
               </div>
 
               {/* High-Contrast Interactive CTA Button */}
-              <div className={`w-full py-2.5 px-3 rounded-xl ${suite.btnBg} text-xs font-extrabold text-center shadow-sm flex items-center justify-center gap-1.5 transition-all group-hover:shadow-md`}>
+              <div className={`w-full py-2.5 px-3 rounded-xl ${suite.btnBg} text-xs font-extrabold text-center shadow-xs flex items-center justify-center gap-1.5 transition-all group-hover:shadow-md`}>
                 <span>{suite.btnText}</span>
               </div>
             </button>
