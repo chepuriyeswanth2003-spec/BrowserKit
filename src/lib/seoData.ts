@@ -880,10 +880,62 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
   },
 };
 
-export function generateSitemapXML(routes?: any): string {
+export function generateSitemapXML(baseUrl = 'https://browserkit.co.in'): string {
+  const routes = [
+    '',
+    'pdf-tools',
+    'image-tools',
+    'video-tools',
+    'zip-tools',
+    'heic-to-jpg',
+    'convert-heic-to-jpg-mac',
+    'compress-image-under-100kb',
+    'compress-image-to-20kb',
+    'passport-photo-maker',
+    'passport-photo-crop-2x2',
+    'add-name-and-dob-on-photo',
+    'resize-signature-300-dpi',
+    'merge-photo-and-signature',
+    'png-to-webp',
+    'png-to-ico-favicon',
+    'remove-pdf-password',
+    'unlock-pdf-online',
+    'compress-pdf-to-200kb',
+    'pdf-merger',
+    'pdf-splitter',
+    'pdf-to-word',
+    'pdf-to-jpg',
+    'images-to-pdf',
+    'pdf-signer',
+    'resize-video-aspect-ratio-9-16',
+    'convert-video-to-mp3-320kbps',
+    'audio-cutter-ringtone-maker',
+    'social-video-downloader',
+    'social-audio-extractor',
+    'thumbnail-grabber',
+    'video-format-swapper',
+    'gif-maker',
+    'trim-video-without-watermark',
+    'video-trimmer',
+    'unlock-zip-file',
+    'remove-zip-password',
+    'guides',
+    'privacy',
+    'terms',
+  ];
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://browserkit.co.in/</loc></url>
+${routes
+  .map(
+    (r) => `  <url>
+    <loc>${baseUrl}/${r}</loc>
+    <lastmod>2026-08-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${r === '' ? '1.0' : r.endsWith('-tools') ? '0.95' : '0.9'}</priority>
+  </url>`
+  )
+  .join('\n')}
 </urlset>`;
 }
 

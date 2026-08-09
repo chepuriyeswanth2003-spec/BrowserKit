@@ -54,23 +54,46 @@ function serveStaticFile(res, fileName, mimeType) {
     if (fileName === 'sitemap.xml') {
       return res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://browserkit.co.in/</loc><lastmod>2026-08-08</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://browserkit.co.in/heic-to-jpg</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/convert-heic-to-jpg-mac</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/png-to-webp</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/png-to-ico-favicon</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/compress-pdf-to-200kb</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/remove-pdf-password</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/unlock-pdf-online</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/unlock-zip-file</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/remove-zip-password</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/compress-image-under-100kb</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/passport-photo-crop-2x2</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/passport-photo-maker</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/trim-video-without-watermark</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://browserkit.co.in/guides</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://browserkit.co.in/privacy</loc><lastmod>2026-08-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://browserkit.co.in/terms</loc><lastmod>2026-08-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://browserkit.co.in/</loc><lastmod>2026-08-09</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://browserkit.co.in/pdf-tools</loc><lastmod>2026-08-09</lastmod><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://browserkit.co.in/image-tools</loc><lastmod>2026-08-09</lastmod><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://browserkit.co.in/video-tools</loc><lastmod>2026-08-09</lastmod><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://browserkit.co.in/zip-tools</loc><lastmod>2026-08-09</lastmod><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://browserkit.co.in/heic-to-jpg</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/convert-heic-to-jpg-mac</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/compress-image-under-100kb</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/compress-image-to-20kb</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/passport-photo-maker</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/passport-photo-crop-2x2</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/add-name-and-dob-on-photo</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/resize-signature-300-dpi</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/merge-photo-and-signature</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/png-to-webp</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/png-to-ico-favicon</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/remove-pdf-password</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/unlock-pdf-online</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/compress-pdf-to-200kb</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/pdf-merger</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/pdf-splitter</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/pdf-to-word</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/pdf-to-jpg</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/images-to-pdf</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/pdf-signer</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/resize-video-aspect-ratio-9-16</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/convert-video-to-mp3-320kbps</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/audio-cutter-ringtone-maker</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/social-video-downloader</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/social-audio-extractor</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/thumbnail-grabber</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/video-format-swapper</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/gif-maker</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/trim-video-without-watermark</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/video-trimmer</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/unlock-zip-file</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/remove-zip-password</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/guides</loc><lastmod>2026-08-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://browserkit.co.in/privacy</loc><lastmod>2026-08-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://browserkit.co.in/terms</loc><lastmod>2026-08-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>`);
     } else if (fileName === 'robots.txt') {
       return res.send(`User-agent: *\nAllow: /\n\nSitemap: https://browserkit.co.in/sitemap.xml`);
