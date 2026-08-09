@@ -26,6 +26,8 @@ import {
   ChevronRight,
   Star,
   CheckCircle2,
+  MousePointerClick,
+  Layers,
 } from 'lucide-react';
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
@@ -116,79 +118,94 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     {
       id: 'pdf-tools' as ActivePage,
       title: 'PDF Tools Suite',
-      subtitle: 'Merge, Split, Compress, Sign & Unlock PDFs',
+      subtitle: 'Merge, Split, Compress, Sign, Protect, Edit & OCR PDFs',
       count: allTools.filter((t) => t.category === 'pdf').length,
-      icon: <FileText className="w-5 h-5 text-red-400" />,
-      color: 'bg-slate-800/80 hover:bg-slate-800 border-slate-700/80',
+      icon: <FileText className="w-7 h-7 text-red-400" />,
+      badge: '30+ PDF Tools',
+      badgeBg: 'bg-red-500/20 text-red-300 border-red-500/40',
     },
     {
       id: 'image-tools' as ActivePage,
       title: 'Image Tools Suite',
-      subtitle: 'Compress KB, Passport Photos & HEIC to JPG',
+      subtitle: 'Compress KB, Passport Photos, HEIC to JPG & Signatures',
       count: allTools.filter((t) => t.category === 'image').length,
-      icon: <Crop className="w-5 h-5 text-emerald-400" />,
-      color: 'bg-slate-800/80 hover:bg-slate-800 border-slate-700/80',
+      icon: <Crop className="w-7 h-7 text-emerald-400" />,
+      badge: '19 Image Tools',
+      badgeBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
     },
     {
       id: 'video-tools' as ActivePage,
       title: 'Video & Audio Suite',
-      subtitle: 'Video Trimmer, Frame Snapshots & Audio',
+      subtitle: 'Video Trimmer, Frame Snapshot Extractor & Audio Tools',
       count: allTools.filter((t) => t.category === 'video' || t.category === 'audio').length,
-      icon: <Video className="w-5 h-5 text-blue-400" />,
-      color: 'bg-slate-800/80 hover:bg-slate-800 border-slate-700/80',
+      icon: <Video className="w-7 h-7 text-blue-400" />,
+      badge: '3 Media Tools',
+      badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
     },
     {
       id: 'zip-tools' as ActivePage,
       title: 'Archive & Vault Suite',
-      subtitle: 'ZIP Archiver, Unlock ZIP & AES-256 Vault',
+      subtitle: 'ZIP Archiver, Extractor, Unlock ZIP & AES-256 Vault',
       count: allTools.filter((t) => t.category === 'zip').length,
-      icon: <Archive className="w-5 h-5 text-amber-400" />,
-      color: 'bg-slate-800/80 hover:bg-slate-800 border-slate-700/80',
+      icon: <Archive className="w-7 h-7 text-amber-400" />,
+      badge: '4 Vault Tools',
+      badgeBg: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
     },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Integrated Unified Hero & Tool Suite Selection Card */}
+      {/* Prominent Selectable Tool Suite Selection Header & Grid */}
       <section className="relative overflow-hidden rounded-3xl bg-slate-900 text-white p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Title Header */}
+        {/* Title & Explicit Clickable Instruction */}
         <div className="relative z-10 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-emerald-400 border border-slate-700 text-xs font-mono font-medium">
-            <Sparkles className="w-3.5 h-3.5" /> BrowserKit Studio PRO • 100% Client-Side Web Utilities
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold animate-pulse">
+              <MousePointerClick className="w-4 h-4 text-emerald-400" /> SELECTABLE CATEGORIES BELOW — CLICK TO OPEN SUITE
+            </span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
             BrowserKit <span className="text-emerald-400">Studio</span>. High-Speed Local Media Suite.
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed">
-            Select a suite below or launch most used tools directly. 100% browser execution with zero cloud uploads.
+            Click any suite category card below to open its dedicated full-page workspace. 100% browser execution with zero server uploads.
           </p>
         </div>
 
-        {/* Integrated Suite Filter Buttons */}
-        <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+        {/* Large Prominent Clickable Suite Cards (2x2 Grid) */}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
           {suites.map((suite) => (
             <button
               key={suite.id}
               onClick={() => setActivePage(suite.id)}
-              className={`p-4 rounded-2xl border ${suite.color} text-left transition-all cursor-pointer hover:border-emerald-500/50 hover:shadow-lg flex items-center justify-between group`}
+              className="group relative p-6 rounded-2xl bg-slate-800/90 hover:bg-slate-800 border-2 border-slate-700/80 hover:border-emerald-400 hover:ring-4 hover:ring-emerald-500/20 text-left transition-all cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-1 flex flex-col justify-between space-y-4"
             >
-              <div className="space-y-1 min-w-0 pr-2">
-                <div className="flex items-center gap-2">
-                  {suite.icon}
-                  <h3 className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-700 group-hover:border-emerald-500/50 transition-colors">
+                    {suite.icon}
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold border ${suite.badgeBg}`}>
+                    {suite.badge}
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-extrabold text-white group-hover:text-emerald-400 transition-colors">
                     {suite.title}
                   </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+                    {suite.subtitle}
+                  </p>
                 </div>
-                <p className="text-[11px] text-slate-400 truncate">
-                  {suite.subtitle}
-                </p>
-                <span className="inline-block text-[10px] font-mono text-emerald-400 font-bold">
-                  {suite.count} Tools →
-                </span>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all shrink-0" />
+
+              <div className="pt-3 border-t border-slate-700/60 flex items-center justify-between text-xs font-bold text-emerald-400 group-hover:text-emerald-300">
+                <span>Select & Open Suite</span>
+                <ChevronRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+              </div>
             </button>
           ))}
         </div>
