@@ -3,6 +3,7 @@ import path from 'path';
 import http from 'http';
 import https from 'https';
 import fs from 'fs';
+import compression from 'compression';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,6 +11,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Enable Gzip / Brotli response compression for ultra-fast network transfer
+app.use(compression());
 
 // Enable CORS and JSON parsing
 app.use(express.json());
@@ -92,11 +96,25 @@ app.get('/ads.txt', (req, res) => {
   serveStaticFile(res, 'ads.txt', 'text/plain');
 });
 
-// Serve static assets from Vite build dist directory
-app.use(express.static(distPath));
+// Serve static assets with aggressive HTTP Cache-Control headers
+app.use(
+  express.static(distPath, {
+    maxAge: '1y',
+    etag: true,
+    immutable: true,
+    setHeaders: (res, filepath) => {
+      if (filepath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+      } else {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    },
+  })
+);
 
 // Fallback all SPA routes to index.html
 app.get('*', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, must-revalidate');
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
