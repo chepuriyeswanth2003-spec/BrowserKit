@@ -32,6 +32,7 @@ import {
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
 import { PROGRAMMATIC_ROUTES } from '../../data/toolsData';
+import { AdSlot } from '../AdSlot';
 
 interface HomeViewProps {
   setActivePage: (page: ActivePage) => void;
@@ -228,6 +229,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
           ))}
         </div>
       </section>
+
+      {/* Display Ad Slot between Category Suite Filter and Most Used Tools (Mobile & Desktop) */}
+      <AdSlot type="in-flow" />
 
       {/* Most Used Tools Grid */}
       <section className="space-y-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
