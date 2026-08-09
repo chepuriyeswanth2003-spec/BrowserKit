@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import http from 'http';
 import https from 'https';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,23 +31,65 @@ app.get('/health', (req, res) => {
 });
 
 const distPath = path.join(__dirname, 'dist');
+const publicPath = path.join(__dirname, 'public');
+
+// Fail-safe helper for serving text/xml files
+function serveStaticFile(res, fileName, mimeType) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.type(mimeType);
+
+  const distFile = path.join(distPath, fileName);
+  const publicFile = path.join(publicPath, fileName);
+
+  if (fs.existsSync(distFile)) {
+    return res.sendFile(distFile);
+  } else if (fs.existsSync(publicFile)) {
+    return res.sendFile(publicFile);
+  } else {
+    // Fail-safe inline content if static files not found
+    if (fileName === 'sitemap.xml') {
+      return res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://browserkit.co.in/</loc><lastmod>2026-08-08</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://browserkit.co.in/heic-to-jpg</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/convert-heic-to-jpg-mac</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/png-to-webp</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/png-to-ico-favicon</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/compress-pdf-to-200kb</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/remove-pdf-password</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/unlock-pdf-online</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/unlock-zip-file</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/remove-zip-password</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/compress-image-under-100kb</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/passport-photo-crop-2x2</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/passport-photo-maker</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/trim-video-without-watermark</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://browserkit.co.in/guides</loc><lastmod>2026-08-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://browserkit.co.in/privacy</loc><lastmod>2026-08-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://browserkit.co.in/terms</loc><lastmod>2026-08-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+</urlset>`);
+    } else if (fileName === 'robots.txt') {
+      return res.send(`User-agent: *\nAllow: /\n\nSitemap: https://browserkit.co.in/sitemap.xml`);
+    } else if (fileName === 'ads.txt') {
+      return res.send(`google.com, ca-pub-8087434803774295, DIRECT, f08c47fec0942fa0`);
+    }
+    return res.status(404).send('Not Found');
+  }
+}
 
 // Dedicated route for sitemap.xml with explicit application/xml header
 app.get('/sitemap.xml', (req, res) => {
-  res.type('application/xml');
-  res.sendFile(path.join(distPath, 'sitemap.xml'));
+  serveStaticFile(res, 'sitemap.xml', 'application/xml');
 });
 
 // Dedicated route for robots.txt with explicit text/plain header
 app.get('/robots.txt', (req, res) => {
-  res.type('text/plain');
-  res.sendFile(path.join(distPath, 'robots.txt'));
+  serveStaticFile(res, 'robots.txt', 'text/plain');
 });
 
 // Dedicated route for ads.txt with explicit text/plain header
 app.get('/ads.txt', (req, res) => {
-  res.type('text/plain');
-  res.sendFile(path.join(distPath, 'ads.txt'));
+  serveStaticFile(res, 'ads.txt', 'text/plain');
 });
 
 // Serve static assets from Vite build dist directory
