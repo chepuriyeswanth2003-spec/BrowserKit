@@ -21,13 +21,16 @@ import { ResizerCropperTool } from './components/tools/ResizerCropperTool';
 import { ColorPaletteTool } from './components/tools/ColorPaletteTool';
 import { MemeGeneratorTool } from './components/tools/MemeGeneratorTool';
 
-// New Toolkits
-import { VideoTrimmerTool } from './components/tools/VideoTrimmerTool';
-import { VideoFrameExtractorTool } from './components/tools/VideoFrameExtractorTool';
+// PDF Suite Tools
 import { PdfMergerTool } from './components/tools/PdfMergerTool';
 import { PdfSplitterTool } from './components/tools/PdfSplitterTool';
 import { PdfPasswordRemoverTool } from './components/tools/PdfPasswordRemoverTool';
 import { ImagesToPdfTool } from './components/tools/ImagesToPdfTool';
+import { PdfSuiteTools } from './components/tools/PdfSuiteTools';
+
+// Media & Security Tools
+import { VideoTrimmerTool } from './components/tools/VideoTrimmerTool';
+import { VideoFrameExtractorTool } from './components/tools/VideoFrameExtractorTool';
 import { ZipArchiverTool } from './components/tools/ZipArchiverTool';
 import { ZipExtractorTool } from './components/tools/ZipExtractorTool';
 import { ZipPasswordRemoverTool } from './components/tools/ZipPasswordRemoverTool';
@@ -62,8 +65,34 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'video-to-gif',
     'pdf-merger',
     'pdf-splitter',
+    'pdf-compressor',
     'pdf-password-remover',
+    'pdf-protector',
     'images-to-pdf',
+    'pdf-to-jpg',
+    'pdf-to-word',
+    'pdf-to-ppt',
+    'pdf-to-excel',
+    'word-to-pdf',
+    'ppt-to-pdf',
+    'excel-to-pdf',
+    'html-to-pdf',
+    'pdf-editor',
+    'pdf-signer',
+    'pdf-watermark',
+    'pdf-rotator',
+    'pdf-organizer',
+    'pdf-to-pdfa',
+    'pdf-repair',
+    'pdf-page-numbers',
+    'pdf-ocr',
+    'pdf-compare',
+    'pdf-redact',
+    'pdf-cropper',
+    'pdf-forms',
+    'pdf-ai-summarizer',
+    'pdf-translate',
+    'pdf-to-markdown',
     'zip-archiver',
     'zip-extractor',
     'zip-password-remover',
@@ -209,6 +238,8 @@ export default function App() {
         return <VideoTrimmerTool />;
       case 'video-to-gif':
         return <VideoFrameExtractorTool />;
+
+      // PDF Tools Suite
       case 'pdf-merger':
         return <PdfMergerTool />;
       case 'pdf-splitter':
@@ -217,6 +248,35 @@ export default function App() {
         return <PdfPasswordRemoverTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'images-to-pdf':
         return <ImagesToPdfTool />;
+      case 'pdf-compressor':
+      case 'pdf-protector':
+      case 'pdf-to-jpg':
+      case 'pdf-to-word':
+      case 'pdf-to-ppt':
+      case 'pdf-to-excel':
+      case 'word-to-pdf':
+      case 'ppt-to-pdf':
+      case 'excel-to-pdf':
+      case 'html-to-pdf':
+      case 'pdf-editor':
+      case 'pdf-signer':
+      case 'pdf-watermark':
+      case 'pdf-rotator':
+      case 'pdf-organizer':
+      case 'pdf-to-pdfa':
+      case 'pdf-repair':
+      case 'pdf-page-numbers':
+      case 'pdf-ocr':
+      case 'pdf-compare':
+      case 'pdf-redact':
+      case 'pdf-cropper':
+      case 'pdf-forms':
+      case 'pdf-ai-summarizer':
+      case 'pdf-translate':
+      case 'pdf-to-markdown':
+        return <PdfSuiteTools toolType={activePage} onDownloadTrigger={handleDownloadTrigger} />;
+
+      // Archives & Security
       case 'zip-archiver':
         return <ZipArchiverTool />;
       case 'zip-extractor':
