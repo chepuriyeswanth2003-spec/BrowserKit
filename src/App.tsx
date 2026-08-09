@@ -14,6 +14,7 @@ import { GuidesView } from './components/views/GuidesView';
 import { PrivacyView } from './components/views/PrivacyView';
 import { TermsView } from './components/views/TermsView';
 import { ProgrammaticLandingPage } from './components/views/ProgrammaticLandingPage';
+import { CategorySuiteView } from './components/views/CategorySuiteView';
 
 import { CompressorTool } from './components/tools/CompressorTool';
 import { FormatConverterTool } from './components/tools/FormatConverterTool';
@@ -57,6 +58,10 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
 
   // 2. Check direct ToolType or Static pages
   const validPages: ActivePage[] = [
+    'pdf-tools',
+    'image-tools',
+    'video-tools',
+    'zip-tools',
     'compressor',
     'converter',
     'resizer',
@@ -238,6 +243,16 @@ export default function App() {
     }
 
     switch (activePage) {
+      // Dedicated Category Suite Standalone Pages
+      case 'pdf-tools':
+        return <CategorySuiteView category="pdf" setActivePage={(p) => navigateToPage(p)} />;
+      case 'image-tools':
+        return <CategorySuiteView category="image" setActivePage={(p) => navigateToPage(p)} />;
+      case 'video-tools':
+        return <CategorySuiteView category="video" setActivePage={(p) => navigateToPage(p)} />;
+      case 'zip-tools':
+        return <CategorySuiteView category="zip" setActivePage={(p) => navigateToPage(p)} />;
+
       case 'compressor':
         return <CompressorTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'converter':

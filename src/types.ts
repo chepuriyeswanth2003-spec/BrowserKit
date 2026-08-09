@@ -56,7 +56,16 @@ export type ToolType =
   | 'svg-optimizer'
   | 'file-encryptor';
 
-export type ActivePage = ToolType | 'home' | 'guides' | 'privacy' | 'terms';
+export type ActivePage =
+  | ToolType
+  | 'home'
+  | 'guides'
+  | 'privacy'
+  | 'terms'
+  | 'pdf-tools'
+  | 'image-tools'
+  | 'video-tools'
+  | 'zip-tools';
 
 export type ToolCategory = 'image' | 'video' | 'pdf' | 'zip' | 'audio';
 

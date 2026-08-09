@@ -197,27 +197,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {suites.map((suite) => {
-            const isSelected = selectedCategory === suite.id;
             return (
               <div
                 key={suite.id}
                 onClick={() => {
-                  setSelectedCategory(suite.id);
-                  setSearchFilter('');
+                  const targetPage = `${suite.id}-tools` as ActivePage;
+                  setActivePage(targetPage);
                 }}
-                className={`p-6 rounded-3xl border transition-all cursor-pointer flex items-start justify-between gap-4 ${
-                  isSelected
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-xl scale-[1.01]'
-                    : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
-                }`}
+                className="p-6 rounded-3xl border border-slate-200 hover:border-slate-900 bg-white hover:bg-slate-900 text-slate-900 hover:text-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex items-start justify-between gap-4 group"
               >
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800">
+                    <div className="p-3 rounded-2xl bg-slate-100 group-hover:bg-slate-800 transition-colors">
                       {suite.icon}
                     </div>
                     <div>
-                      <h3 className={`text-lg font-bold ${isSelected ? 'text-white' : 'text-slate-900'}`}>
+                      <h3 className="text-lg font-bold group-hover:text-white transition-colors">
                         {suite.title}
                       </h3>
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border mt-0.5 ${suite.badgeBg}`}>
@@ -225,11 +220,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
                       </span>
                     </div>
                   </div>
-                  <p className={`text-xs leading-relaxed ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
+                  <p className="text-xs leading-relaxed text-slate-500 group-hover:text-slate-300 transition-colors">
                     {suite.subtitle}
                   </p>
                 </div>
-                <div className={`p-2 rounded-xl shrink-0 mt-2 ${isSelected ? 'bg-emerald-500 text-slate-900' : 'bg-slate-100 text-slate-600'}`}>
+                <div className="p-2 rounded-xl shrink-0 mt-2 bg-slate-100 group-hover:bg-emerald-500 text-slate-600 group-hover:text-slate-900 transition-colors">
                   <ChevronRight className="w-5 h-5" />
                 </div>
               </div>
