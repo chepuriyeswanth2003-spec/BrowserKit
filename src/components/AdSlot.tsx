@@ -25,6 +25,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   onStatusChange,
 }) => {
   const insRef = useRef<HTMLModElement | null>(null);
+  const [isFilled, setIsFilled] = useState<boolean>(false);
   const [isUnfilled, setIsUnfilled] = useState<boolean>(false);
   const pushedRef = useRef<boolean>(false);
 
@@ -54,7 +55,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   const resolvedSlot = getFallbackSlotId();
 
   useEffect(() => {
-    // 1. Push AdSense slot once when element is rendered visible in DOM
+    // 1. Push AdSense slot once when mounted
     if (!pushedRef.current) {
       pushedRef.current = true;
       const timer = setTimeout(() => {
@@ -68,13 +69,18 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     const insNode = insRef.current;
     if (!insNode) return;
 
-    // Observe Google AdSense data-ad-status attribute
+    // Observe Google AdSense data-ad-status attribute & child iframe insertion
     const observer = new MutationObserver(() => {
       const status = insNode.getAttribute('data-ad-status');
-      if (status === 'filled' || (insNode.children.length > 0 && insNode.offsetHeight > 0)) {
+      const hasIframe = insNode.getElementsByTagName('iframe').length > 0;
+      const hasHeight = insNode.offsetHeight > 10;
+
+      if (status === 'filled' || hasIframe || hasHeight) {
+        setIsFilled(true);
         setIsUnfilled(false);
         if (onStatusChange) onStatusChange(true);
       } else if (status === 'unfilled') {
+        setIsFilled(false);
         setIsUnfilled(true);
         if (onStatusChange) onStatusChange(false);
       }
@@ -82,19 +88,20 @@ export const AdSlot: React.FC<AdSlotProps> = ({
 
     observer.observe(insNode, {
       attributes: true,
-      attributeFilter: ['data-ad-status'],
+      attributeFilter: ['data-ad-status', 'style'],
       childList: true,
       subtree: true,
     });
 
-    // Check after 3.5s if ad is explicitly unfilled
+    // Check after 2.5s if ad is unfilled or unrendered
     const checkTimer = setTimeout(() => {
       const status = insNode.getAttribute('data-ad-status');
-      if (status === 'unfilled') {
+      const hasIframe = insNode.getElementsByTagName('iframe').length > 0;
+      if (status === 'unfilled' || (!hasIframe && insNode.offsetHeight < 10)) {
         setIsUnfilled(true);
         if (onStatusChange) onStatusChange(false);
       }
-    }, 3500);
+    }, 2500);
 
     return () => {
       observer.disconnect();
@@ -102,41 +109,31 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     };
   }, [onStatusChange]);
 
-  // Hide container if explicitly marked unfilled by Google AdSense
+  // Hide container completely if marked unfilled by Google AdSense or AdBlocker
   if (isUnfilled && !showPlaceholderInDev) {
     return null;
   }
 
-  const getContainerStyle = () => {
-    switch (type) {
-      case 'header-banner':
-        return 'w-full max-w-4xl my-3 mx-auto min-h-[90px]';
-      case 'sidebar':
-        return 'w-full my-4 min-h-[250px]';
-      case 'below-tool':
-        return 'w-full max-w-4xl my-6 mx-auto min-h-[100px]';
-      case 'modal':
-        return 'w-full my-3 min-h-[150px]';
-      case 'in-flow':
-      default:
-        return 'w-full my-4 min-h-[90px]';
-    }
-  };
-
   return (
     <div
-      className={`relative overflow-hidden rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex flex-col items-center justify-center p-2.5 text-center transition-all ${getContainerStyle()} ${className}`}
-      aria-label="Advertisement"
+      className={`w-full transition-all duration-300 ${
+        isFilled || (isDemoClient && showPlaceholderInDev)
+          ? 'my-4 p-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden'
+          : 'my-0 p-0 border-0 bg-transparent overflow-hidden'
+      } ${className}`}
     >
-      <span className="absolute top-1.5 right-2 text-[9px] font-mono tracking-wider uppercase text-slate-400 dark:text-slate-500 z-10 select-none">
-        Advertisement
-      </span>
+      {/* Show Advertisement label ONLY when an ad is actively loaded and filled */}
+      {(isFilled || (isDemoClient && showPlaceholderInDev)) && (
+        <span className="text-[9px] font-mono tracking-wider uppercase text-slate-400 dark:text-slate-500 mb-1 select-none">
+          Advertisement
+        </span>
+      )}
 
       {/* Production Google AdSense Ins element */}
       <ins
         ref={insRef}
         className="adsbygoogle"
-        style={{ display: 'block', width: '100%', minHeight: '90px' }}
+        style={{ display: 'block', width: '100%' }}
         data-ad-client={resolvedClient}
         data-ad-slot={resolvedSlot}
         data-ad-format={format}
@@ -144,16 +141,13 @@ export const AdSlot: React.FC<AdSlotProps> = ({
         {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
       ></ins>
 
-      {/* Visual placeholder only shown if explicitly requested via showPlaceholderInDev */}
+      {/* Visual placeholder only shown in dev if explicitly requested */}
       {isDemoClient && showPlaceholderInDev && (
         <div className="flex flex-col items-center justify-center gap-1.5 py-4 px-3 text-slate-400 dark:text-slate-500 select-none">
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             AdSense Display Ad Slot ({type})
           </div>
-          <p className="text-[11px] max-w-xs opacity-75 leading-tight">
-            Configured for <code className="font-mono text-[10px] text-emerald-500">{resolvedClient}</code>.
-          </p>
         </div>
       )}
     </div>
