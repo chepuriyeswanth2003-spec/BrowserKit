@@ -25,6 +25,8 @@ import {
   Filter,
   Wrench,
   Image,
+  Layers,
+  ChevronRight
 } from 'lucide-react';
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
@@ -37,17 +39,17 @@ interface HomeViewProps {
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRoute }) => {
-  const [selectedCategory, setSelectedCategory] = useState<ToolCategory | 'all'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<ToolCategory | 'all' | 'none'>('pdf');
   const [searchFilter, setSearchFilter] = useState('');
 
   const toolIcons: Record<ToolType, React.ReactNode> = {
-    compressor: <Minimize2 className="w-5 h-5" />,
-    converter: <RefreshCw className="w-5 h-5" />,
-    resizer: <Crop className="w-5 h-5" />,
-    palette: <Palette className="w-5 h-5" />,
-    meme: <Smile className="w-5 h-5" />,
-    'video-trimmer': <Video className="w-5 h-5" />,
-    'video-to-gif': <Film className="w-5 h-5" />,
+    compressor: <Minimize2 className="w-5 h-5 text-emerald-600" />,
+    converter: <RefreshCw className="w-5 h-5 text-blue-600" />,
+    resizer: <Crop className="w-5 h-5 text-purple-600" />,
+    palette: <Palette className="w-5 h-5 text-amber-600" />,
+    meme: <Smile className="w-5 h-5 text-rose-600" />,
+    'video-trimmer': <Video className="w-5 h-5 text-blue-600" />,
+    'video-to-gif': <Film className="w-5 h-5 text-indigo-600" />,
     'pdf-merger': <FileText className="w-5 h-5 text-red-600" />,
     'pdf-splitter': <Scissors className="w-5 h-5 text-red-600" />,
     'pdf-compressor': <Minimize2 className="w-5 h-5 text-emerald-600" />,
@@ -66,7 +68,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     'pdf-signer': <FileText className="w-5 h-5 text-indigo-600" />,
     'pdf-watermark': <FileText className="w-5 h-5 text-rose-600" />,
     'pdf-rotator': <RefreshCw className="w-5 h-5 text-sky-600" />,
-    'pdf-organizer': <FileText className="w-5 h-5 text-indigo-600" />,
+    'pdf-organizer': <Layers className="w-5 h-5 text-indigo-600" />,
     'pdf-to-pdfa': <CheckCircle className="w-5 h-5 text-teal-600" />,
     'pdf-repair': <Sparkles className="w-5 h-5 text-amber-600" />,
     'pdf-page-numbers': <FileText className="w-5 h-5 text-blue-600" />,
@@ -78,18 +80,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     'pdf-ai-summarizer': <Sparkles className="w-5 h-5 text-amber-600" />,
     'pdf-translate': <Sparkles className="w-5 h-5 text-blue-600" />,
     'pdf-to-markdown': <Code className="w-5 h-5 text-slate-800" />,
-    'zip-archiver': <Archive className="w-5 h-5" />,
-    'zip-extractor': <FolderArchive className="w-5 h-5" />,
-    'zip-password-remover': <Unlock className="w-5 h-5" />,
-    'audio-tools': <Music className="w-5 h-5" />,
-    'svg-optimizer': <Code className="w-5 h-5" />,
-    'file-encryptor': <Lock className="w-5 h-5" />,
+    'zip-archiver': <Archive className="w-5 h-5 text-amber-600" />,
+    'zip-extractor': <FolderArchive className="w-5 h-5 text-amber-600" />,
+    'zip-password-remover': <Unlock className="w-5 h-5 text-rose-600" />,
+    'audio-tools': <Music className="w-5 h-5 text-purple-600" />,
+    'svg-optimizer': <Code className="w-5 h-5 text-indigo-600" />,
+    'file-encryptor': <Lock className="w-5 h-5 text-emerald-600" />,
   };
 
   const allTools = Object.values(TOOL_METADATA);
 
   const filteredTools = allTools.filter((tool) => {
-    const matchesCategory = selectedCategory === 'all' || tool.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === 'all' ||
+      (selectedCategory === 'video' ? (tool.category === 'video' || tool.category === 'audio') : tool.category === selectedCategory);
     const matchesSearch =
       searchFilter.trim() === '' ||
       tool.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
@@ -97,13 +101,40 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     return matchesCategory && matchesSearch;
   });
 
-  const categories = [
-    { id: 'all', label: 'All Tools', icon: <Wrench className="w-4 h-4" />, count: allTools.length },
-    { id: 'image', label: 'Image Suite', icon: <Image className="w-4 h-4" />, count: allTools.filter(t => t.category === 'image').length },
-    { id: 'pdf', label: 'PDF Tools', icon: <FileText className="w-4 h-4" />, count: allTools.filter(t => t.category === 'pdf').length },
-    { id: 'video', label: 'Video & Audio', icon: <Video className="w-4 h-4" />, count: allTools.filter(t => t.category === 'video' || t.category === 'audio').length },
-    { id: 'zip', label: 'Archive & Vault', icon: <Archive className="w-4 h-4" />, count: allTools.filter(t => t.category === 'zip').length },
-  ] as const;
+  const suites = [
+    {
+      id: 'pdf' as ToolCategory,
+      title: 'PDF Tools Suite',
+      subtitle: 'Merge, Split, Compress, Convert, Sign, Protect, Edit & OCR PDFs',
+      count: allTools.filter((t) => t.category === 'pdf').length,
+      icon: <FileText className="w-7 h-7 text-red-600" />,
+      badgeBg: 'bg-red-50 text-red-700 border-red-200',
+    },
+    {
+      id: 'image' as ToolCategory,
+      title: 'Image Tools Suite',
+      subtitle: 'Compress Under 100KB, Convert HEIC, Resize, Eyedropper & Meme Studio',
+      count: allTools.filter((t) => t.category === 'image').length,
+      icon: <Image className="w-7 h-7 text-emerald-600" />,
+      badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    },
+    {
+      id: 'video' as ToolCategory,
+      title: 'Video & Audio Suite',
+      subtitle: 'Trim Videos, Extract Audio Tracks, Frame Snapshots & Audio Converter',
+      count: allTools.filter((t) => t.category === 'video' || t.category === 'audio').length,
+      icon: <Video className="w-7 h-7 text-blue-600" />,
+      badgeBg: 'bg-blue-50 text-blue-700 border-blue-200',
+    },
+    {
+      id: 'zip' as ToolCategory,
+      title: 'Archive & Vault Suite',
+      subtitle: 'ZIP Archiver, Extractor, ZIP Password Remover & AES-256 Vault Encryption',
+      count: allTools.filter((t) => t.category === 'zip').length,
+      icon: <Archive className="w-7 h-7 text-amber-600" />,
+      badgeBg: 'bg-amber-50 text-amber-700 border-amber-200',
+    },
+  ];
 
   return (
     <div className="space-y-10">
@@ -116,10 +147,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
             BrowserKit <span className="text-emerald-400">Studio</span>. <br />
-            Private Tools. Zero Cloud Uploads.
+            Select Your Tool Suite Below.
           </h1>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            The premium browser studio to <strong>compress images under 100kb free</strong>, <strong>convert HEIC to JPG on Mac & PC</strong>, <strong>remove PDF passwords online</strong>, trim video clips, and encrypt confidential files with AES-256 locally.
+            Select your target suite below to launch PDF tools, image compressors, video editors, or security vaults. 100% browser execution with zero cloud uploads.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -136,118 +167,152 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
         </div>
       </section>
 
-      {/* Prominent Search & Category Filter Toolbar */}
-      <section className="space-y-5 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
-              <Filter className="w-4 h-4 text-emerald-700" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-slate-900">Explore & Filter Tools</h2>
-              <p className="text-xs text-slate-500">Filter tools by category or search by keywords</p>
-            </div>
+      {/* Prominent Category Suite Selection Grid */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-extrabold text-slate-900">Select Tool Category</h2>
+            <p className="text-xs text-slate-500 font-medium">Click any suite category to view and launch tools</p>
           </div>
-
-          {/* Inline Filter Search Input */}
-          <div className="relative w-full md:w-72">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Search tools (e.g. compress, unlock)..."
-              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 rounded-2xl border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 text-slate-900 placeholder:text-slate-400 transition-all"
-            />
-          </div>
+          <PrivacyBadge />
         </div>
 
-        {/* High-Visibility Larger Category Filter Pills */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-1">
-          {categories.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {suites.map((suite) => {
+            const isSelected = selectedCategory === suite.id;
             return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id as any)}
-                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 transition-all cursor-pointer ${
+              <div
+                key={suite.id}
+                onClick={() => {
+                  setSelectedCategory(suite.id);
+                  setSearchFilter('');
+                }}
+                className={`p-6 rounded-3xl border transition-all cursor-pointer flex items-start justify-between gap-4 ${
                   isSelected
-                    ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 scale-[1.02]'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200/80 hover:border-slate-300'
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-xl scale-[1.01]'
+                    : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
                 }`}
               >
-                <span className={isSelected ? 'text-emerald-400' : 'text-slate-500'}>
-                  {cat.icon}
-                </span>
-                <span>{cat.label}</span>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-[11px] font-mono ${
-                    isSelected
-                      ? 'bg-slate-800 text-emerald-300 border border-slate-700'
-                      : 'bg-white text-slate-600 border border-slate-200'
-                  }`}
-                >
-                  {cat.count}
-                </span>
-              </button>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800">
+                      {suite.icon}
+                    </div>
+                    <div>
+                      <h3 className={`text-lg font-bold ${isSelected ? 'text-white' : 'text-slate-900'}`}>
+                        {suite.title}
+                      </h3>
+                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border mt-0.5 ${suite.badgeBg}`}>
+                        {suite.count} Tools Available
+                      </span>
+                    </div>
+                  </div>
+                  <p className={`text-xs leading-relaxed ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
+                    {suite.subtitle}
+                  </p>
+                </div>
+                <div className={`p-2 rounded-xl shrink-0 mt-2 ${isSelected ? 'bg-emerald-500 text-slate-900' : 'bg-slate-100 text-slate-600'}`}>
+                  <ChevronRight className="w-5 h-5" />
+                </div>
+              </div>
             );
           })}
         </div>
+      </section>
 
-        {/* Tools Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
-          {filteredTools.length > 0 ? (
-            filteredTools.map((tool) => (
-              <div
-                key={tool.id}
-                onClick={() => setActivePage(tool.id)}
-                className="group relative p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="p-3 rounded-xl bg-slate-100 text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                      {toolIcons[tool.id]}
-                    </div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                      {tool.badge}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                      {tool.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                      {tool.subtitle}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-900">
-                  <span>Launch Tool</span>
-                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                </div>
+      {/* Tool Filter Bar & Grid */}
+      {selectedCategory !== 'none' && (
+        <section className="space-y-5 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm animate-fade-in">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold">
+                <Filter className="w-4 h-4 text-emerald-400" />
               </div>
-            ))
-          ) : (
-            <div className="col-span-full py-12 text-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-                <Search className="w-6 h-6" />
+              <div>
+                <h2 className="text-base font-bold text-slate-900">
+                  {selectedCategory === 'all' ? 'All Platform Tools' : suites.find(s => s.id === selectedCategory)?.title}
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Showing {filteredTools.length} selected tools
+                </p>
               </div>
-              <p className="text-sm font-bold text-slate-800">No tools match "{searchFilter}"</p>
+            </div>
+
+            {/* Inline Filter Search Input */}
+            <div className="flex items-center gap-3">
+              <div className="relative w-full md:w-64">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  placeholder="Search in selected suite..."
+                  className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 rounded-2xl border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 text-slate-900 placeholder:text-slate-400 transition-all"
+                />
+              </div>
               <button
-                onClick={() => {
-                  setSearchFilter('');
-                  setSelectedCategory('all');
-                }}
-                className="text-xs text-emerald-700 hover:underline font-semibold cursor-pointer"
+                onClick={() => setSelectedCategory('all')}
+                className={`px-3 py-2 rounded-2xl text-xs font-bold whitespace-nowrap cursor-pointer ${
+                  selectedCategory === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
               >
-                Reset Filter
+                Show All ({allTools.length})
               </button>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+
+          {/* Selected Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+            {filteredTools.length > 0 ? (
+              filteredTools.map((tool) => (
+                <div
+                  key={tool.id}
+                  onClick={() => setActivePage(tool.id)}
+                  className="group relative p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="p-3 rounded-xl bg-slate-100 text-slate-900 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                        {toolIcons[tool.id]}
+                      </div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                        {tool.badge}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
+                        {tool.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                        {tool.subtitle}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-900">
+                    <span>Launch Tool</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                  <Search className="w-6 h-6" />
+                </div>
+                <p className="text-sm font-bold text-slate-800">No tools match "{searchFilter}"</p>
+                <button
+                  onClick={() => setSearchFilter('')}
+                  className="text-xs text-emerald-700 hover:underline font-semibold cursor-pointer"
+                >
+                  Clear Search
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Popular SEO Programmatic Routes Section */}
       <section className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6">
@@ -256,7 +321,6 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
             <h2 className="text-lg font-bold text-slate-900">Popular Quick Tool Utilities</h2>
             <p className="text-xs text-slate-500">Direct 1-click access to specialized target file conversions</p>
           </div>
-          <PrivacyBadge />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
