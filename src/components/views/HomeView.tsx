@@ -211,9 +211,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
                 </div>
 
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900 group-hover:text-white transition-colors">
+                  <h2 className="text-base font-extrabold text-slate-900 group-hover:text-white transition-colors">
                     {suite.title}
-                  </h3>
+                  </h2>
                   <p className="text-xs text-slate-600 group-hover:text-slate-300 mt-1 line-clamp-2 leading-relaxed font-medium transition-colors">
                     {suite.subtitle}
                   </p>

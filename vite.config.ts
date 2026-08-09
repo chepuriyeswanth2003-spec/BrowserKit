@@ -23,14 +23,17 @@ export default defineConfig(() => {
               if (id.includes('pdf-lib')) {
                 return 'vendor-pdf';
               }
+              if (id.includes('jszip')) {
+                return 'vendor-zip';
+              }
+              if (id.includes('heic2any')) {
+                return 'vendor-heic';
+              }
               if (id.includes('lucide-react')) {
                 return 'vendor-icons';
               }
               if (id.includes('motion')) {
                 return 'vendor-motion';
-              }
-              if (id.includes('jszip') || id.includes('heic2any')) {
-                return 'vendor-utils';
               }
               if (id.includes('react')) {
                 return 'vendor-react';
