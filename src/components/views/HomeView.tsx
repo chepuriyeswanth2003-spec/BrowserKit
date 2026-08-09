@@ -84,14 +84,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
         <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-3xl space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-emerald-400 border border-slate-700 text-xs font-mono font-medium">
-            <Sparkles className="w-3.5 h-3.5" /> 100% Client-Side Private Web Utilities
+            <Sparkles className="w-3.5 h-3.5" /> BrowserKit Studio • 100% Private Web Utilities
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-            Private Web Tools. <br />
-            <span className="text-emerald-400">Zero Server Uploads.</span>
+            BrowserKit <span className="text-emerald-400">Studio</span>. <br />
+            Private Tools. Zero Cloud Uploads.
           </h1>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            Compress images, convert formats, merge PDFs, unlock passwords, trim videos, and encrypt files entirely inside your browser memory. Your files never touch a remote server.
+            The premium browser studio to <strong>compress images under 100kb free</strong>, <strong>convert HEIC to JPG on Mac & PC</strong>, <strong>remove PDF passwords online</strong>, trim video clips, and encrypt confidential files with AES-256 locally.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2">

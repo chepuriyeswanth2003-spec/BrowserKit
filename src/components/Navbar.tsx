@@ -132,13 +132,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div className="flex flex-col text-left">
             <span className="font-mono font-bold text-base tracking-tight text-slate-900 flex items-center gap-1.5">
-              BrowserKit
+              BrowserKit <span className="text-emerald-600">Studio</span>
               <span className="text-[10px] font-sans font-medium px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                Client-Side
+                PRO
               </span>
             </span>
             <span className="text-[10px] text-slate-600 tracking-wider uppercase font-semibold">
-              100% Private Web Utilities
+              100% Private Web Media Suite
             </span>
           </div>
         </button>
