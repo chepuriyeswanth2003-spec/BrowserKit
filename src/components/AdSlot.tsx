@@ -25,9 +25,9 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   onStatusChange,
 }) => {
   const insRef = useRef<HTMLModElement | null>(null);
-  const [adStatus, setAdStatus] = useState<'loading' | 'filled' | 'unfilled' | 'blocked'>('loading');
+  const [isUnfilled, setIsUnfilled] = useState<boolean>(false);
+  const pushedRef = useRef<boolean>(false);
 
-  // Environment fallback resolution
   const resolvedClient = client || getAdSenseClientId();
   const isDemoClient = resolvedClient === 'ca-pub-0000000000000000';
 
@@ -54,75 +54,57 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   const resolvedSlot = getFallbackSlotId();
 
   useEffect(() => {
-    // Push ad slot after DOM render
-    const timer = setTimeout(() => {
-      pushAdSenseSlot();
-    }, 150);
+    // 1. Push AdSense slot once when element is rendered visible in DOM
+    if (!pushedRef.current) {
+      pushedRef.current = true;
+      const timer = setTimeout(() => {
+        pushAdSenseSlot();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [resolvedSlot]);
 
+  useEffect(() => {
     const insNode = insRef.current;
-    if (!insNode) return () => clearTimeout(timer);
+    if (!insNode) return;
 
-    const updateStatus = (newStatus: 'filled' | 'unfilled' | 'blocked') => {
-      setAdStatus(newStatus);
-      if (onStatusChange) {
-        onStatusChange(newStatus === 'filled');
-      }
-    };
-
-    // Observe Google AdSense data-ad-status attribute changes
+    // Observe Google AdSense data-ad-status attribute
     const observer = new MutationObserver(() => {
       const status = insNode.getAttribute('data-ad-status');
-      if (status === 'filled') {
-        updateStatus('filled');
+      if (status === 'filled' || (insNode.children.length > 0 && insNode.offsetHeight > 0)) {
+        setIsUnfilled(false);
+        if (onStatusChange) onStatusChange(true);
       } else if (status === 'unfilled') {
-        updateStatus('unfilled');
-      } else if (insNode.children.length > 0 && insNode.offsetHeight > 0) {
-        updateStatus('filled');
+        setIsUnfilled(true);
+        if (onStatusChange) onStatusChange(false);
       }
     });
 
     observer.observe(insNode, {
       attributes: true,
-      attributeFilter: ['data-ad-status', 'style'],
+      attributeFilter: ['data-ad-status'],
       childList: true,
       subtree: true,
     });
 
-    // Fallback status check after 2.5 seconds
-    const fallbackTimer = setTimeout(() => {
-      const currentStatus = insNode.getAttribute('data-ad-status');
-      if (currentStatus === 'filled' || (insNode.children.length > 0 && insNode.offsetHeight > 0)) {
-        updateStatus('filled');
-      } else {
-        updateStatus('unfilled');
+    // Check after 3.5s if ad is explicitly unfilled
+    const checkTimer = setTimeout(() => {
+      const status = insNode.getAttribute('data-ad-status');
+      if (status === 'unfilled') {
+        setIsUnfilled(true);
+        if (onStatusChange) onStatusChange(false);
       }
-    }, 2500);
+    }, 3500);
 
     return () => {
-      clearTimeout(timer);
-      clearTimeout(fallbackTimer);
       observer.disconnect();
+      clearTimeout(checkTimer);
     };
-  }, [type, resolvedSlot, isDemoClient, showPlaceholderInDev, onStatusChange]);
+  }, [onStatusChange]);
 
-  const isFilled = adStatus === 'filled' || (isDemoClient && showPlaceholderInDev);
-
-  // If ad is not filled and showPlaceholderInDev is false, return null (completely hide element & margins)
-  if (!isFilled) {
-    return (
-      <div className="hidden" aria-hidden="true">
-        <ins
-          ref={insRef}
-          className="adsbygoogle"
-          style={{ display: 'none' }}
-          data-ad-client={resolvedClient}
-          data-ad-slot={resolvedSlot}
-          data-ad-format={format}
-          data-full-width-responsive={responsive ? 'true' : 'false'}
-          {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
-        ></ins>
-      </div>
-    );
+  // Hide container if explicitly marked unfilled by Google AdSense
+  if (isUnfilled && !showPlaceholderInDev) {
+    return null;
   }
 
   const getContainerStyle = () => {
@@ -143,7 +125,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center p-3 text-center transition-all ${getContainerStyle()} ${className}`}
+      className={`relative overflow-hidden rounded-xl bg-slate-100/60 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex flex-col items-center justify-center p-2.5 text-center transition-all ${getContainerStyle()} ${className}`}
       aria-label="Advertisement"
     >
       <span className="absolute top-1.5 right-2 text-[9px] font-mono tracking-wider uppercase text-slate-400 dark:text-slate-500 z-10 select-none">
@@ -154,7 +136,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
       <ins
         ref={insRef}
         className="adsbygoogle"
-        style={{ display: 'block', width: '100%', height: '100%' }}
+        style={{ display: 'block', width: '100%', minHeight: '90px' }}
         data-ad-client={resolvedClient}
         data-ad-slot={resolvedSlot}
         data-ad-format={format}
