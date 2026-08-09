@@ -114,11 +114,16 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     return null;
   }
 
+  const getWidthConstraint = () => {
+    if (type === 'sidebar') return 'w-full';
+    return 'w-full max-w-3xl mx-auto';
+  };
+
   return (
     <div
-      className={`w-full transition-all duration-300 ${
+      className={`transition-all duration-300 ${getWidthConstraint()} ${
         isFilled || (isDemoClient && showPlaceholderInDev)
-          ? 'my-4 p-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden'
+          ? 'my-4 p-2.5 bg-slate-50/70 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden'
           : 'my-0 p-0 border-0 bg-transparent overflow-hidden'
       } ${className}`}
     >

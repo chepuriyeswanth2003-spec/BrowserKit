@@ -400,17 +400,17 @@ export default function App() {
 
       {/* Main Layout Container */}
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className={sidebarAdFilled ? "grid grid-cols-1 lg:grid-cols-12 gap-8 items-start" : "w-full"}>
           {/* Main Workspace Column */}
-          <main className="lg:col-span-9 w-full min-w-0 space-y-8">
+          <main className={sidebarAdFilled ? "lg:col-span-9 w-full min-w-0 space-y-8" : "w-full min-w-0 space-y-8"}>
             {renderCurrentPage()}
             {/* Below Tool Ad Slot */}
             {activePage !== 'home' && <AdSlot type="below-tool" />}
           </main>
 
           {/* Desktop Side Ads Column (Laptop / Desktop) */}
-          <aside className="hidden lg:block lg:col-span-3 space-y-6 sticky top-20">
-            <AdSlot type="sidebar" />
+          <aside className={sidebarAdFilled ? "hidden lg:block lg:col-span-3 space-y-6 sticky top-20" : "hidden"}>
+            <AdSlot type="sidebar" onStatusChange={setSidebarAdFilled} />
           </aside>
         </div>
       </div>
