@@ -36,6 +36,9 @@ import {
   CheckCircle,
   Languages,
   FileCode,
+  UserCheck,
+  Calendar,
+  Sliders,
 } from 'lucide-react';
 import { ActivePage, ToolType } from '../types';
 import { TOOL_METADATA } from '../lib/seoData';
@@ -61,11 +64,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const categories = [
     {
-      title: 'Image Tools',
+      title: 'Image Suite',
       tools: [
         { id: 'compressor' as ToolType, label: 'Image Compressor', icon: <Minimize2 className="w-4 h-4 text-emerald-600" /> },
+        { id: 'target-kb-compressor' as ToolType, label: 'Reduce KB Size', icon: <Minimize2 className="w-4 h-4 text-emerald-600" /> },
+        { id: 'passport-photo-maker' as ToolType, label: 'Passport Photo Maker', icon: <UserCheck className="w-4 h-4 text-emerald-600" /> },
+        { id: 'add-name-and-dob' as ToolType, label: 'Add Name & DOB', icon: <Calendar className="w-4 h-4 text-blue-600" /> },
+        { id: 'signature-resizer' as ToolType, label: 'Resize Signature', icon: <PenTool className="w-4 h-4 text-indigo-600" /> },
+        { id: 'image-dpi-converter' as ToolType, label: 'Convert DPI (300 DPI)', icon: <Sliders className="w-4 h-4 text-purple-600" /> },
         { id: 'converter' as ToolType, label: 'Format Converter', icon: <RefreshCw className="w-4 h-4 text-emerald-600" /> },
         { id: 'resizer' as ToolType, label: 'Resize & Crop', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
+        { id: 'circle-crop' as ToolType, label: 'Circle Crop', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
+        { id: 'merge-photo-signature' as ToolType, label: 'Merge Photo & Sign', icon: <Layers className="w-4 h-4 text-amber-600" /> },
         { id: 'palette' as ToolType, label: 'Color Extractor', icon: <Palette className="w-4 h-4 text-emerald-600" /> },
         { id: 'meme' as ToolType, label: 'Meme Generator', icon: <Smile className="w-4 h-4 text-emerald-600" /> },
       ],

@@ -26,7 +26,12 @@ import {
   Wrench,
   Image,
   Layers,
-  ChevronRight
+  ChevronRight,
+  UserCheck,
+  Calendar,
+  PenTool,
+  RotateCw,
+  SlidersHorizontal
 } from 'lucide-react';
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
@@ -48,6 +53,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     resizer: <Crop className="w-5 h-5 text-purple-600" />,
     palette: <Palette className="w-5 h-5 text-amber-600" />,
     meme: <Smile className="w-5 h-5 text-rose-600" />,
+    'passport-photo-maker': <UserCheck className="w-5 h-5 text-emerald-600" />,
+    'add-name-and-dob': <Calendar className="w-5 h-5 text-blue-600" />,
+    'signature-resizer': <PenTool className="w-5 h-5 text-indigo-600" />,
+    'image-dpi-converter': <SlidersHorizontal className="w-5 h-5 text-purple-600" />,
+    'circle-crop': <Crop className="w-5 h-5 text-emerald-600" />,
+    'merge-photo-signature': <Layers className="w-5 h-5 text-amber-600" />,
+    'join-images': <FilePlus className="w-5 h-5 text-indigo-600" />,
+    'image-watermark': <FileText className="w-5 h-5 text-rose-600" />,
+    'image-rotate-flip': <RotateCw className="w-5 h-5 text-sky-600" />,
+    'image-effects': <Eye className="w-5 h-5 text-purple-600" />,
+    'official-size-resizer': <UserCheck className="w-5 h-5 text-emerald-600" />,
+    'social-media-resizer': <Crop className="w-5 h-5 text-blue-600" />,
+    'target-kb-compressor': <Minimize2 className="w-5 h-5 text-emerald-600" />,
     'video-trimmer': <Video className="w-5 h-5 text-blue-600" />,
     'video-to-gif': <Film className="w-5 h-5 text-indigo-600" />,
     'pdf-merger': <FileText className="w-5 h-5 text-red-600" />,

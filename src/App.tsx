@@ -20,6 +20,7 @@ import { FormatConverterTool } from './components/tools/FormatConverterTool';
 import { ResizerCropperTool } from './components/tools/ResizerCropperTool';
 import { ColorPaletteTool } from './components/tools/ColorPaletteTool';
 import { MemeGeneratorTool } from './components/tools/MemeGeneratorTool';
+import { ImageSuiteTools } from './components/tools/ImageSuiteTools';
 
 // PDF Suite Tools
 import { PdfMergerTool } from './components/tools/PdfMergerTool';
@@ -61,6 +62,19 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'resizer',
     'palette',
     'meme',
+    'passport-photo-maker',
+    'add-name-and-dob',
+    'signature-resizer',
+    'image-dpi-converter',
+    'circle-crop',
+    'merge-photo-signature',
+    'join-images',
+    'image-watermark',
+    'image-rotate-flip',
+    'image-effects',
+    'official-size-resizer',
+    'social-media-resizer',
+    'target-kb-compressor',
     'video-trimmer',
     'video-to-gif',
     'pdf-merger',
@@ -234,6 +248,23 @@ export default function App() {
         return <ColorPaletteTool onDownloadTrigger={handleDownloadTrigger} />;
       case 'meme':
         return <MemeGeneratorTool onDownloadTrigger={handleDownloadTrigger} />;
+
+      // Image Suite Tools
+      case 'passport-photo-maker':
+      case 'add-name-and-dob':
+      case 'signature-resizer':
+      case 'image-dpi-converter':
+      case 'circle-crop':
+      case 'merge-photo-signature':
+      case 'join-images':
+      case 'image-watermark':
+      case 'image-rotate-flip':
+      case 'image-effects':
+      case 'official-size-resizer':
+      case 'social-media-resizer':
+      case 'target-kb-compressor':
+        return <ImageSuiteTools toolType={activePage} onDownloadTrigger={handleDownloadTrigger} />;
+
       case 'video-trimmer':
         return <VideoTrimmerTool />;
       case 'video-to-gif':
