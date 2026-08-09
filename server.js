@@ -12,6 +12,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Security and HSTS headers middleware
+app.use((req, res, next) => {
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
+
 // Enable Gzip / Brotli response compression for ultra-fast network transfer
 app.use(compression());
 
@@ -117,6 +125,11 @@ app.get('/robots.txt', (req, res) => {
 // Dedicated route for ads.txt with explicit text/plain header
 app.get('/ads.txt', (req, res) => {
   serveStaticFile(res, 'ads.txt', 'text/plain');
+});
+
+// Dedicated route for llms.txt with explicit text/plain header
+app.get('/llms.txt', (req, res) => {
+  serveStaticFile(res, 'llms.txt', 'text/plain');
 });
 
 // Serve static assets with aggressive HTTP Cache-Control headers

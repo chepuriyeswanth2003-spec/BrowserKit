@@ -1,0 +1,18 @@
+# BrowserKit Studio
+
+> High-Speed, 100% Client-Side Web Utilities Suite.
+
+BrowserKit Studio (browserkit.co.in) provides browser-native tools for media processing, PDF operations, image compression, video editing, and file encryption. All computations execute locally in browser memory using WebAssembly and HTML5 APIs with zero server uploads.
+
+## Primary Tool Suites
+
+- [PDF Tools Suite](https://browserkit.co.in/pdf-tools): Merge, Split, Compress, Sign, Protect, Edit & OCR PDFs.
+- [Image Tools Suite](https://browserkit.co.in/image-tools): Compress Under 100KB, Passport Photo Maker, HEIC to JPG, 300 DPI Signature Resizer.
+- [Video & Audio Suite](https://browserkit.co.in/video-tools): Aspect Ratio Resizer (9:16 TikTok/Reels), Video to 320kbps MP3 Audio, Audio Cutter, Video Trimmer, Thumbnail Grabber.
+- [Archive & Vault Suite](https://browserkit.co.in/zip-tools): ZIP Archiver, Extractor, ZIP Password Remover & AES-256 Vault Encryption.
+
+## Privacy & Security
+
+- 100% Client-Side Processing: Zero file uploads to any remote server.
+- WebAssembly & HTML5 Native execution.
+- No account or registration required.

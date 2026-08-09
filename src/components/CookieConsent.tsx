@@ -40,6 +40,7 @@ export const CookieConsent: React.FC = () => {
         </div>
         <button
           onClick={() => setShow(false)}
+          aria-label="Close notification"
           className="text-neutral-400 hover:text-black dark:hover:text-white p-1"
         >
           <X className="w-4 h-4" />

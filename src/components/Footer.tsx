@@ -39,18 +39,13 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, onNavigateRoute }
 
           {/* Column 2: Image Tools */}
           <div>
-            <h4 className="font-bold text-xs text-slate-900 dark:text-slate-200 uppercase tracking-wider mb-3 font-mono">
+            <h3 className="font-bold text-xs text-slate-900 dark:text-slate-200 uppercase tracking-wider mb-3 font-mono">
               Image Utilities
-            </h4>
+            </h3>
             <ul className="space-y-2">
               <li>
                 <button onClick={() => { if (onNavigateRoute) onNavigateRoute(''); setActivePage('compressor'); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">
                   Image Compressor
-                </button>
-              </li>
-              <li>
-                <button onClick={() => { if (onNavigateRoute) onNavigateRoute(''); setActivePage('bg-remover'); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">
-                  AI Background Remover
                 </button>
               </li>
               <li>
@@ -73,9 +68,9 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, onNavigateRoute }
 
           {/* Column 3: Video & Audio */}
           <div>
-            <h4 className="font-bold text-xs text-slate-900 dark:text-slate-200 uppercase tracking-wider mb-3 font-mono">
+            <h3 className="font-bold text-xs text-slate-900 dark:text-slate-200 uppercase tracking-wider mb-3 font-mono">
               Video & Audio
-            </h4>
+            </h3>
             <ul className="space-y-2">
               <li>
                 <button onClick={() => { if (onNavigateRoute) onNavigateRoute(''); setActivePage('video-trimmer'); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">
@@ -97,9 +92,9 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, onNavigateRoute }
 
           {/* Column 4: PDF & ZIP */}
           <div>
-            <h4 className="font-bold text-xs text-slate-900 dark:text-slate-200 uppercase tracking-wider mb-3 font-mono">
+            <h3 className="font-bold text-xs text-slate-900 dark:text-slate-200 uppercase tracking-wider mb-3 font-mono">
               PDF & ZIP Tools
-            </h4>
+            </h3>
             <ul className="space-y-2">
               <li>
                 <button onClick={() => { if (onNavigateRoute) onNavigateRoute(''); setActivePage('pdf-merger'); }} className="hover:text-slate-900 dark:hover:text-white transition-colors">
@@ -137,7 +132,7 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, onNavigateRoute }
 
         {/* Programmatic SEO Routes Bar */}
         <div className="pt-6 border-t border-slate-200 dark:border-slate-800/80 mb-6 space-y-2">
-          <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+          <span className="text-[10px] font-mono font-bold uppercase text-slate-700 dark:text-slate-300">
             Programmatic Long-Tail Search Landing Pages
           </span>
           <div className="flex flex-wrap gap-2 text-[11px] font-mono">
