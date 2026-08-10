@@ -275,32 +275,29 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
           <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4"
+            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4 relative overflow-hidden"
           >
-            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto">
+            <input
+              type="file"
+              accept="video/*,audio/*"
+              onChange={handleFileChange}
+              className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 block"
+              title="Choose media file"
+            />
+            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto pointer-events-none">
               <Upload className="w-8 h-8" />
             </div>
-            <div>
+            <div className="pointer-events-none">
               <h3 className="text-base font-bold text-slate-900">
-                Drop Video / Audio file here or click to browse
+                Tap or drop Video / Audio file here to browse
               </h3>
               <p className="text-xs text-slate-500 mt-1 font-mono">
                 Supports MP4, WebM, MOV, AVI, MP3, WAV (Max 500MB)
               </p>
             </div>
-            <input
-              type="file"
-              accept="video/*,audio/*"
-              onChange={handleFileChange}
-              className="hidden"
-              id="media-upload"
-            />
-            <label
-              htmlFor="media-upload"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md hover:bg-slate-800 transition-all cursor-pointer"
-            >
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md pointer-events-none">
               Select Media File
-            </label>
+            </div>
           </div>
         ) : (
           /* Custom Controls & Render */

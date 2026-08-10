@@ -13,15 +13,26 @@
   button,
   a,
   [role="button"],
-  input[type="submit"],
-  input[type="button"],
-  input[type="reset"],
-  input[type="file"],
-  input[type="checkbox"],
-  input[type="radio"],
+  input,
   select,
-  label[for],
+  textarea,
+  label,
   .clickable {
     cursor: pointer !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent iOS Safari input auto-zoom on mobile focus */
+  @media (max-width: 640px) {
+    input[type="text"],
+    input[type="number"],
+    input[type="password"],
+    input[type="email"],
+    input[type="search"],
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
   }
 }

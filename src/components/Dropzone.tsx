@@ -198,22 +198,21 @@ export const Dropzone: React.FC<DropzoneProps> = ({
 
   if (variant === 'compact' || variant === 'mini') {
     return (
-      <div className="w-full">
+      <div className="w-full relative overflow-hidden rounded-xl">
         <input
           ref={fileInputRef}
           type="file"
           accept={accept}
           multiple={multiple}
           onChange={handleInputChange}
-          className="hidden"
+          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20 block"
+          title="Choose files"
         />
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          tabIndex={0}
-          className={`cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 ${
+          className={`cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 relative z-10 ${
             isDragOver
               ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01]'
               : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 shadow-xs'
@@ -230,7 +229,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
               </span>
             </p>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Click to browse or drop items anywhere on page
+              Tap to browse or drop items anywhere on page
             </p>
           </div>
         </div>
@@ -264,8 +263,6 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
-        tabIndex={0}
         className={`relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed p-8 md:p-12 text-center transition-all duration-200 outline-none ${
           isDragOver
             ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01] shadow-lg'
@@ -274,18 +271,20 @@ export const Dropzone: React.FC<DropzoneProps> = ({
             : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 hover:shadow-xs'
         }`}
       >
+        {/* Transparent Full-Size Overlay File Input for 100% Mobile Touch & Desktop Click Compatibility */}
         <input
           ref={fileInputRef}
           type="file"
           accept={accept}
           multiple={multiple}
           onChange={handleInputChange}
-          className="hidden"
+          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20 block"
+          title="Choose files"
         />
 
         {/* Local Dragover Visual Overlay */}
         {isDragOver && (
-          <div className="absolute inset-0 bg-slate-950/90 text-white flex flex-col items-center justify-center p-6 z-20 animate-fade-in backdrop-blur-xs">
+          <div className="absolute inset-0 bg-slate-950/90 text-white flex flex-col items-center justify-center p-6 z-30 animate-fade-in backdrop-blur-xs pointer-events-none">
             <Upload className="w-12 h-12 mb-2 text-white animate-bounce" />
             <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight">
               RELEASE TO IMPORT BATCH
@@ -296,7 +295,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           </div>
         )}
 
-        <div className="flex flex-col items-center justify-center gap-3">
+        <div className="flex flex-col items-center justify-center gap-3 relative z-10 pointer-events-none">
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-sm relative">
             <Upload className="w-7 h-7 text-slate-900 dark:text-white" />
             <Sparkles className="w-4 h-4 text-slate-400 absolute -top-1 -right-1 animate-pulse" />
@@ -311,22 +310,18 @@ export const Dropzone: React.FC<DropzoneProps> = ({
             </p>
           </div>
 
-          <div
-            className="flex items-center justify-center gap-2.5 mt-2"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="flex items-center justify-center gap-2.5 mt-2">
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm flex items-center gap-2 transition-all active:scale-95"
+              className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm flex items-center gap-2 transition-all active:scale-95 pointer-events-none"
             >
-              <ImagePlus className="w-4 h-4 text-white dark:text-slate-900" /> Browse Files
+              <ImagePlus className="w-4 h-4 text-white dark:text-slate-900" /> Choose Files
             </button>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-2">
             <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
-              <Clipboard className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Paste (Ctrl+V)
+              <Clipboard className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Tap / Paste (Ctrl+V)
             </span>
             <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
               <FolderPlus className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Drop Folders

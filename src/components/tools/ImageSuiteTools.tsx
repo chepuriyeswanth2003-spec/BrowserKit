@@ -382,32 +382,29 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
           <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4"
+            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4 relative overflow-hidden"
           >
-            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFileChange(e)}
+              className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 block"
+              title="Choose image"
+            />
+            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto pointer-events-none">
               <Upload className="w-8 h-8" />
             </div>
-            <div>
+            <div className="pointer-events-none">
               <h3 className="text-base font-bold text-slate-900">
-                Drop image here or click to browse
+                Tap or drop image here to browse
               </h3>
               <p className="text-xs text-slate-500 mt-1 font-mono">
                 Supports JPG, PNG, WebP, HEIC (Max 50MB)
               </p>
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleFileChange(e)}
-              className="hidden"
-              id="file-upload"
-            />
-            <label
-              htmlFor="file-upload"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md hover:bg-slate-800 transition-all cursor-pointer"
-            >
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md pointer-events-none">
               Select Image File
-            </label>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
