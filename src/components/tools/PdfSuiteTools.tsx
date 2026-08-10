@@ -238,7 +238,7 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
         {!file ? (
           <Dropzone
-            onFileSelect={handleFileSelect}
+            onFilesSelected={handleFileSelect}
             accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.html,.txt"
             title={`Select Document for ${meta.title}`}
             subtitle="Drag & drop file or browse from device (100% Local Wasm Execution)"

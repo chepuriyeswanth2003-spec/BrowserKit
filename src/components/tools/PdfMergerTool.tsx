@@ -9,7 +9,7 @@ export const PdfMergerTool: React.FC = () => {
   const [isMerging, setIsMerging] = useState<boolean>(false);
 
   const handleFilesSelected = (files: File[]) => {
-    const validPdfs = files.filter((f) => f.type.includes('pdf') || f.name.endsWith('.pdf'));
+    const validPdfs = files.filter((f) => f.type.toLowerCase().includes('pdf') || f.name.toLowerCase().endsWith('.pdf') || f.type === '');
     setPdfFiles((prev) => [...prev, ...validPdfs]);
   };
 

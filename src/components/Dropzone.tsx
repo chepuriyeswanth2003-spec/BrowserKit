@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Upload, ImagePlus, FileCheck, Clipboard, FolderPlus, Sparkles } from 'lucide-react';
 
 interface DropzoneProps {
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected?: (files: File[]) => void;
+  onFileSelect?: (files: File[]) => void;
   accept?: string;
   multiple?: boolean;
   title?: string;
@@ -70,6 +71,7 @@ async function extractFilesFromDataTransfer(dataTransfer: DataTransfer): Promise
 
 export const Dropzone: React.FC<DropzoneProps> = ({
   onFilesSelected,
+  onFileSelect,
   accept = 'image/*,.heic,.heif,.pdf,.svg',
   multiple = true,
   title = 'Drag & drop your files or folders here',
@@ -82,6 +84,11 @@ export const Dropzone: React.FC<DropzoneProps> = ({
   const [justPasted, setJustPasted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef<number>(0);
+
+  const notifyFilesSelected = (files: File[]) => {
+    if (onFilesSelected) onFilesSelected(files);
+    if (onFileSelect) onFileSelect(files);
+  };
 
   // Global window drag-and-drop listener
   useEffect(() => {
@@ -119,7 +126,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
       if (e.dataTransfer) {
         const extracted = await extractFilesFromDataTransfer(e.dataTransfer);
         if (extracted.length > 0) {
-          onFilesSelected(extracted);
+          notifyFilesSelected(extracted);
         }
       }
     };
@@ -135,7 +142,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
       window.removeEventListener('dragover', handleWindowDragOver);
       window.removeEventListener('drop', handleWindowDrop);
     };
-  }, [enableGlobalDrop, onFilesSelected]);
+  }, [enableGlobalDrop, onFilesSelected, onFileSelect]);
 
   // Handle clipboard paste
   useEffect(() => {
@@ -153,7 +160,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
 
       if (pasteFiles.length > 0) {
         e.preventDefault();
-        onFilesSelected(pasteFiles);
+        notifyFilesSelected(pasteFiles);
         setJustPasted(true);
         setTimeout(() => setJustPasted(false), 2000);
       }
@@ -161,7 +168,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
 
     window.addEventListener('paste', handlePaste);
     return () => window.removeEventListener('paste', handlePaste);
-  }, [onFilesSelected]);
+  }, [onFilesSelected, onFileSelect]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -182,15 +189,15 @@ export const Dropzone: React.FC<DropzoneProps> = ({
     if (e.dataTransfer) {
       const extracted = await extractFilesFromDataTransfer(e.dataTransfer);
       if (extracted.length > 0) {
-        onFilesSelected(extracted);
+        notifyFilesSelected(extracted);
       }
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files);
-      onFilesSelected(filesArray);
+      const filesArray = Array.from(e.target.files) as File[];
+      notifyFilesSelected(filesArray);
       // Reset input value so re-selecting same files works
       e.target.value = '';
     }
