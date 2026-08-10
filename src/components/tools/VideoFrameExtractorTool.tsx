@@ -46,17 +46,30 @@ export const VideoFrameExtractorTool: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {!videoFile ? (
-        <Dropzone
-          onFilesSelected={handleVideoSelected}
-          title="Drop Video File to Extract Photo Frames"
-          subtitle="Supports MP4, WebM, MOV (High-Resolution Frame Snapshots)"
-          accept="video/*"
-          multiple={false}
-        />
-      ) : (
-        <div className="space-y-6">
-          <div className="p-5 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-4">
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+              <Film className="w-6 h-6 text-indigo-600" />
+              Video Frame Extractor & GIF Creator
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+              Extract high-resolution video frame snapshots at any FPS rate 100% locally in your browser.
+            </p>
+          </div>
+          <PrivacyBadge />
+        </div>
+
+        {!videoFile ? (
+          <Dropzone
+            onFilesSelected={handleVideoSelected}
+            title="Drop Video File to Extract Snapshots"
+            subtitle="Supports MP4, WebM, MOV. Convert video frames to PNG/JPG snapshots."
+            accept="video/*"
+            multiple={false}
+          />
+        ) : (
+          <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
                 <Film className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
@@ -88,70 +101,65 @@ export const VideoFrameExtractorTool: React.FC = () => {
                     setSampleFps(val);
                     if (videoFile) processExtract(videoFile, val, maxFrames);
                   }}
-                  className="w-full accent-black dark:accent-white cursor-pointer"
+                  className="w-full accent-slate-900"
                 />
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-neutral-700 dark:text-neutral-300">
-                  Max Frame Count: {maxFrames} Snapshots
+                  Max Frame Limit: {maxFrames} Frames
                 </label>
                 <input
                   type="range"
-                  min={4}
-                  max={24}
-                  step={2}
+                  min={5}
+                  max={60}
+                  step={5}
                   value={maxFrames}
                   onChange={(e) => {
-                    const val = parseInt(e.target.value);
+                    const val = parseInt(e.target.value, 10);
                     setMaxFrames(val);
                     if (videoFile) processExtract(videoFile, sampleFps, val);
                   }}
-                  className="w-full accent-black dark:accent-white cursor-pointer"
+                  className="w-full accent-slate-900"
                 />
               </div>
             </div>
-          </div>
 
-          {isProcessing ? (
-            <div className="p-12 text-center rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-3">
-              <Loader2 className="w-8 h-8 animate-spin mx-auto text-neutral-700 dark:text-neutral-300" />
-              <p className="text-xs font-mono font-medium text-neutral-600 dark:text-neutral-400">
-                Extracting high-resolution canvas frames from video...
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {frames.map((frame, index) => (
-                <div
-                  key={`frame-${index}`}
-                  className="group relative rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950 shadow-xs transition-all hover:scale-[1.02]"
-                >
-                  <img
-                    src={frame.dataUrl}
-                    alt={`Frame ${index + 1}`}
-                    className="w-full aspect-video object-cover"
-                  />
-                  <div className="p-2 bg-white dark:bg-neutral-900 flex items-center justify-between border-t border-neutral-200 dark:border-neutral-800">
-                    <span className="text-[10px] font-mono font-bold text-neutral-500">
-                      {frame.timestamp.toFixed(1)}s
-                    </span>
-                    <button
-                      onClick={() => handleDownloadSingle(frame.dataUrl, index)}
-                      className="p-1.5 rounded-md bg-black dark:bg-white text-white dark:text-black hover:opacity-80 transition-opacity"
-                      title="Download frame PNG"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                    </button>
+            {isProcessing && (
+              <div className="py-8 text-center space-y-2">
+                <Loader2 className="w-8 h-8 text-slate-900 animate-spin mx-auto" />
+                <p className="text-xs font-bold text-slate-700">Decoding Video Frames...</p>
+              </div>
+            )}
+
+            {!isProcessing && frames.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pt-4 border-t border-slate-100">
+                {frames.map((frame, index) => (
+                  <div
+                    key={index}
+                    className="group relative rounded-lg overflow-hidden border border-slate-200 bg-slate-50"
+                  >
+                    <img
+                      src={frame.dataUrl}
+                      alt={`Frame ${index + 1}`}
+                      className="w-full h-24 object-cover"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                      <button
+                        onClick={() => handleDownloadSingle(frame.dataUrl, index)}
+                        className="p-1.5 rounded-md bg-black dark:bg-white text-white dark:text-black hover:opacity-80 transition-opacity"
+                        title="Download frame PNG"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      <PrivacyBadge />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

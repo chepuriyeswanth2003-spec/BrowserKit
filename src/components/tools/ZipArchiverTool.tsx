@@ -139,8 +139,6 @@ export const ZipArchiverTool: React.FC = () => {
           </div>
         </div>
       )}
-
-      <PrivacyBadge />
     </div>
   );
 };

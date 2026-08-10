@@ -172,8 +172,6 @@ export const PdfMergerTool: React.FC = () => {
           </div>
         </div>
       )}
-
-      <PrivacyBadge />
     </div>
   );
 };

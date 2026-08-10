@@ -222,8 +222,6 @@ export const ImagesToPdfTool: React.FC = () => {
           </div>
         </div>
       )}
-
-      <PrivacyBadge />
     </div>
   );
 };

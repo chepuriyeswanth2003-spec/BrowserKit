@@ -215,17 +215,17 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           tabIndex={0}
           className={`cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 ${
             isDragOver
-              ? 'border-slate-900 bg-slate-200 dark:border-white dark:bg-slate-800 scale-[1.01]'
-              : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-slate-50/50 dark:bg-slate-900/40'
+              ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01]'
+              : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 shadow-xs'
           }`}
         >
-          <div className="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+          <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
             <Upload className="w-4 h-4" />
           </div>
           <div className="text-left">
             <p className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
               <span>Add or drop more files / folders</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-mono">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-mono">
                 Batch
               </span>
             </p>
@@ -268,10 +268,10 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         tabIndex={0}
         className={`relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed p-8 md:p-12 text-center transition-all duration-200 outline-none ${
           isDragOver
-            ? 'border-slate-900 bg-slate-200/80 dark:border-white dark:bg-slate-800/80 scale-[1.01] shadow-lg'
+            ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01] shadow-lg'
             : justPasted
-            ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800'
-            : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-slate-50/50 dark:bg-slate-900/30 hover:shadow-sm'
+            ? 'border-slate-900 bg-white dark:border-white dark:bg-slate-800'
+            : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 hover:shadow-xs'
         }`}
       >
         <input
