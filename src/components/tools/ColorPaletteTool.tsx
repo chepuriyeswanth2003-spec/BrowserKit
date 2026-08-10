@@ -114,7 +114,6 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
         <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
           {meta.subtitle}
         </p>
-        <PrivacyBadge compact />
       </div>
 
       {!imageSrc ? (
@@ -298,6 +297,8 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
           ))}
         </div>
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };

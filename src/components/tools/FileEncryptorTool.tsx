@@ -521,6 +521,8 @@ export const FileEncryptorTool: React.FC = () => {
           )}
         </div>
       )}
+
+      <PrivacyBadge />
     </div>
   );
 };

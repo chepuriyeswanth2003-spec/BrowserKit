@@ -80,17 +80,14 @@ export const SvgOptimizerTool: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-              <Code className="w-6 h-6 text-indigo-600" />
-              SVG Vector Code Minifier & Optimizer
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-              Strip comments, sanitize SVG markup, and reduce vector file sizes 100% in-browser.
-            </p>
-          </div>
-          <PrivacyBadge />
+        <div className="border-b border-slate-100 pb-4">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+            <Code className="w-6 h-6 text-indigo-600" />
+            SVG Vector Code Minifier & Optimizer
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+            Strip comments, sanitize SVG markup, and reduce vector file sizes 100% in-browser.
+          </p>
         </div>
 
         {!svgContent ? (
@@ -176,6 +173,8 @@ export const SvgOptimizerTool: React.FC = () => {
           </div>
         )}
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };

@@ -132,7 +132,6 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
         <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
           {meta.subtitle}
         </p>
-        <PrivacyBadge compact />
       </div>
 
       {!imageSrc ? (
@@ -297,6 +296,8 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
           ))}
         </div>
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };

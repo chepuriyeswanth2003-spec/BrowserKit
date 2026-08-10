@@ -156,7 +156,7 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
 
   return (
     <div className="w-full space-y-8 animate-fade-in">
-      {/* Title & Privacy Badge */}
+      {/* Title */}
       <div className="text-center space-y-2 max-w-3xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {meta.title}
@@ -164,7 +164,6 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
         <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
           {meta.subtitle}
         </p>
-        <PrivacyBadge compact />
       </div>
 
       {/* Main Upload Dropzone */}
@@ -336,6 +335,8 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
           ))}
         </div>
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };

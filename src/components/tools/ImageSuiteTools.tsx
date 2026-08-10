@@ -365,17 +365,14 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-            Image Suite
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            {meta.title}
-          </h1>
-          <p className="text-slate-500 text-xs sm:text-sm mt-1">{meta.subtitle}</p>
-        </div>
-        <PrivacyBadge />
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs">
+        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+          Image Suite
+        </span>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+          {meta.title}
+        </h1>
+        <p className="text-slate-500 text-xs sm:text-sm mt-1">{meta.subtitle}</p>
       </div>
 
       {/* Main Workspace */}
@@ -609,6 +606,8 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
           </div>
         )}
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };

@@ -1,15 +1,17 @@
 import React from 'react';
-import { Lock, ShieldCheck, Cpu } from 'lucide-react';
+import { Lock } from 'lucide-react';
 
 interface PrivacyBadgeProps {
   compact?: boolean;
 }
 
-export const PrivacyBadge: React.FC<PrivacyBadgeProps> = ({ compact = false }) => {
+export const PrivacyBadge: React.FC<PrivacyBadgeProps> = () => {
   return (
-    <div className="inline-flex flex-wrap items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-bold bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-xs">
-      <Lock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-      <span>100% Client-Side Private WASM / Canvas Execution</span>
+    <div className="flex justify-center pt-3 pb-1">
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono font-bold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 border border-slate-800 shadow-sm select-none">
+        <Lock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+        <span>100% Client-Side Private WASM / Canvas Execution</span>
+      </div>
     </div>
   );
 };

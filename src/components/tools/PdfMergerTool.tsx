@@ -58,17 +58,14 @@ export const PdfMergerTool: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-              <FilePlus className="w-6 h-6 text-rose-600" />
-              Merge PDF Documents
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-              Combine multiple PDF files into one clean document in the order you want.
-            </p>
-          </div>
-          <PrivacyBadge />
+        <div className="border-b border-slate-100 pb-4">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+            <FilePlus className="w-6 h-6 text-rose-600" />
+            Merge PDF Documents
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+            Combine multiple PDF files into one clean document in the order you want.
+          </p>
         </div>
 
         <Dropzone
@@ -96,54 +93,45 @@ export const PdfMergerTool: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            {pdfFiles.map((file, idx) => (
+            {pdfFiles.map((file, index) => (
               <div
-                key={`pdf-${idx}-${file.name}`}
-                className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-3"
+                key={`${file.name}-${index}`}
+                className="p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 flex items-center justify-between gap-3"
               >
                 <div className="flex items-center gap-3 overflow-hidden">
-                  <span className="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-mono font-bold flex items-center justify-center shrink-0">
-                    {idx + 1}
+                  <span className="w-6 h-6 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 text-xs font-mono font-bold flex items-center justify-center shrink-0">
+                    {index + 1}
                   </span>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
-                      {file.name}
-                    </p>
-                    <p className="text-[11px] font-mono text-slate-500">
-                      {(file.size / 1024).toFixed(1)} KB
-                    </p>
-                  </div>
+                  <span className="text-xs font-mono font-bold text-neutral-900 dark:text-neutral-100 truncate">
+                    {file.name}
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
                   <button
-                    onClick={() => moveUp(idx)}
-                    disabled={idx === 0}
-                    className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-30"
-                    title="Move Up"
+                    onClick={() => moveUp(index)}
+                    disabled={index === 0}
+                    className="p-1.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 disabled:opacity-30 hover:bg-neutral-300 dark:hover:bg-neutral-600"
                   >
-                    <ArrowUp className="w-4 h-4" />
+                    <ArrowUp className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => moveDown(idx)}
-                    disabled={idx === pdfFiles.length - 1}
-                    className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-30"
-                    title="Move Down"
+                    onClick={() => moveDown(index)}
+                    disabled={index === pdfFiles.length - 1}
+                    className="p-1.5 rounded bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 disabled:opacity-30 hover:bg-neutral-300 dark:hover:bg-neutral-600"
                   >
-                    <ArrowDown className="w-4 h-4" />
+                    <ArrowDown className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => removeFile(idx)}
-                    className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 hover:text-rose-500"
-                    title="Remove"
+                    onClick={() => removeFile(index)}
+                    className="p-1.5 rounded bg-rose-100 text-rose-600 hover:bg-rose-200 ml-1"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
             ))}
 
-            {/* Compact Dropzone for adding more PDFs */}
             <div className="pt-2">
               <Dropzone
                 variant="compact"
@@ -172,6 +160,8 @@ export const PdfMergerTool: React.FC = () => {
           </div>
         </div>
       )}
+
+      <PrivacyBadge />
     </div>
   );
 };

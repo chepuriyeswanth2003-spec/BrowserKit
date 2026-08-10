@@ -124,7 +124,6 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
         <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
           {meta.subtitle}
         </p>
-        <PrivacyBadge compact />
       </div>
 
       {/* Template Gallery Picker */}
@@ -312,6 +311,8 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
           ))}
         </div>
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };

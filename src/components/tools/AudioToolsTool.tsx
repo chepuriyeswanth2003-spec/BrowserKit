@@ -41,25 +41,22 @@ export const AudioToolsTool: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-              <Music className="w-6 h-6 text-purple-600" />
-              Audio Converter & Track Extractor
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-              Extract high-fidelity audio streams or convert sound files to WAV format 100% locally.
-            </p>
-          </div>
-          <PrivacyBadge />
+        <div className="border-b border-slate-100 pb-4">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+            <Music className="w-6 h-6 text-purple-600" />
+            Audio Converter & Track Extractor
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+            Extract high-fidelity audio streams or convert sound files to WAV format 100% locally.
+          </p>
         </div>
 
         {!file ? (
           <Dropzone
             onFilesSelected={handleFileSelected}
-            title="Drop Audio or Video File to Extract Track"
-            subtitle="Extract audio stream to WAV / MP3 (100% Client-Side Processing)"
-            accept="audio/*,video/*"
+            title="Drop Video or Audio File to Extract Track"
+            subtitle="Extract clean audio stream from MP4, WebM, MP3, WAV, AAC files"
+            accept="video/*,audio/*"
             multiple={false}
           />
         ) : (
@@ -70,11 +67,11 @@ export const AudioToolsTool: React.FC = () => {
                   <Music className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate max-w-md">
+                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate max-w-xs sm:max-w-md">
                     {file.name}
                   </h3>
                   <p className="text-xs font-mono text-neutral-500">
-                    Size: {(file.size / (1024 * 1024)).toFixed(2)} MB
+                    File Size: {(file.size / (1024 * 1024)).toFixed(2)} MB
                   </p>
                 </div>
               </div>
@@ -86,7 +83,7 @@ export const AudioToolsTool: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="pt-2 flex justify-end">
               <button
                 onClick={handleExtractAudio}
                 disabled={isExtracting}
@@ -106,6 +103,8 @@ export const AudioToolsTool: React.FC = () => {
           </div>
         )}
       </div>
+
+      <PrivacyBadge />
     </div>
   );
 };
