@@ -32,7 +32,12 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://browserkit.co.in/" />
 
-    <!-- Favicon & Touch Icons for Browsers & Google Search -->
+    <!-- Favicon & Touch Icons for Browsers & Google Search Favicon Crawler -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -57,7 +62,7 @@
     <meta name="twitter:description" content="Compress images under 100kb free, convert HEIC to JPG, remove PDF passwords online, and encrypt files with AES-256 100% locally with zero server uploads." />
     <meta name="twitter:image" content="https://browserkit.co.in/og-image.png" />
 
-    <!-- Google Search Structured Data (Organization Logo Schema) -->
+    <!-- Google Search Structured Data (Organization, Logo, WebSite & Sitelinks Navigation Schema) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -70,6 +75,8 @@
           "logo": {
             "@type": "ImageObject",
             "url": "https://browserkit.co.in/logo.png",
+            "width": 512,
+            "height": 512,
             "caption": "BrowserKit Studio Logo"
           },
           "image": "https://browserkit.co.in/logo.png"
@@ -82,7 +89,64 @@
           "description": "Premium 100% Private Client-Side Web Utilities & Media Studio",
           "publisher": {
             "@id": "https://browserkit.co.in/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://browserkit.co.in/?s={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
           }
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://browserkit.co.in/#sitelinks",
+          "name": "BrowserKit Studio Key Web Utility Suites Navigation",
+          "itemListElement": [
+            {
+              "@type": "SiteNavigationElement",
+              "position": 1,
+              "name": "PDF Tools Suite",
+              "description": "Merge, split, compress, repair, unlock, and edit PDF documents online 100% locally.",
+              "url": "https://browserkit.co.in/pdf-tools"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 2,
+              "name": "Image & Photo Suite",
+              "description": "Compress images under 100KB, convert HEIC to JPG, crop passport photos, and resize photos.",
+              "url": "https://browserkit.co.in/image-tools"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 3,
+              "name": "Passport Photo Maker",
+              "description": "Create official 3.5x4.5cm and 2x2 inch passport size photos with white/blue/red backgrounds.",
+              "url": "https://browserkit.co.in/passport-photo-maker"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 4,
+              "name": "Video & Audio Suite",
+              "description": "Trim video clips, extract audio tracks, extract video frame snapshots, and create GIFs.",
+              "url": "https://browserkit.co.in/video-tools"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 5,
+              "name": "Archive & Security Vault",
+              "description": "Compress ZIP archives, extract .zip files, unlock ZIP passwords, and encrypt files with AES-256.",
+              "url": "https://browserkit.co.in/zip-tools"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 6,
+              "name": "AES-256 File Encryptor",
+              "description": "Military-grade password file encryption vault locally in browser.",
+              "url": "https://browserkit.co.in/file-encryptor"
+            }
+          ]
         }
       ]
     }
