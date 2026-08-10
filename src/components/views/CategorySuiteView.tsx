@@ -35,15 +35,29 @@ import { TOOL_METADATA } from '../../lib/seoData';
 import { PrivacyBadge } from '../PrivacyBadge';
 
 interface CategorySuiteViewProps {
-  category: ToolCategory;
+  category?: ToolCategory;
+  categoryPage?: ActivePage;
   setActivePage: (page: ActivePage) => void;
+  onNavigateRoute?: (slug: string) => void;
 }
 
 export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
   category,
+  categoryPage,
   setActivePage,
 }) => {
   const [searchFilter, setSearchFilter] = useState('');
+
+  const resolvedCategory: ToolCategory = (() => {
+    if (category) return category;
+    if (categoryPage) {
+      if (categoryPage === 'pdf-tools') return 'pdf';
+      if (categoryPage === 'image-tools') return 'image';
+      if (categoryPage === 'video-tools') return 'video';
+      if (categoryPage === 'zip-tools') return 'zip';
+    }
+    return 'pdf';
+  })();
 
   const toolIcons: Record<ToolType, React.ReactNode> = {
     compressor: <Minimize2 className="w-5 h-5 text-emerald-600" />,
@@ -98,8 +112,8 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
     'pdf-to-pdfa': <CheckCircle className="w-5 h-5 text-teal-600" />,
     'pdf-repair': <Sparkles className="w-5 h-5 text-amber-600" />,
     'pdf-page-numbers': <FileText className="w-5 h-5 text-blue-600" />,
-    'pdf-ocr': <Search className="w-5 h-5 text-purple-600" />,
-    'pdf-compare': <Eye className="w-5 h-5 text-indigo-600" />,
+    'pdf-ocr': <Sparkles className="w-5 h-5 text-purple-600" />,
+    'pdf-compare': <FileText className="w-5 h-5 text-indigo-600" />,
     'pdf-redact': <Lock className="w-5 h-5 text-rose-600" />,
     'pdf-cropper': <Crop className="w-5 h-5 text-emerald-600" />,
     'pdf-forms': <CheckCircle className="w-5 h-5 text-cyan-600" />,
@@ -114,41 +128,38 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
     'file-encryptor': <Lock className="w-5 h-5 text-emerald-600" />,
   };
 
-  const suiteInfo = {
+  const suiteInfoMap = {
     pdf: {
       title: 'PDF Tools Suite',
       subtitle: 'All 27+ PDF tools for merging, splitting, compressing, converting, signing, protecting, and editing PDF files.',
-      icon: <FileText className="w-8 h-8 text-red-600" />,
-      color: 'from-red-600 to-rose-700',
+      icon: <FileText className="w-6 h-6 text-rose-600" />,
     },
     image: {
       title: 'Image & Photo Suite',
       subtitle: 'All image editing tools for compressing under 100KB, Passport photos, HEIC conversion, resizing & signature editing.',
-      icon: <ImageIcon className="w-8 h-8 text-emerald-600" />,
-      color: 'from-emerald-600 to-teal-700',
+      icon: <ImageIcon className="w-6 h-6 text-emerald-600" />,
     },
     video: {
       title: 'Video & Audio Suite',
       subtitle: 'All media utilities for video trimming, frame extractions, GIF creation, and audio track conversion.',
-      icon: <Video className="w-8 h-8 text-blue-600" />,
-      color: 'from-blue-600 to-indigo-700',
+      icon: <Video className="w-6 h-6 text-indigo-600" />,
     },
     zip: {
       title: 'Archive & Security Vault',
       subtitle: 'All archive utilities for ZIP creation, extraction, ZIP password unlock, and AES-256 military-grade file encryption.',
-      icon: <Archive className="w-8 h-8 text-amber-600" />,
-      color: 'from-amber-600 to-orange-700',
+      icon: <Archive className="w-6 h-6 text-amber-600" />,
     },
     audio: {
       title: 'Audio Tools Suite',
       subtitle: 'Convert audio formats and extract sound tracks.',
-      icon: <Music className="w-8 h-8 text-purple-600" />,
-      color: 'from-purple-600 to-indigo-700',
+      icon: <Music className="w-6 h-6 text-purple-600" />,
     },
-  }[category];
+  };
+
+  const suiteInfo = suiteInfoMap[resolvedCategory] || suiteInfoMap.pdf;
 
   const categoryTools = Object.values(TOOL_METADATA).filter((t) =>
-    category === 'video' ? t.category === 'video' || t.category === 'audio' : t.category === category
+    resolvedCategory === 'video' ? t.category === 'video' || t.category === 'audio' : t.category === resolvedCategory
   );
 
   const filteredTools = categoryTools.filter(
@@ -169,24 +180,24 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
       </button>
 
       {/* Hero Header Section */}
-      <section className={`relative overflow-hidden rounded-3xl bg-gradient-to-r ${suiteInfo.color} text-white p-8 sm:p-12 shadow-xl`}>
-        <div className="relative z-10 max-w-3xl space-y-4">
+      <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-white/10 backdrop-blur-md rounded-2xl">
+            <div className="p-3 bg-slate-100 rounded-2xl">
               {suiteInfo.icon}
             </div>
             <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full text-white">
-                {categoryTools.length} Tools Available
-              </span>
-              <h1 className="text-3xl sm:text-4xl font-black mt-1">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 {suiteInfo.title}
               </h1>
+              <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
+                {suiteInfo.subtitle}
+              </p>
             </div>
           </div>
-          <p className="text-white/90 text-sm sm:text-base leading-relaxed">
-            {suiteInfo.subtitle}
-          </p>
+          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 text-white shadow-xs">
+            {categoryTools.length} Tools Available
+          </span>
         </div>
       </section>
 

@@ -57,13 +57,28 @@ export const PdfMergerTool: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Dropzone
-        onFilesSelected={handleFilesSelected}
-        title="Drop PDF Files to Merge"
-        subtitle="Combine multiple PDF documents into one single file (100% Client-Side)"
-        accept="application/pdf,.pdf"
-        multiple={true}
-      />
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+              <FilePlus className="w-6 h-6 text-rose-600" />
+              Merge PDF Documents
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+              Combine multiple PDF files into one clean document in the order you want.
+            </p>
+          </div>
+          <PrivacyBadge />
+        </div>
+
+        <Dropzone
+          onFilesSelected={handleFilesSelected}
+          title="Drop PDF Files to Merge"
+          subtitle="Combine multiple PDF documents into one single file (100% Client-Side)"
+          accept="application/pdf,.pdf"
+          multiple={true}
+        />
+      </div>
 
       {pdfFiles.length > 0 && (
         <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-4">

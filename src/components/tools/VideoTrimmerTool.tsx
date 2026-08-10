@@ -89,15 +89,29 @@ export const VideoTrimmerTool: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {!videoFile ? (
-        <Dropzone
-          onFilesSelected={handleVideoLoaded}
-          title="Drop Video File to Trim or Mute"
-          subtitle="Supports MP4, WebM, MOV, AVI (100% Client-Side Processing)"
-          accept="video/*"
-          multiple={false}
-        />
-      ) : (
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+              <Video className="w-6 h-6 text-indigo-600" />
+              Video Trimmer & Audio Cutter
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+              Trim start/end timestamps, mute audio, or slice video clips 100% locally.
+            </p>
+          </div>
+          <PrivacyBadge />
+        </div>
+
+        {!videoFile ? (
+          <Dropzone
+            onFilesSelected={handleVideoLoaded}
+            title="Drop Video File to Trim or Mute"
+            subtitle="Supports MP4, WebM, MOV, AVI (100% Client-Side Processing)"
+            accept="video/*"
+            multiple={false}
+          />
+        ) : (
         <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
           <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
             <div className="flex items-center gap-3">
@@ -212,8 +226,7 @@ export const VideoTrimmerTool: React.FC = () => {
           </div>
         </div>
       )}
-
-      <PrivacyBadge />
+      </div>
     </div>
   );
 };

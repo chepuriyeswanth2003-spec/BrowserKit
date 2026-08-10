@@ -60,13 +60,28 @@ export const ImagesToPdfTool: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Dropzone
-        onFilesSelected={handleImagesSelected}
-        title="Drop Photos or Images to Convert to PDF"
-        subtitle="Supports JPG, PNG, WebP, SVG. Adjust page size and layout settings."
-        accept="image/*"
-        multiple={true}
-      />
+      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
+              <FilePlus className="w-6 h-6 text-rose-600" />
+              Convert Images to PDF
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+              Convert JPG, PNG, WebP, and SVG images into a professional PDF document.
+            </p>
+          </div>
+          <PrivacyBadge />
+        </div>
+
+        <Dropzone
+          onFilesSelected={handleImagesSelected}
+          title="Drop Photos or Images to Convert to PDF"
+          subtitle="Supports JPG, PNG, WebP, SVG. Adjust page size and layout settings."
+          accept="image/*"
+          multiple={true}
+        />
+      </div>
 
       {images.length > 0 && (
         <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
