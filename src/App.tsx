@@ -7,6 +7,7 @@ import { CookieConsent } from './components/CookieConsent';
 import { PostDownloadAdModal, ProcessedFileItem } from './components/PostDownloadAdModal';
 import { initGoogleAdSense } from './lib/adManager';
 import { startKeepAlive } from './lib/keepAlive';
+import { TOOL_METADATA } from './lib/seoData';
 
 // Core views loaded immediately
 import { HomeView } from './components/views/HomeView';
@@ -189,9 +190,28 @@ export default function App() {
     startKeepAlive();
   }, []);
 
-  // Scroll to top on page change
+  // Scroll to top & update canonical URL on page change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+
+    const currentPath = window.location.pathname === '/' ? '' : window.location.pathname.replace(/^\/+/, '');
+    const canonicalUrl = `https://browserkit.co.in/${currentPath}`;
+    canonicalLink.setAttribute('href', canonicalUrl);
+
+    // Update document title dynamically based on active page metadata
+    const toolMeta = TOOL_METADATA[activePage];
+    if (toolMeta) {
+      document.title = `${toolMeta.metaTitle || toolMeta.title} | BrowserKit Studio`;
+    } else if (activePage === 'home') {
+      document.title = 'BrowserKit Studio — Free Client-Side PDF, Image & Video Utilities';
+    }
   }, [activePage, currentSlug]);
 
   const navigateToPage = (page: ActivePage) => {
