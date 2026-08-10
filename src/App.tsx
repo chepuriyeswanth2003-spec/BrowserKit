@@ -9,7 +9,7 @@ import { initGoogleAdSense } from './lib/adManager';
 import { startKeepAlive } from './lib/keepAlive';
 import { TOOL_METADATA } from './lib/seoData';
 
-// Core views loaded immediately
+import { SEOHead } from './components/SEOHead';
 import { HomeView } from './components/views/HomeView';
 import { GuidesView } from './components/views/GuidesView';
 import { PrivacyView } from './components/views/PrivacyView';
@@ -405,8 +405,34 @@ export default function App() {
     );
   };
 
+  const currentPath = window.location.pathname === '/' ? '' : window.location.pathname.replace(/^\/+/, '');
+  const canonicalUrl = `https://browserkit.co.in/${currentPath}`;
+  const toolMeta = TOOL_METADATA[activePage];
+  const progRoute = currentSlug ? findRouteBySlug(currentSlug) : null;
+
+  let pageTitle = 'BrowserKit Studio PRO — Free & 100% Private Browser Utilities';
+  let pageDesc = 'Process images, PDFs, videos, and zip files 100% locally inside your browser with maximum speed, zero server uploads, and complete privacy.';
+  let pageKeywords = ['free pdf tools', 'image converter', 'passport photo maker', 'online video editor', 'privacy browser tools'];
+
+  if (progRoute) {
+    pageTitle = `${progRoute.metaTitle || progRoute.h1} | BrowserKit Studio PRO`;
+    pageDesc = progRoute.metaDescription;
+    pageKeywords = [progRoute.sourceFormat, progRoute.targetFormat, progRoute.toolCategory, 'free online tool'];
+  } else if (toolMeta) {
+    pageTitle = `${toolMeta.metaTitle || toolMeta.title} | BrowserKit Studio PRO`;
+    pageDesc = toolMeta.metaDescription || toolMeta.description;
+    pageKeywords = toolMeta.keywords || pageKeywords;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-slate-900 selection:text-white">
+      <SEOHead
+        title={pageTitle}
+        description={pageDesc}
+        keywords={pageKeywords}
+        canonicalUrl={canonicalUrl}
+        toolType={activePage}
+      />
       {/* Top Header Navbar */}
       <Navbar
         activePage={activePage}

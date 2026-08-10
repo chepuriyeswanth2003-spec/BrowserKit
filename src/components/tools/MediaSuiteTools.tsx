@@ -217,20 +217,20 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
     toolType === 'social-batch-downloader';
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs">
-        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
+        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
           Media Suite
         </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
           {meta.title}
         </h1>
-        <p className="text-slate-500 text-xs sm:text-sm mt-1">{meta.subtitle}</p>
+        <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">{meta.subtitle}</p>
       </div>
 
       {/* Main Workspace */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
         {isUrlTool ? (
           /* Link Input Dropzone */
           <div className="space-y-4">
