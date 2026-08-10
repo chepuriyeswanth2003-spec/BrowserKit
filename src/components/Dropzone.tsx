@@ -198,42 +198,39 @@ export const Dropzone: React.FC<DropzoneProps> = ({
 
   if (variant === 'compact' || variant === 'mini') {
     return (
-      <div className="w-full relative overflow-hidden rounded-xl">
+      <label
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={`relative block cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 ${
+          isDragOver
+            ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01]'
+            : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 shadow-xs'
+        }`}
+      >
         <input
           ref={fileInputRef}
           type="file"
           accept={accept}
           multiple={multiple}
           onChange={handleInputChange}
-          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20 block"
-          title="Choose files"
+          className="sr-only"
         />
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 relative z-10 ${
-            isDragOver
-              ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01]'
-              : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 shadow-xs'
-          }`}
-        >
-          <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
-            <Upload className="w-4 h-4" />
-          </div>
-          <div className="text-left">
-            <p className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-              <span>Add or drop more files / folders</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-mono">
-                Batch
-              </span>
-            </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Tap to browse or drop items anywhere on page
-            </p>
-          </div>
+        <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+          <Upload className="w-4 h-4" />
         </div>
-      </div>
+        <div className="text-left">
+          <p className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+            <span>Add or drop more files / folders</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-mono">
+              Batch
+            </span>
+          </p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            Click or tap to browse or drop items anywhere on page
+          </p>
+        </div>
+      </label>
     );
   }
 
@@ -259,11 +256,11 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         </div>
       )}
 
-      <div
+      <label
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed p-8 md:p-12 text-center transition-all duration-200 outline-none ${
+        className={`relative block cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed p-8 md:p-12 text-center transition-all duration-200 outline-none ${
           isDragOver
             ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01] shadow-lg'
             : justPasted
@@ -271,15 +268,14 @@ export const Dropzone: React.FC<DropzoneProps> = ({
             : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 hover:shadow-xs'
         }`}
       >
-        {/* Transparent Full-Size Overlay File Input for 100% Mobile Touch & Desktop Click Compatibility */}
+        {/* Accessible Native HTML File Input */}
         <input
           ref={fileInputRef}
           type="file"
           accept={accept}
           multiple={multiple}
           onChange={handleInputChange}
-          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20 block"
-          title="Choose files"
+          className="sr-only"
         />
 
         {/* Local Dragover Visual Overlay */}
@@ -295,7 +291,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           </div>
         )}
 
-        <div className="flex flex-col items-center justify-center gap-3 relative z-10 pointer-events-none">
+        <div className="flex flex-col items-center justify-center gap-3">
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 shadow-sm relative">
             <Upload className="w-7 h-7 text-slate-900 dark:text-white" />
             <Sparkles className="w-4 h-4 text-slate-400 absolute -top-1 -right-1 animate-pulse" />
@@ -311,17 +307,16 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           </div>
 
           <div className="flex items-center justify-center gap-2.5 mt-2">
-            <button
-              type="button"
-              className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm flex items-center gap-2 transition-all active:scale-95 pointer-events-none"
+            <span
+              className="px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
             >
               <ImagePlus className="w-4 h-4 text-white dark:text-slate-900" /> Choose Files
-            </button>
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-2">
             <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
-              <Clipboard className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Tap / Paste (Ctrl+V)
+              <Clipboard className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Click / Paste (Ctrl+V)
             </span>
             <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
               <FolderPlus className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Drop Folders
@@ -331,7 +326,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({
             </span>
           </div>
         </div>
-      </div>
+      </label>
     </div>
   );
 };

@@ -272,33 +272,32 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
           </div>
         ) : !mediaUrl ? (
           /* File Upload Dropzone */
-          <div
+          <label
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4 relative overflow-hidden"
+            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4 block relative"
           >
             <input
               type="file"
               accept="video/*,audio/*"
               onChange={handleFileChange}
-              className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 block"
-              title="Choose media file"
+              className="sr-only"
             />
-            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto pointer-events-none">
+            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto">
               <Upload className="w-8 h-8" />
             </div>
-            <div className="pointer-events-none">
+            <div>
               <h3 className="text-base font-bold text-slate-900">
-                Tap or drop Video / Audio file here to browse
+                Click or drop Video / Audio file here to browse
               </h3>
               <p className="text-xs text-slate-500 mt-1 font-mono">
                 Supports MP4, WebM, MOV, AVI, MP3, WAV (Max 500MB)
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md pointer-events-none">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md cursor-pointer">
               Select Media File
-            </div>
-          </div>
+            </span>
+          </label>
         ) : (
           /* Custom Controls & Render */
           <div className="space-y-6">

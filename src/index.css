@@ -13,12 +13,27 @@
   button,
   a,
   [role="button"],
-  input,
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  input[type="file"],
+  input[type="checkbox"],
+  input[type="radio"],
   select,
-  textarea,
   label,
   .clickable {
     cursor: pointer !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="password"],
+  input[type="email"],
+  input[type="search"],
+  textarea {
+    cursor: text !important;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
