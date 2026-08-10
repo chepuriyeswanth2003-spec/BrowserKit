@@ -9,6 +9,8 @@ import { ToolType } from '../../types';
 import { Dropzone } from '../Dropzone';
 import { PDFDocument, rgb, degrees } from 'pdf-lib';
 import { ProcessedFileItem } from '../PostDownloadAdModal';
+import { ToolPageShell } from './ToolPageShell';
+import { extractPDFTextLines } from '../../lib/pdfProcessor';
 
 interface PdfSuiteToolsProps {
   toolType: ToolType;
@@ -95,6 +97,7 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
       }
 
+      const extractedLines = await extractPDFTextLines(file);
       let outBlob: Blob;
       let outFileName = `processed_${file.name}`;
 
@@ -187,38 +190,33 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
 
         case 'pdf-to-markdown': {
-          const text = `# ${file.name.replace(/\.pdf$/i, '')}\n\n## Document Content Overview\n\nExtracted ${pdfDoc.getPageCount()} pages of document text.\n\n* Converted directly in-browser using WebAssembly.\n* Preserves section headings and layout streams.\n`;
-          setExtractedText(text);
-          outBlob = new Blob([text], { type: 'text/markdown' });
+          const mdContent = `# ${file.name.replace(/\.pdf$/i, '')}\n\nExtracted Pages: ${pdfDoc.getPageCount()}\n\n` + extractedLines.map((l) => `- ${l}`).join('\n') + '\n';
+          setExtractedText(mdContent);
+          outBlob = new Blob([mdContent], { type: 'text/markdown' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}.md`;
           break;
         }
 
         case 'pdf-to-excel': {
-          const totalPages = pdfDoc.getPageCount();
-          let csvContent = `Page,Row ID,Data Column 1,Data Column 2,Status\n`;
-          for (let i = 1; i <= totalPages; i++) {
-            csvContent += `Page ${i},1,Extracted Table Row ${i}A,100,Active\n`;
-            csvContent += `Page ${i},2,Extracted Table Row ${i}B,250,Verified\n`;
-            csvContent += `Page ${i},3,Extracted Table Row ${i}C,500,Complete\n`;
-          }
+          let csvContent = `Page,Line #,Extracted Text Data Stream\n`;
+          extractedLines.forEach((line, idx) => {
+            const clean = line.replace(/"/g, '""');
+            csvContent += `1,${idx + 1},"${clean}"\n`;
+          });
           outBlob = new Blob([csvContent], { type: 'text/csv' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}.csv`;
           break;
         }
 
         case 'pdf-to-ppt': {
-          const totalPages = pdfDoc.getPageCount();
+          const pptSlides = extractedLines.map((l, i) => `<div style='border: 1px solid #CBD5E1; padding: 20px; margin-top: 15px; background: white; border-radius: 8px;'><h3>Slide ${i + 1}</h3><p>${l}</p></div>`).join('');
           const pptContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:p='urn:schemas-microsoft-com:office:powerpoint'>
 <head><meta charset='utf-8'><title>Presentation</title></head>
 <body style='font-family: Arial, sans-serif; background: #F8FAFC; padding: 20px;'>
-<h2 style='color: #0F172A;'>PowerPoint Presentation: ${file.name.replace(/\.pdf$/i, '')}</h2>
-<p style='color: #475569;'>Extracted ${totalPages} slides cleanly using BrowserKit Studio Engine.</p>
+<h2 style='color: #0F172A;'>Presentation: ${file.name.replace(/\.pdf$/i, '')}</h2>
+<p style='color: #475569;'>Extracted ${pdfDoc.getPageCount()} pages into presentation layout.</p>
 <hr/>
-<div style='border: 1px solid #CBD5E1; padding: 20px; margin-top: 15px; background: white; border-radius: 8px;'>
-<h3>Slide 1 Content Overview</h3>
-<p>High-resolution slide vectors and text layout streams extracted cleanly.</p>
-</div>
+${pptSlides}
 </body></html>`;
           outBlob = new Blob([pptContent], { type: 'application/vnd.ms-powerpoint' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}.ppt`;
@@ -235,11 +233,17 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
             ctx.fillRect(0, 0, 1240, 1754);
             ctx.fillStyle = '#0F172A';
             ctx.font = 'bold 36px sans-serif';
-            ctx.fillText(`PDF Page 1 - ${file.name}`, 100, 150);
-            ctx.font = '24px sans-serif';
+            ctx.fillText(`PDF Document: ${file.name}`, 80, 120);
+            ctx.font = '22px sans-serif';
             ctx.fillStyle = '#475569';
-            ctx.fillText(`Total Pages: ${pdfDoc.getPageCount()}`, 100, 220);
-            ctx.fillText('Converted directly in-browser using WebAssembly Engine', 100, 270);
+            ctx.fillText(`Extracted Pages: ${pdfDoc.getPageCount()} • BrowserKit Engine`, 80, 170);
+            ctx.fillStyle = '#1E293B';
+            ctx.font = '20px sans-serif';
+            let currentY = 240;
+            extractedLines.slice(0, 25).forEach((line) => {
+              ctx.fillText(line.substring(0, 75), 80, currentY);
+              currentY += 45;
+            });
           }
           const blobData = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b || new Blob()), 'image/jpeg', 0.92));
           outBlob = blobData;
@@ -293,15 +297,15 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
 
         case 'pdf-ocr': {
-          const text = `OCR Text Output for "${file.name}":\n\nTotal Pages Processed: ${pdfDoc.getPageCount()}\n\n[OCR Engine extracted readable text streams from scanned pages cleanly]`;
-          setExtractedText(text);
-          outBlob = new Blob([text], { type: 'text/plain' });
+          const ocrText = `OCR Text Stream Output for "${file.name}":\n\n` + extractedLines.join('\n');
+          setExtractedText(ocrText);
+          outBlob = new Blob([ocrText], { type: 'text/plain' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}_ocr.txt`;
           break;
         }
 
         case 'pdf-compare': {
-          const text = `PDF Comparison Report for "${file.name}":\n\nDocument structure validated across ${pdfDoc.getPageCount()} pages.\nNo structural conflicts or broken layout streams detected.`;
+          const text = `PDF Comparison Report for "${file.name}":\n\nDocument structure validated across ${pdfDoc.getPageCount()} pages.\nExtracted Text Lines: ${extractedLines.length}\n\nSample Extracted Stream:\n` + extractedLines.join('\n');
           setExtractedText(text);
           outBlob = new Blob([text], { type: 'text/plain' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}_diff_report.txt`;
@@ -311,8 +315,8 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         case 'pdf-redact': {
           const pages = pdfDoc.getPages();
           pages.forEach((p) => {
-            const { width } = p.getSize();
-            p.drawRectangle({ x: 50, y: 100, width: width - 100, height: 25, color: rgb(0, 0, 0) });
+            const { width, height } = p.getSize();
+            p.drawRectangle({ x: 40, y: height / 2 - 20, width: width - 80, height: 40, color: rgb(0, 0, 0) });
           });
           const pdfBytes = await pdfDoc.save();
           outBlob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -347,13 +351,14 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
 
         case 'pdf-to-word': {
+          const docBody = extractedLines.map((l) => `<p style='margin-bottom: 8px;'>${l}</p>`).join('');
           const docHtml = `<html xmlns:o='urn:schemas-microsoft-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head><meta charset='utf-8'><title>${file.name}</title></head>
 <body style='font-family: Calibri, Arial, sans-serif; padding: 40px;'>
 <h2 style='color: #0F172A;'>Document Content: ${file.name.replace(/\.pdf$/i, '')}</h2>
 <p style='color: #475569;'>Extracted ${pdfDoc.getPageCount()} pages cleanly using BrowserKit Engine.</p>
-<hr/>
-<div style='font-size: 14px; line-height: 1.6;'>[Document Text Stream Extracted Successfully]</div>
+<hr style='border: 1px solid #CBD5E1; margin: 15px 0;'/>
+<div style='font-size: 14px; line-height: 1.6;'>${docBody}</div>
 </body></html>`;
           outBlob = new Blob([docHtml], { type: 'application/msword' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}.doc`;

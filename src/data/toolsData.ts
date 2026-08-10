@@ -1,4 +1,5 @@
 import { ToolType } from '../types';
+import { PUBLIC_PROGRAMMATIC_SLUGS } from '../lib/publicTools';
 
 export interface ProgrammaticToolRoute {
   slug: string;
@@ -282,7 +283,7 @@ export const PROGRAMMATIC_ROUTES: ProgrammaticToolRoute[] = [
   },
   {
     slug: 'compress-pdf-to-200kb',
-    toolType: 'pdf-splitter',
+    toolType: 'pdf-compressor',
     sourceFormat: 'PDF',
     targetFormat: 'Compressed PDF',
     toolCategory: 'PDF Suite',
@@ -683,5 +684,7 @@ export const PROGRAMMATIC_ROUTES: ProgrammaticToolRoute[] = [
 ];
 
 export function findRouteBySlug(slug: string): ProgrammaticToolRoute | undefined {
-  return PROGRAMMATIC_ROUTES.find((r) => r.slug === slug || slug.endsWith(`/${r.slug}`));
+  return PROGRAMMATIC_ROUTES.find(
+    (r) => PUBLIC_PROGRAMMATIC_SLUGS.has(r.slug) && (r.slug === slug || slug.endsWith(`/${r.slug}`))
+  );
 }

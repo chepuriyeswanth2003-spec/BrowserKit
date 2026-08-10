@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { ActivePage, ToolCategory, ToolType } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
+import { isPublicTool } from '../../lib/publicTools';
 import { PrivacyBadge } from '../PrivacyBadge';
 
 interface CategorySuiteViewProps {
@@ -156,8 +157,9 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
 
   const suiteInfo = suiteInfoMap[resolvedCategory] || suiteInfoMap.pdf;
 
-  const categoryTools = Object.values(TOOL_METADATA).filter((t) =>
-    resolvedCategory === 'video' ? t.category === 'video' || t.category === 'audio' : t.category === resolvedCategory
+  const categoryTools = Object.values(TOOL_METADATA).filter(
+    (t) => isPublicTool(t.id) &&
+      (resolvedCategory === 'video' ? t.category === 'video' || t.category === 'audio' : t.category === resolvedCategory)
   );
 
   const filteredTools = categoryTools.filter(

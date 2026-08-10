@@ -37,33 +37,37 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     if (typeof window !== 'undefined' && import.meta.env) {
       switch (type) {
         case 'header-banner':
-          return import.meta.env.VITE_ADSENSE_SLOT_HEADER || '1234567890';
+          return import.meta.env.VITE_ADSENSE_SLOT_HEADER;
         case 'sidebar':
-          return import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR || '2345678901';
+          return import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR;
         case 'below-tool':
-          return import.meta.env.VITE_ADSENSE_SLOT_BELOW_TOOL || '3456789012';
+          return import.meta.env.VITE_ADSENSE_SLOT_BELOW_TOOL;
         case 'modal':
-          return import.meta.env.VITE_ADSENSE_SLOT_MODAL || '4567890123';
+          return import.meta.env.VITE_ADSENSE_SLOT_MODAL;
         case 'in-flow':
         default:
-          return import.meta.env.VITE_ADSENSE_SLOT_INFLOW || '5678901234';
+          return import.meta.env.VITE_ADSENSE_SLOT_INFLOW;
       }
     }
-    return '1234567890';
+    return undefined;
   };
 
   const resolvedSlot = getFallbackSlotId();
+  const hasValidAdSlot = Boolean(resolvedSlot && !/^(1234567890|2345678901|3456789012|4567890123|5678901234)$/.test(resolvedSlot));
 
   useEffect(() => {
-    // 1. Push AdSense slot once when mounted
-    if (!pushedRef.current) {
+    // 1. Push AdSense slot once when mounted and container is visible (offsetWidth > 0)
+    if (hasValidAdSlot && !pushedRef.current) {
+      if (insRef.current && insRef.current.offsetWidth === 0) {
+        return;
+      }
       pushedRef.current = true;
       const timer = setTimeout(() => {
         pushAdSenseSlot();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [resolvedSlot]);
+  }, [hasValidAdSlot, resolvedSlot]);
 
   useEffect(() => {
     const insNode = insRef.current;
@@ -110,7 +114,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({
   }, [onStatusChange]);
 
   // Hide container completely if marked unfilled by Google AdSense or AdBlocker
-  if (isUnfilled && !showPlaceholderInDev) {
+  if (!hasValidAdSlot || (isUnfilled && !showPlaceholderInDev)) {
     return null;
   }
 

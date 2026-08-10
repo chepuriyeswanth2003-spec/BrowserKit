@@ -20,8 +20,8 @@ import {
 } from 'lucide-react';
 import { ToolType } from '../../types';
 import { ProcessedFileItem } from '../PostDownloadAdModal';
-import { PrivacyBadge } from '../PrivacyBadge';
 import { TOOL_METADATA } from '../../lib/seoData';
+import { ToolPageShell } from './ToolPageShell';
 
 interface ImageSuiteToolsProps {
   toolType: ToolType;
@@ -323,6 +323,60 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
           return;
         }
 
+        case 'join-images': {
+          if (secondPreviewUrl) {
+            const secondImg = new Image();
+            secondImg.crossOrigin = 'anonymous';
+            secondImg.src = secondPreviewUrl;
+            await new Promise((r) => (secondImg.onload = r));
+
+            canvas.width = Math.max(img.width, secondImg.width);
+            canvas.height = img.height + secondImg.height;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, (canvas.width - img.width) / 2, 0);
+            ctx.drawImage(secondImg, (canvas.width - secondImg.width) / 2, img.height);
+          } else {
+            canvas.width = img.width;
+            canvas.height = img.height * 2;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, img.height);
+          }
+          break;
+        }
+
+        case 'official-size-resizer': {
+          canvas.width = 600;
+          canvas.height = 600;
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, 600, 600);
+          ctx.drawImage(img, 0, 0, 600, 600);
+          break;
+        }
+
+        case 'social-media-resizer': {
+          canvas.width = 1080;
+          canvas.height = 1080;
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, 1080, 1080);
+          const scale = Math.min(1080 / img.width, 1080 / img.height);
+          const x = (1080 - img.width * scale) / 2;
+          const y = (1080 - img.height * scale) / 2;
+          ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+          break;
+        }
+
+        case 'image-dpi-converter': {
+          canvas.width = img.width * 2;
+          canvas.height = img.height * 2;
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          break;
+        }
+
         default: {
           canvas.width = img.width;
           canvas.height = img.height;
@@ -363,20 +417,13 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-          Image Suite
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-          {meta.title}
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">{meta.subtitle}</p>
-      </div>
-
-      {/* Main Workspace */}
-      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+    <ToolPageShell
+      categoryBadge="Image Suite"
+      categoryBadgeColor="emerald"
+      title={meta.title}
+      description={meta.subtitle}
+      icon={<ImageIcon className="w-6 h-6 text-emerald-600" />}
+    >
         {/* Upload Dropzone */}
         {!previewUrl ? (
           <label
@@ -601,9 +648,6 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
             </div>
           </div>
         )}
-      </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };

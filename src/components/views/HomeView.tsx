@@ -32,6 +32,7 @@ import {
 import { ActivePage, ToolType, ToolCategory } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
 import { PROGRAMMATIC_ROUTES } from '../../data/toolsData';
+import { isPublicTool, PUBLIC_PROGRAMMATIC_SLUGS } from '../../lib/publicTools';
 import { AdSlot } from '../AdSlot';
 
 interface HomeViewProps {
@@ -107,16 +108,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     'file-encryptor': <Lock className="w-5 h-5 text-emerald-600" />,
   };
 
-  const allTools = Object.values(TOOL_METADATA);
+  const allTools = Object.values(TOOL_METADATA).filter((tool) => isPublicTool(tool.id));
 
   // Curated Most Used Tools
   const mostUsedToolIds: ToolType[] = [
     'pdf-merger',
-    'pdf-compressor',
     'passport-photo-maker',
     'target-kb-compressor',
     'converter',
-    'pdf-password-remover',
   ];
 
   const mostUsedTools = mostUsedToolIds
@@ -127,13 +126,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
     {
       id: 'pdf-tools' as ActivePage,
       title: 'PDF Tools Suite',
-      subtitle: 'Merge, Split, Compress, Sign & OCR PDFs',
+      subtitle: 'Merge, split and create PDFs privately',
       count: allTools.filter((t) => t.category === 'pdf').length,
       icon: <FileText className="w-5 h-5 text-rose-600 group-hover:text-white transition-colors" />,
       iconBox: 'bg-rose-50 border border-rose-200/80 group-hover:bg-white/10 group-hover:border-white/20',
       badgeBg: 'bg-rose-100/60 text-rose-800 border border-rose-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
       btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
-      btnText: 'Open 30+ PDF Tools →',
+      btnText: 'Open PDF Tools →',
     },
     {
       id: 'image-tools' as ActivePage,
@@ -144,18 +143,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       iconBox: 'bg-emerald-50 border border-emerald-200/80 group-hover:bg-white/10 group-hover:border-white/20',
       badgeBg: 'bg-emerald-100/60 text-emerald-800 border border-emerald-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
       btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
-      btnText: 'Open 19 Image Tools →',
+      btnText: 'Open Image Tools →',
     },
     {
       id: 'video-tools' as ActivePage,
       title: 'Video & Audio Suite',
-      subtitle: 'Video Trimmer, Snapshots & Audio',
+      subtitle: 'Extract video frames and WAV audio',
       count: allTools.filter((t) => t.category === 'video' || t.category === 'audio').length,
       icon: <Video className="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors" />,
       iconBox: 'bg-indigo-50 border border-indigo-200/80 group-hover:bg-white/10 group-hover:border-white/20',
       badgeBg: 'bg-indigo-100/60 text-indigo-800 border border-indigo-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
       btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
-      btnText: 'Open 3 Media Tools →',
+      btnText: 'Open Media Tools →',
     },
     {
       id: 'zip-tools' as ActivePage,
@@ -166,7 +165,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       iconBox: 'bg-amber-50 border border-amber-200/80 group-hover:bg-white/10 group-hover:border-white/20',
       badgeBg: 'bg-amber-100/60 text-amber-900 border border-amber-200/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
       btnBg: 'bg-slate-900 text-white group-hover:bg-white group-hover:text-slate-900',
-      btnText: 'Open 4 Vault Tools →',
+      btnText: 'Open Vault Tools →',
     },
   ];
 
@@ -285,7 +284,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {PROGRAMMATIC_ROUTES.slice(0, 6).map((route) => (
+          {PROGRAMMATIC_ROUTES.filter((route) => PUBLIC_PROGRAMMATIC_SLUGS.has(route.slug)).slice(0, 6).map((route) => (
             <button
               key={route.slug}
               onClick={() => {

@@ -6,19 +6,19 @@ export const CookieConsent: React.FC = () => {
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem('imagetoolkit_cookie_consent');
+    const consent = localStorage.getItem('browserkit_cookie_consent');
     if (!consent) {
       setShow(true);
     }
   }, []);
 
   const handleAcceptAll = () => {
-    localStorage.setItem('imagetoolkit_cookie_consent', 'accepted_all');
+    localStorage.setItem('browserkit_cookie_consent', 'accepted_all');
     setShow(false);
   };
 
   const handleAcceptNecessary = () => {
-    localStorage.setItem('imagetoolkit_cookie_consent', 'necessary_only');
+    localStorage.setItem('browserkit_cookie_consent', 'necessary_only');
     setShow(false);
   };
 
@@ -34,7 +34,7 @@ export const CookieConsent: React.FC = () => {
           <div>
             <h4 className="font-bold text-sm uppercase tracking-tight">Privacy & Ad Cookie Notice</h4>
             <p className="text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed">
-              ImageToolkit is 100% free with no account required. We use essential local storage to save your dark mode preference and standard display ad cookies to monetize our hosting. Your images are processed 100% locally in your browser and are never uploaded or stored on any server.
+              BrowserKit Studio PRO is 100% free with no account required. We use essential local storage for cookie preferences and standard display ad cookies to monetize hosting. Your images and files are processed locally in your browser and are never uploaded or stored on any server.
             </p>
           </div>
         </div>

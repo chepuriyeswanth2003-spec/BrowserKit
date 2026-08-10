@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Dropzone } from '../Dropzone';
-import { Video, Play, Pause, Scissors, VolumeX, Volume2, Download, Trash2, Clock } from 'lucide-react';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { Video, Play, Pause, Scissors, VolumeX, Volume2, Download, Trash2, Clock, Loader2 } from 'lucide-react';
+import { ToolPageShell } from './ToolPageShell';
 
 export const VideoTrimmerTool: React.FC = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -11,6 +11,7 @@ export const VideoTrimmerTool: React.FC = () => {
   const [endTime, setEndTime] = useState<number>(10);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isTrimming, setIsTrimming] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -66,17 +67,60 @@ export const VideoTrimmerTool: React.FC = () => {
     return `${m}:${s < 10 ? '0' : ''}${s}.${ms}`;
   };
 
-  const handleDownload = () => {
-    // In browser client-side video trimming, if original video is used, we offer trimmed video download via MediaRecorder or raw video download with trim timestamps metadata
-    if (!videoUrl || !videoFile) return;
+  const handleDownload = async () => {
+    if (!videoUrl || !videoFile || !videoRef.current) return;
+    setIsTrimming(true);
 
-    // Fast client-side export
-    const a = document.createElement('a');
-    a.href = videoUrl;
-    a.download = `trimmed_${isMuted ? 'muted_' : ''}${videoFile.name}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      const videoEl = videoRef.current;
+      videoEl.pause();
+      videoEl.currentTime = startTime;
+
+      await new Promise((r) => setTimeout(r, 300));
+
+      const stream = (videoEl as any).captureStream ? (videoEl as any).captureStream() : null;
+
+      if (stream && typeof MediaRecorder !== 'undefined') {
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        const chunks: Blob[] = [];
+
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+
+        recorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `trimmed_${isMuted ? 'muted_' : ''}${videoFile.name.replace(/\.[^/.]+$/, '')}.webm`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setIsTrimming(false);
+        };
+
+        recorder.start();
+        videoEl.muted = isMuted;
+        videoEl.play();
+
+        const durationMs = Math.max(500, (endTime - startTime) * 1000);
+        setTimeout(() => {
+          videoEl.pause();
+          recorder.stop();
+        }, durationMs);
+      } else {
+        const a = document.createElement('a');
+        a.href = videoUrl;
+        a.download = `trimmed_${videoFile.name}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setIsTrimming(false);
+      }
+    } catch {
+      setIsTrimming(false);
+    }
   };
 
   const clearFile = () => {
@@ -88,27 +132,22 @@ export const VideoTrimmerTool: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="border-b border-slate-100 pb-4">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-            <Video className="w-6 h-6 text-indigo-600" />
-            Video Trimmer & Audio Cutter
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Trim start/end timestamps, mute audio, or slice video clips 100% locally.
-          </p>
-        </div>
-
-        {!videoFile ? (
-          <Dropzone
-            onFilesSelected={handleVideoLoaded}
-            title="Drop Video File to Trim or Mute"
-            subtitle="Supports MP4, WebM, MOV, AVI (100% Client-Side Processing)"
-            accept="video/*"
-            multiple={false}
-          />
-        ) : (
+    <ToolPageShell
+      categoryBadge="Video Suite"
+      categoryBadgeColor="blue"
+      title="Video Trimmer & Audio Cutter"
+      description="Trim start/end timestamps, mute audio, or slice video clips 100% locally."
+      icon={<Video className="w-6 h-6 text-blue-600" />}
+    >
+      {!videoFile ? (
+        <Dropzone
+          onFilesSelected={handleVideoLoaded}
+          title="Drop Video File to Trim or Mute"
+          subtitle="Supports MP4, WebM, MOV, AVI (100% Client-Side Processing)"
+          accept="video/*"
+          multiple={false}
+        />
+      ) : (
           <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
             <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
               <div className="flex items-center gap-3">
@@ -214,17 +253,16 @@ export const VideoTrimmerTool: React.FC = () => {
 
                 <button
                   onClick={handleDownload}
-                  className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-xs flex items-center gap-2 transition-all active:scale-95"
+                  disabled={isTrimming}
+                  className="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white shadow-md flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <Download className="w-4 h-4" /> Download Trimmed Clip
+                  {isTrimming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                  {isTrimming ? 'Processing Trim...' : 'Download Trimmed Clip'}
                 </button>
               </div>
             </div>
           </div>
         )}
-      </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };

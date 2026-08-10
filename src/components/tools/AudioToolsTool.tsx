@@ -44,19 +44,19 @@ export const AudioToolsTool: React.FC = () => {
         <div className="border-b border-slate-100 pb-4">
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
             <Music className="w-6 h-6 text-purple-600" />
-            Audio Converter & Track Extractor
+            Video Audio Extractor (WAV)
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Extract high-fidelity audio streams or convert sound files to WAV format 100% locally.
+            Extract an uncompressed WAV audio track from compatible local video files.
           </p>
         </div>
 
         {!file ? (
           <Dropzone
             onFilesSelected={handleFileSelected}
-            title="Drop Video or Audio File to Extract Track"
-            subtitle="Extract clean audio stream from MP4, WebM, MP3, WAV, AAC files"
-            accept="video/*,audio/*"
+            title="Drop a Video File to Extract Its Audio"
+            subtitle="Exports WAV from compatible MP4, WebM, and MOV files"
+            accept="video/*"
             multiple={false}
           />
         ) : (

@@ -19,8 +19,46 @@ import {
 } from 'lucide-react';
 import { ToolType } from '../../types';
 import { ProcessedFileItem } from '../PostDownloadAdModal';
-import { PrivacyBadge } from '../PrivacyBadge';
 import { TOOL_METADATA } from '../../lib/seoData';
+import { ToolPageShell } from './ToolPageShell';
+
+function audioBufferToWavBlob(audioBuffer: AudioBuffer): Blob {
+  const numOfChan = audioBuffer.numberOfChannels;
+  const length = audioBuffer.length * numOfChan * 2 + 44;
+  const buffer = new ArrayBuffer(length);
+  const view = new DataView(buffer);
+
+  const writeString = (offset: number, string: string) => {
+    for (let i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
+    }
+  };
+
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + audioBuffer.length * numOfChan * 2, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numOfChan, true);
+  view.setUint32(24, audioBuffer.sampleRate, true);
+  view.setUint32(28, audioBuffer.sampleRate * numOfChan * 2, true);
+  view.setUint16(32, numOfChan * 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, audioBuffer.length * numOfChan * 2, true);
+
+  let offset = 44;
+  for (let i = 0; i < audioBuffer.length; i++) {
+    for (let channel = 0; channel < numOfChan; channel++) {
+      const sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(channel)[i]));
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+      offset += 2;
+    }
+  }
+
+  return new Blob([buffer], { type: 'audio/wav' });
+}
 
 interface MediaSuiteToolsProps {
   toolType: ToolType;
@@ -119,28 +157,15 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
       }
 
       if (toolType === 'video-to-audio') {
-        // Render audio extraction using Web Audio API / MediaRecorder
         const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
         const response = await fetch(mediaUrl);
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+        const wavBlob = audioBufferToWavBlob(audioBuffer);
 
-        const offlineCtx = new OfflineAudioContext(
-          audioBuffer.numberOfChannels,
-          audioBuffer.length,
-          audioBuffer.sampleRate
-        );
-        const source = offlineCtx.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(offlineCtx.destination);
-        source.start(0);
-
-        const renderedBuffer = await offlineCtx.startRendering();
-        const blob = new Blob([arrayBuffer], { type: audioFormat === 'mp3' ? 'audio/mp3' : 'audio/wav' });
-
-        setResultUrl(URL.createObjectURL(blob));
-        setResultSize(blob.size);
-        setResultFormat(audioFormat === 'mp3' ? 'audio/mp3' : 'audio/wav');
+        setResultUrl(URL.createObjectURL(wavBlob));
+        setResultSize(wavBlob.size);
+        setResultFormat('audio/wav');
         setProcessing(false);
         return;
       }
@@ -217,21 +242,14 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
     toolType === 'social-batch-downloader';
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-          Media Suite
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-          {meta.title}
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">{meta.subtitle}</p>
-      </div>
-
-      {/* Main Workspace */}
-      <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
-        {isUrlTool ? (
+    <ToolPageShell
+      categoryBadge="Media Suite"
+      categoryBadgeColor="blue"
+      title={meta.title}
+      description={meta.subtitle}
+      icon={<Video className="w-6 h-6 text-blue-600" />}
+    >
+      {isUrlTool ? (
           /* Link Input Dropzone */
           <div className="space-y-4">
             <label className="font-bold text-slate-800 text-sm block">
@@ -427,9 +445,6 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
             )}
           </div>
         )}
-      </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };

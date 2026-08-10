@@ -44,6 +44,19 @@ app.get('/health', (req, res) => {
 
 const distPath = path.join(__dirname, 'dist');
 const publicPath = path.join(__dirname, 'public');
+const knownSpaRoutes = new Set([
+  '/', '/pdf-tools', '/image-tools', '/video-tools', '/zip-tools', '/guides', '/privacy', '/terms',
+  '/compressor', '/converter', '/resizer', '/palette', '/meme', '/passport-photo-maker',
+  '/add-name-and-dob', '/signature-resizer', '/circle-crop', '/merge-photo-signature',
+  '/image-watermark', '/image-rotate-flip', '/image-effects', '/target-kb-compressor',
+  '/pdf-merger', '/pdf-splitter', '/images-to-pdf', '/zip-archiver', '/zip-extractor',
+  '/audio-tools', '/video-to-gif', '/svg-optimizer', '/file-encryptor',
+  '/heic-to-jpg', '/convert-heic-to-jpg-mac', '/png-to-webp', '/svg-to-png',
+  '/compress-png-online', '/compress-jpg-online', '/passport-photo-crop-2x2',
+  '/merge-pdf-offline', '/split-pdf-pages', '/convert-images-to-pdf',
+  '/extract-video-frames', '/meme-generator-online', '/svg-cleaner-optimizer',
+  '/create-zip-archive', '/extract-zip-online', '/encrypt-file-password',
+]);
 
 // Fail-safe helper for serving text/xml files
 function serveStaticFile(res, fileName, mimeType) {
@@ -151,7 +164,10 @@ app.use(
 // Fallback all SPA routes to index.html
 app.get('*', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-  res.sendFile(path.join(distPath, 'index.html'));
+  if (!knownSpaRoutes.has(req.path)) {
+    return res.status(404).sendFile(path.join(distPath, 'index.html'));
+  }
+  return res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {

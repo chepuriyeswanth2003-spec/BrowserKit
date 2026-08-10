@@ -1,4 +1,5 @@
 import { ToolMeta, ToolType } from '../types';
+import { PUBLIC_PROGRAMMATIC_SLUGS } from './publicTools';
 
 export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
   compressor: {
@@ -817,14 +818,14 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
     id: 'audio-tools',
     category: 'audio',
     badge: 'Audio',
-    title: 'Audio Converter & Sound Extractor',
-    subtitle: 'Convert audio formats or extract high quality audio tracks from video files.',
-    description: 'Convert audio recordings between MP3, WAV, OGG, and extract audio from MP4 videos.',
+    title: 'Video Audio Extractor (WAV)',
+    subtitle: 'Extract a WAV audio track from compatible video files locally.',
+    description: 'Decode a compatible local video file and download its audio as uncompressed WAV.',
     iconName: 'Music',
-    seoKeyword: 'extract audio from mp4 free',
-    metaTitle: 'Free Audio Converter & Video Audio Extractor | BrowserKit Studio',
-    metaDescription: 'Extract audio from video and convert audio formats online for free.',
-    faqs: [{ question: 'Which formats?', answer: 'MP3, WAV, OGG, WebM, AAC, and M4A.' }],
+    seoKeyword: 'extract wav audio from video free',
+    metaTitle: 'Free Video to WAV Audio Extractor | BrowserKit Studio',
+    metaDescription: 'Extract a WAV audio track from compatible local video files in your browser.',
+    faqs: [{ question: 'Which format is exported?', answer: 'The tool exports uncompressed WAV audio.' }],
   },
   'svg-optimizer': {
     id: 'svg-optimizer',
@@ -896,7 +897,10 @@ export function generateSitemapXML(baseUrl = 'https://browserkit.co.in'): string
     'guides',
     'privacy',
     'terms',
-  ];
+  ].filter((route) =>
+    ['', 'pdf-tools', 'image-tools', 'video-tools', 'zip-tools', 'guides', 'privacy', 'terms'].includes(route) ||
+    PUBLIC_PROGRAMMATIC_SLUGS.has(route)
+  );
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

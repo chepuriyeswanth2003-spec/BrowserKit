@@ -43,6 +43,7 @@ import {
 import { ActivePage, ToolType } from '../types';
 import { TOOL_METADATA } from '../lib/seoData';
 import { PROGRAMMATIC_ROUTES } from '../data/toolsData';
+import { isPublicTool, PUBLIC_PROGRAMMATIC_SLUGS } from '../lib/publicTools';
 
 interface NavbarProps {
   activePage: ActivePage;
@@ -139,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   // All searchable tool items
   const allSearchableTools = [
-    ...Object.entries(TOOL_METADATA).map(([key, meta]) => ({
+    ...Object.entries(TOOL_METADATA).filter(([key]) => isPublicTool(key as ToolType)).map(([key, meta]) => ({
       id: key,
       type: 'tool',
       title: meta.title,
@@ -148,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       slug: '',
       toolType: key as ActivePage,
     })),
-    ...PROGRAMMATIC_ROUTES.map((route) => ({
+    ...PROGRAMMATIC_ROUTES.filter((route) => PUBLIC_PROGRAMMATIC_SLUGS.has(route.slug)).map((route) => ({
       id: route.slug,
       type: 'route',
       title: route.h1,
@@ -256,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Navigation Category Dropdowns with Continuous Hover Bridge */}
         <nav className="hidden lg:flex items-center gap-1">
-          {categories.map((cat) => (
+          {categories.map((cat) => ({ ...cat, tools: cat.tools.filter((tool) => isPublicTool(tool.id)) })).map((cat) => (
             <div
               key={cat.title}
               className="relative py-2"
@@ -331,7 +332,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-3 animate-fade-in max-h-[80vh] overflow-y-auto">
-          {categories.map((cat) => (
+          {categories.map((cat) => ({ ...cat, tools: cat.tools.filter((tool) => isPublicTool(tool.id)) })).map((cat) => (
             <div key={cat.title} className="space-y-1">
               <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-600 px-2">
                 {cat.title}

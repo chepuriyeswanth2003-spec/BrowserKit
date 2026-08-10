@@ -16,6 +16,8 @@ import { PrivacyView } from './components/views/PrivacyView';
 import { TermsView } from './components/views/TermsView';
 import { ProgrammaticLandingPage } from './components/views/ProgrammaticLandingPage';
 import { CategorySuiteView } from './components/views/CategorySuiteView';
+import { NotFoundView } from './components/views/NotFoundView';
+import { isPublicTool } from './lib/publicTools';
 
 // Dynamic React.lazy imports for heavy tools to eliminate unused JavaScript on home load
 const CompressorTool = lazy(() => import('./components/tools/CompressorTool').then((m) => ({ default: m.CompressorTool })));
@@ -132,7 +134,7 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'terms',
   ];
 
-  if (validPages.includes(path as ActivePage)) {
+  if (validPages.includes(path as ActivePage) && (!TOOL_METADATA[path as ToolType] || isPublicTool(path as ToolType))) {
     return { page: path as ActivePage, slug: '' };
   }
 
@@ -147,11 +149,11 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'unlock-zip': 'zip-password-remover',
   };
 
-  if (aliases[path]) {
+  if (aliases[path] && isPublicTool(aliases[path] as ToolType)) {
     return { page: aliases[path], slug: '' };
   }
 
-  return { page: 'home', slug: '' };
+  return { page: 'not-found', slug: '' };
 }
 
 export default function App() {
@@ -215,6 +217,12 @@ export default function App() {
   }, [activePage, currentSlug]);
 
   const navigateToPage = (page: ActivePage) => {
+    if (TOOL_METADATA[page as ToolType] && !isPublicTool(page as ToolType)) {
+      setActivePage('not-found');
+      setCurrentSlug('');
+      window.history.pushState(null, '', '/not-found');
+      return;
+    }
     setActivePage(page);
     setCurrentSlug('');
 
@@ -391,6 +399,8 @@ export default function App() {
               return <PrivacyView />;
             case 'terms':
               return <TermsView />;
+            case 'not-found':
+              return <NotFoundView onGoHome={() => navigateToPage('home')} />;
             case 'home':
             default:
               return (

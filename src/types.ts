@@ -73,7 +73,8 @@ export type ActivePage =
   | 'pdf-tools'
   | 'image-tools'
   | 'video-tools'
-  | 'zip-tools';
+  | 'zip-tools'
+  | 'not-found';
 
 export type ToolCategory = 'image' | 'video' | 'pdf' | 'zip' | 'audio';
 
