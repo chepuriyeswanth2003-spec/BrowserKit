@@ -56,8 +56,6 @@ export type ToolType =
   | 'pdf-redact'
   | 'pdf-cropper'
   | 'pdf-forms'
-  | 'pdf-ai-summarizer'
-  | 'pdf-translate'
   | 'pdf-to-markdown'
   | 'zip-archiver'
   | 'zip-extractor'

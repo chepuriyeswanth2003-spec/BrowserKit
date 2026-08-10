@@ -121,8 +121,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         { id: 'pdf-redact' as ToolType, label: 'Redact PDF', icon: <ShieldAlert className="w-4 h-4 text-rose-600" /> },
         { id: 'pdf-cropper' as ToolType, label: 'Crop PDF', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
         { id: 'pdf-forms' as ToolType, label: 'PDF Forms', icon: <CheckCircle className="w-4 h-4 text-cyan-600" /> },
-        { id: 'pdf-ai-summarizer' as ToolType, label: 'AI Summarizer', icon: <Sparkles className="w-4 h-4 text-amber-600" /> },
-        { id: 'pdf-translate' as ToolType, label: 'Translate PDF', icon: <Languages className="w-4 h-4 text-blue-600" /> },
         { id: 'pdf-to-markdown' as ToolType, label: 'PDF to Markdown', icon: <FileCode className="w-4 h-4 text-slate-800" /> },
       ],
     },

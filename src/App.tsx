@@ -119,8 +119,6 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'pdf-redact',
     'pdf-cropper',
     'pdf-forms',
-    'pdf-ai-summarizer',
-    'pdf-translate',
     'pdf-to-markdown',
     'zip-archiver',
     'zip-extractor',
@@ -351,8 +349,6 @@ export default function App() {
             case 'pdf-redact':
             case 'pdf-cropper':
             case 'pdf-forms':
-            case 'pdf-ai-summarizer':
-            case 'pdf-translate':
             case 'pdf-to-markdown':
               return <PdfSuiteTools toolType={activePage} onDownloadTrigger={handleDownloadTrigger} />;
 

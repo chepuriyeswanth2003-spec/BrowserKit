@@ -144,14 +144,6 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
           break;
         }
 
-        case 'pdf-ai-summarizer': {
-          const text = `Document Summary for "${file.name}":\n\n• Key Takeaway 1: Primary PDF payload loaded successfully with ${pdfDoc.getPageCount()} pages.\n• Key Takeaway 2: Document contains metadata structures and formatted text pages.\n• Security Check: No malicious embedded script objects detected.\n• Executive Brief: Recommended for digital archiving and review.`;
-          setExtractedText(text);
-          outBlob = new Blob([text], { type: 'text/plain' });
-          outFileName = `summary_${file.name.replace(/\.pdf$/i, '')}.txt`;
-          break;
-        }
-
         case 'pdf-to-markdown': {
           const text = `# ${file.name.replace(/\.pdf$/i, '')}\n\n## Document Content Overview\n\nExtracted ${pdfDoc.getPageCount()} pages of document text.\n\n* Converted directly in-browser using WebAssembly.\n* Preserves section headings and layout streams.\n`;
           setExtractedText(text);
@@ -216,8 +208,6 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
       case 'pdf-redact': return { title: 'Redact PDF Text', desc: 'Black out and permanently erase sensitive text or numbers from PDF.', icon: <ShieldAlert className="w-6 h-6 text-rose-600" /> };
       case 'pdf-cropper': return { title: 'Crop PDF Margins', desc: 'Crop page margins or adjust bounding boxes on PDF documents.', icon: <Crop className="w-6 h-6 text-emerald-600" /> };
       case 'pdf-forms': return { title: 'PDF Form Builder & Filler', desc: 'Detect form fields and fill out interactive PDF forms.', icon: <CheckCircle className="w-6 h-6 text-cyan-600" /> };
-      case 'pdf-ai-summarizer': return { title: 'AI PDF Summarizer', desc: 'Generate key summaries and executive highlights from PDFs.', icon: <Sparkles className="w-6 h-6 text-amber-600" /> };
-      case 'pdf-translate': return { title: 'AI PDF Translator', desc: 'Translate PDF document text while preserving formatting.', icon: <Languages className="w-6 h-6 text-blue-600" /> };
       case 'pdf-to-markdown': return { title: 'PDF to Markdown Converter', desc: 'Extract structured text and tables into Markdown format.', icon: <FileCode className="w-6 h-6 text-slate-800" /> };
       default: return { title: 'PDF Utility Tool', desc: 'Process PDF documents 100% locally inside your web browser.', icon: <FileText className="w-6 h-6 text-slate-700" /> };
     }
