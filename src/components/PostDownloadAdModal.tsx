@@ -93,7 +93,7 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
 
       const zipName = fileName
         ? fileName.replace(/\.[^/.]+$/, '') + '_batch_archive.zip'
-        : `mediacraft_batch_${Date.now()}.zip`;
+        : `browserkit_batch_${Date.now()}.zip`;
 
       a.download = zipName;
       document.body.appendChild(a);

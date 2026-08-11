@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropzone } from '../Dropzone';
 import { Unlock, FileText, Download, Loader2, Trash2, Key, ShieldCheck } from 'lucide-react';
 import { removePDFPassword, checkIfPDFEncrypted } from '../../lib/pdfProcessor';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { ToolPageShell } from './ToolPageShell';
 
 interface PdfPasswordRemoverToolProps {
   onDownloadTrigger?: (filename: string, count: number) => void;
@@ -58,134 +58,84 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <div className="border-b border-slate-100 pb-4">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Unlock className="w-5 h-5 text-rose-600" />
-              Remove PDF Password & Unlock Security Restrictions
-            </h2>
-            <p className="text-xs text-slate-600 mt-1">
-              Unlock password-protected PDFs and strip printing/copying restrictions 100% locally in your browser.
-            </p>
-          </div>
-        </div>
-
-        {!pdfFile ? (
-          <Dropzone
-            onFilesSelected={handleFileSelected}
-            accept={{ 'application/pdf': ['.pdf'] }}
-            maxFiles={1}
-            title="Drop your password-protected PDF file here"
-            subtitle="100% private client-side decryption — your document never leaves your device"
-          />
-        ) : (
-          <div className="space-y-6">
-            {/* Selected File Card */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-rose-100 rounded-lg text-rose-600">
-                  <FileText className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-slate-900">{pdfFile.name}</div>
-                  <div className="text-xs text-slate-500 font-mono mt-0.5">
-                    {(pdfFile.size / 1024 / 1024).toFixed(2)} MB • {isEncrypted ? 'Locked / Password Required' : 'Standard Restrictions Detected'}
-                  </div>
+    <ToolPageShell
+      categoryBadge="PDF Security"
+      categoryBadgeColor="rose"
+      title="Remove PDF Password & Security Restrictions"
+      description="Unlock password-protected PDFs and strip printing/copying restrictions 100% locally in your browser."
+      icon={<Unlock className="w-6 h-6 text-rose-600" />}
+    >
+      {!pdfFile ? (
+        <Dropzone
+          onFilesSelected={handleFileSelected}
+          accept=".pdf"
+          title="Drop your password-protected PDF file here"
+          subtitle="100% private client-side decryption — your document never leaves your device"
+        />
+      ) : (
+        <div className="space-y-6">
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-rose-100 dark:bg-rose-950/60 rounded-xl text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+                <FileText className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-slate-900 dark:text-white">{pdfFile.name}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                  {(pdfFile.size / 1024 / 1024).toFixed(2)} MB • {isEncrypted ? 'Locked / Password Required' : 'Standard Restrictions Detected'}
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  setPdfFile(null);
-                  setPassword('');
-                  setErrorMsg('');
-                }}
-                className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                title="Remove PDF"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
             </div>
-
-            {/* Password Input Section */}
-            <div className="p-5 bg-rose-50/50 rounded-xl border border-rose-100 space-y-3">
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <Key className="w-4 h-4 text-rose-600" />
-                PDF Password (If prompt required):
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter PDF open password (leave blank if owner-restricted only)..."
-                className="w-full px-4 py-2.5 text-xs bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono text-slate-900 placeholder:text-slate-400"
-              />
-              <p className="text-[11px] text-slate-500">
-                Tip: Leave blank for PDFs with owner restrictions (print/copy restrictions). Enter password for open-encrypted PDFs.
-              </p>
-            </div>
-
-            {errorMsg && (
-              <div className="p-3 bg-red-100 text-red-700 text-xs rounded-xl font-medium border border-red-200">
-                {errorMsg}
-              </div>
-            )}
-
-            {/* Unlock Action Button */}
             <button
-              onClick={handleUnlockPDF}
-              disabled={isUnlocking}
-              className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 disabled:opacity-50 transition-all cursor-pointer"
+              onClick={() => {
+                setPdfFile(null);
+                setPassword('');
+                setErrorMsg('');
+              }}
+              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+              title="Remove PDF"
             >
-              {isUnlocking ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Unlocking & Removing Restrictions...
-                </>
-              ) : (
-                <>
-                  <Unlock className="w-4 h-4 text-emerald-400" /> Unlock & Save Clean PDF
-                </>
-              )}
+              <Trash2 className="w-5 h-5" />
             </button>
           </div>
-        )}
-      </div>
 
-      {/* SEO Benefit Highlights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 space-y-1">
-          <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            100% On-Device Privacy
+          <div className="p-5 bg-rose-50/50 dark:bg-rose-950/30 rounded-2xl border border-rose-100 dark:border-rose-900/50 space-y-3">
+            <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+              <Key className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+              PDF Password (If prompt required):
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter PDF open password..."
+              className="w-full px-4 py-2.5 text-xs bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono text-slate-900 dark:text-white placeholder:text-slate-400"
+            />
           </div>
-          <div className="text-[11px] text-slate-500">
-            Decryption executes in your local browser WebAssembly vault. Financial and legal PDFs never touch cloud servers.
-          </div>
+
+          {errorMsg && (
+            <div className="p-3 bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 text-xs rounded-xl font-medium border border-red-200 dark:border-red-800">
+              {errorMsg}
+            </div>
+          )}
+
+          <button
+            onClick={handleUnlockPDF}
+            disabled={isUnlocking}
+            className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md disabled:opacity-50 transition-all cursor-pointer"
+          >
+            {isUnlocking ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Unlocking & Removing Restrictions...
+              </>
+            ) : (
+              <>
+                <Unlock className="w-4 h-4 text-emerald-400" /> Unlock & Save Clean PDF
+              </>
+            )}
+          </button>
         </div>
-
-        <div className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 space-y-1">
-          <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <Unlock className="w-4 h-4 text-rose-600" />
-            Strip Owner Restrictions
-          </div>
-          <div className="text-[11px] text-slate-500">
-            Unlocks print, edit, and copy restrictions instantly so you can modify or print your document without hassle.
-          </div>
-        </div>
-
-        <div className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 space-y-1">
-          <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <Download className="w-4 h-4 text-blue-600" />
-            Instant Unlocked Export
-          </div>
-          <div className="text-[11px] text-slate-500">
-            Saves a clean, unencrypted standard PDF file that opens smoothly in any PDF viewer or printing device.
-          </div>
-        </div>
-      </div>
-
-      <PrivacyBadge />
-    </div>
+      )}
+    </ToolPageShell>
   );
 };

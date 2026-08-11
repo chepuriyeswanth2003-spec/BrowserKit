@@ -845,7 +845,7 @@ export const TOOL_METADATA: Record<ToolType, ToolMeta> = {
     category: 'zip',
     badge: 'Security',
     title: 'Client-Side File Encryptor (AES-256 Vault)',
-    subtitle: 'Encrypt photos, videos, PDFs, and documents with military-grade password vaulting.',
+    subtitle: 'Encrypt photos, videos, PDFs, and documents with client-side AES-256 password vaulting.',
     description: 'Protect sensitive files using AES-256-GCM encryption with PBKDF2 password derivation.',
     iconName: 'Lock',
     seoKeyword: 'password encrypt file online free',

@@ -8,7 +8,7 @@ interface SitemapModalProps {
 }
 
 export const SitemapModal: React.FC<SitemapModalProps> = ({ isOpen, onClose }) => {
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://mediacraft.studio';
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://browserkit.co.in';
   const sitemapXml = generateSitemapXML(baseUrl);
   const robotsTxt = generateRobotsTxt(baseUrl);
 

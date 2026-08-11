@@ -1,5 +1,6 @@
 import React from 'react';
 import { PrivacyBadge } from '../PrivacyBadge';
+import { LocalSandboxMonitor } from '../LocalSandboxMonitor';
 
 interface ToolPageShellProps {
   categoryBadge: string;
@@ -57,6 +58,7 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
       {/* Main Workspace Card */}
       <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
         {children}
+        <LocalSandboxMonitor />
       </div>
     </div>
   );

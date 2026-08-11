@@ -1,5 +1,5 @@
 /**
- * MediaCraft Studio - Military Grade Browser AES-256-GCM File Encryption Engine
+ * BrowserKit Studio - Browser AES-256-GCM File Encryption Engine
  * Uses Web Crypto API (SubtleCrypto) with PBKDF2 Key Derivation (100,000 iterations)
  * 100% Client-Side. No servers involved.
  */
@@ -156,7 +156,7 @@ export async function inspectEncryptedFile(file: File): Promise<EncryptedFileMet
   // Verify magic header
   for (let i = 0; i < MAGIC_HEADER.length; i++) {
     if (bytes[i] !== MAGIC_HEADER[i]) {
-      throw new Error('Unrecognized encrypted file header. Ensure this file was encrypted with MediaCraft Vault.');
+      throw new Error('Unrecognized encrypted file header. Ensure this file was encrypted with BrowserKit Vault.');
     }
   }
 
@@ -206,7 +206,7 @@ export async function decryptFileWithPassword(
   // Check magic header
   for (let i = 0; i < MAGIC_HEADER.length; i++) {
     if (bytes[i] !== MAGIC_HEADER[i]) {
-      throw new Error('This file was not encrypted with MediaCraft Studio or header is corrupt.');
+      throw new Error('This file was not encrypted with BrowserKit Studio or header is corrupt.');
     }
   }
 

@@ -130,7 +130,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
     {
       id: 'aes256-encrypt-guide',
       icon: <ShieldCheck className="w-5 h-5 text-purple-600" />,
-      title: 'Understanding Military-Grade AES-256 Password Encryption Vaults in Web Browsers',
+      title: 'Understanding Client-Side AES-256 Password Encryption Vaults in Web Browsers',
       category: 'Security Vault',
       readTime: '5 min read',
       toolTarget: 'file-encryptor' as ToolType,

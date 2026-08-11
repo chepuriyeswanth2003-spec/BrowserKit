@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:\\Users\\YESWANTH\\Downloads\\imagetoolkit/scripts/paperclip-issue-update.sh:*)",
+      "Bash(C:\\Users\\YESWANTH\\Downloads\\imagetoolkit/scripts/paperclip:*)",
+      "Bash(curl:*)",
+      "Bash(env)",
+      "Bash(env:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\YESWANTH\\.paperclip\\instances\\default\\companies\\e9bef9a3-5465-46e2-8d53-54d8bf76dd63",
+      "C:\\Users\\YESWANTH\\.paperclip\\instances\\default\\companies\\e9bef9a3-5465-46e2-8d53-54d8bf76dd63\\acp-engine\\agents\\6e1e40cc-f44b-4f59-8ccb-21f23a30decc",
+      "C:\\Users\\YESWANTH\\.paperclip\\instances\\default\\workspaces\\6e1e40cc-f44b-4f59-8ccb-21f23a30decc"
+    ],
+    "defaultMode": "default"
+  }
+}

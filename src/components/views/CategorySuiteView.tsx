@@ -145,7 +145,7 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
     },
     zip: {
       title: 'Archive & Security Vault',
-      subtitle: 'All archive utilities for ZIP creation, extraction, ZIP password unlock, and AES-256 military-grade file encryption.',
+      subtitle: 'All archive utilities for ZIP creation, extraction, ZIP password unlock, and AES-256 client-side file encryption.',
       icon: <Archive className="w-6 h-6 text-amber-600" />,
     },
     audio: {

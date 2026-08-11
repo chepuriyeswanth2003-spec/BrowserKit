@@ -527,7 +527,7 @@ export const PROGRAMMATIC_ROUTES: ProgrammaticToolRoute[] = [
     sourceFormat: 'Any File',
     targetFormat: 'Encrypted Vault',
     toolCategory: 'Security Vault',
-    metaTitle: 'Password Encrypt Files Online - Military-Grade AES-256 | BrowserKit',
+    metaTitle: 'Password Encrypt Files Online - On-Device AES-256 | BrowserKit',
     metaDescription: 'Encrypt photos, videos, PDFs, and ZIP files with password protection online for free. AES-256-GCM vault with zero server uploads.',
     h1: 'Encrypt Files & Documents with Password Vault',
     primaryBenefits: [

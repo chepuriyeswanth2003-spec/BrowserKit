@@ -66,6 +66,13 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
     scriptTag.textContent = JSON.stringify(schemaData);
 
     window.scrollTo(0, 0);
+
+    return () => {
+      const scriptTag = document.querySelector('#software-application-schema');
+      if (scriptTag) {
+        scriptTag.remove();
+      }
+    };
   }, [route]);
 
   // Render corresponding interactive tool based on route.toolType

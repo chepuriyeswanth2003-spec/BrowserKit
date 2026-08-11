@@ -25,7 +25,7 @@ import {
   decryptFileWithPassword,
   inspectEncryptedFile,
 } from '../../lib/fileEncryption';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { ToolPageShell } from './ToolPageShell';
 
 export const FileEncryptorTool: React.FC = () => {
   const [mode, setMode] = useState<'encrypt' | 'decrypt'>('encrypt');
@@ -191,7 +191,13 @@ export const FileEncryptorTool: React.FC = () => {
   const strength = getPasswordStrength(password);
 
   return (
-    <div className="space-y-6">
+    <ToolPageShell
+      categoryBadge="Vault Suite"
+      categoryBadgeColor="indigo"
+      title="AES-256 Client-Side File Encryptor & Decryptor"
+      description="Encrypt photos, documents, and videos with password protection 100% locally in your browser RAM."
+      icon={<Lock className="w-6 h-6 text-indigo-600" />}
+    >
       {/* Mode Switcher */}
       <div className="flex items-center justify-center p-1 rounded-xl bg-neutral-200 dark:bg-neutral-900 w-full max-w-md mx-auto border border-neutral-300 dark:border-neutral-800">
         <button
@@ -231,7 +237,7 @@ export const FileEncryptorTool: React.FC = () => {
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-              AES-256-GCM Military Grade Encryption
+              AES-256-GCM On-Device Encryption
             </h4>
             <p className="text-[11px] text-neutral-400 font-mono mt-0.5">
               PBKDF2 key derivation (100,000 rounds) + 256-bit AES authenticated vault.
@@ -522,7 +528,6 @@ export const FileEncryptorTool: React.FC = () => {
         </div>
       )}
 
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };
