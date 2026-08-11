@@ -174,53 +174,53 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
       {/* Back Button */}
       <button
         onClick={() => setActivePage('home')}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer"
       >
-        <ArrowLeft className="w-4 h-4 text-slate-500" /> Back to Dashboard
+        <ArrowLeft className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Back to Dashboard
       </button>
 
       {/* Hero Header Section */}
-      <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+      <section className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-slate-100 rounded-2xl">
+            <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl">
               {suiteInfo.icon}
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 {suiteInfo.title}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">
                 {suiteInfo.subtitle}
               </p>
             </div>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 text-white shadow-xs">
+          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 dark:bg-emerald-600 text-white shadow-xs">
             {categoryTools.length} Tools Available
           </span>
         </div>
       </section>
 
       {/* Tools Filter Bar & Grid */}
-      <section className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+      <section className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Browse {suiteInfo.title}
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Select any tool to process your files 100% locally on device
             </p>
           </div>
 
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
             <input
               type="text"
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               placeholder="Filter tools..."
-              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 rounded-2xl border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 text-slate-900 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500 text-slate-900 dark:text-white transition-all"
             />
           </div>
         </div>
@@ -232,45 +232,45 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
               <div
                 key={tool.id}
                 onClick={() => setActivePage(tool.id)}
-                className="group relative p-6 bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
+                className="group relative p-6 bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="p-3 rounded-xl bg-slate-100 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                    <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 group-hover:bg-slate-900 dark:group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                       {toolIcons[tool.id]}
                     </div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                       {tool.badge}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                       {tool.title}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                       {tool.subtitle}
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-900">
-                  <span>Launch Tool</span>
-                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                  <span>Open Tool</span>
+                  <ArrowRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             ))
           ) : (
-            <div className="col-span-full py-12 text-center space-y-3">
-              <p className="text-sm font-bold text-slate-800">
-                No tools match "{searchFilter}"
-              </p>
-              <button
-                onClick={() => setSearchFilter('')}
-                className="text-xs text-emerald-700 hover:underline font-semibold cursor-pointer"
-              >
-                Clear Filter
-              </button>
+            <div className="col-span-full py-12 text-center text-slate-500 dark:text-slate-400 text-sm font-medium">
+              No tools match your search criteria. Try a different query or clear the filter.
+              <div className="mt-4">
+                <button
+                  onClick={() => setSearchFilter('')}
+                  className="text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                >
+                  Clear Filter
+                </button>
+              </div>
             </div>
           )}
         </div>

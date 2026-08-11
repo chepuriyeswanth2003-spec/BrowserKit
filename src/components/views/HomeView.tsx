@@ -171,21 +171,21 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
 
   return (
     <div className="space-y-6">
-      {/* Clean White Hero & Horizontal 4-Column Tool Suite Selection Grid */}
-      <section className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
+      {/* Hero & Horizontal 4-Column Tool Suite Selection Grid */}
+      <section className="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-5">
         {/* Title Header */}
-        <div className="space-y-2 border-b border-slate-100 pb-4">
+        <div className="space-y-2 border-b border-slate-100 dark:border-slate-800 pb-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs font-mono font-bold">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               SELECTABLE CATEGORY SUITES BELOW
             </span>
-            <span className="text-xs font-mono text-slate-600 font-semibold">100% Private Local Browser Studio</span>
+            <span className="text-xs font-mono text-slate-600 dark:text-slate-400 font-semibold">100% Private Local Browser Studio</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            BrowserKit <span className="text-slate-700">Studio</span>. Select Tool Suite Below.
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            BrowserKit <span className="text-slate-700 dark:text-slate-300">Studio</span>. Select Tool Suite Below.
           </h1>
-          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+          <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed font-medium">
             Click any suite button below to open its full workspace. Zero cloud uploads.
           </p>
         </div>
@@ -196,7 +196,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
             <button
               key={suite.id}
               onClick={() => setActivePage(suite.id)}
-              className="group p-5 rounded-2xl bg-slate-50/80 hover:bg-slate-900 text-slate-900 hover:text-white border border-slate-200/90 hover:border-slate-900 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-xl hover:-translate-y-0.5 text-left flex flex-col justify-between space-y-4"
+              className="group p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/80 hover:bg-slate-900 dark:hover:bg-slate-950 text-slate-900 dark:text-white hover:text-white border border-slate-200/90 dark:border-slate-700 hover:border-slate-900 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-xl hover:-translate-y-0.5 text-left flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -209,10 +209,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
                 </div>
 
                 <div>
-                  <h2 className="text-base font-extrabold text-slate-900 group-hover:text-white transition-colors">
+                  <h2 className="text-base font-extrabold text-slate-900 dark:text-white group-hover:text-white transition-colors">
                     {suite.title}
                   </h2>
-                  <p className="text-xs text-slate-600 group-hover:text-slate-300 mt-1 line-clamp-2 leading-relaxed font-medium transition-colors">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-slate-300 mt-1 line-clamp-2 leading-relaxed font-medium transition-colors">
                     {suite.subtitle}
                   </p>
                 </div>
@@ -231,13 +231,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       <AdSlot type="in-flow" />
 
       {/* Most Used Tools Grid */}
-      <section className="space-y-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+      <section className="space-y-4 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-            <h2 className="text-lg font-bold text-slate-900">Most Used Tools</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Most Used Tools</h2>
           </div>
-          <span className="text-xs text-slate-500 font-medium">Quick 1-click access to top tools</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Quick 1-click access to top tools</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -245,29 +245,29 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
             <div
               key={tool.id}
               onClick={() => setActivePage(tool.id)}
-              className="group p-5 bg-slate-50 hover:bg-slate-900 hover:text-white rounded-2xl border border-slate-200/80 hover:border-slate-900 transition-all cursor-pointer flex flex-col justify-between"
+              className="group p-5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-900 dark:hover:bg-slate-950 text-slate-900 dark:text-white hover:text-white rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-slate-900 transition-all cursor-pointer flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-2.5 rounded-xl bg-white group-hover:bg-slate-800 transition-colors shadow-xs">
+                  <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 group-hover:bg-slate-800 transition-colors shadow-xs">
                     {toolIcons[tool.id]}
                   </div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white group-hover:bg-slate-800 text-slate-600 group-hover:text-emerald-400 border border-slate-200 group-hover:border-slate-700">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 group-hover:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:text-emerald-400 border border-slate-200 dark:border-slate-700 group-hover:border-slate-700">
                     {tool.badge}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-white transition-colors">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-white transition-colors">
                     {tool.title}
                   </h3>
-                  <p className="text-xs text-slate-500 group-hover:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 group-hover:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
                     {tool.subtitle}
                   </p>
                 </div>
               </div>
 
-              <div className="pt-3 mt-3 border-t border-slate-200/60 group-hover:border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-emerald-400">
+              <div className="pt-3 mt-3 border-t border-slate-200/60 dark:border-slate-700 group-hover:border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-emerald-400">
                 <span>Launch Tool</span>
                 <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -277,10 +277,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       </section>
 
       {/* Popular SEO Programmatic Routes Section */}
-      <section className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 space-y-4">
+      <section className="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-900">Popular Quick Utility Routes</h2>
-          <span className="text-xs text-slate-500">1-click format targets</span>
+          <h2 className="text-base font-bold text-slate-900 dark:text-white">Popular Quick Utility Routes</h2>
+          <span className="text-xs text-slate-500 dark:text-slate-400">1-click format targets</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -290,13 +290,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
               onClick={() => {
                 if (onNavigateRoute) onNavigateRoute(route.slug);
               }}
-              className="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 text-left transition-colors flex items-center justify-between group cursor-pointer"
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-left transition-colors flex items-center justify-between group cursor-pointer"
             >
               <div>
-                <div className="text-xs font-bold text-slate-900 group-hover:text-emerald-700">
+                <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
                   {route.h1}
                 </div>
-                <div className="text-[10px] font-mono text-slate-500 mt-0.5">
+                <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
                   {route.sourceFormat} → {route.targetFormat}
                 </div>
               </div>
