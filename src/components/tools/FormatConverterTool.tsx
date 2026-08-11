@@ -213,11 +213,11 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({
     const url = URL.createObjectURL(zipBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'imagetoolkit_converted.zip';
+    a.download = 'browserkit_converted.zip';
     a.click();
     URL.revokeObjectURL(url);
 
-    onDownloadTrigger('imagetoolkit_converted.zip', doneItems.length, doneFiles);
+    onDownloadTrigger('browserkit_converted.zip', doneItems.length, doneFiles);
   };
 
   const removeItem = (id: string) => {

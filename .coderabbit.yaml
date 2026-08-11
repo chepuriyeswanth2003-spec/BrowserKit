@@ -1,0 +1,18 @@
+# CodeRabbit AI Configuration
+version: "2"
+language: "en-US"
+tone_instructions: >-
+  Be extremely thorough, rigorous, and technical. Inspect for client-side security,
+  file processing accuracy, UI/UX consistency, responsive layout bugs, and dark mode completeness.
+reviews:
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+  path_filters:
+    - "!**/dist/**"
+    - "!**/node_modules/**"
+    - "!**/*.lock"
+chat:
+  auto_reply: true

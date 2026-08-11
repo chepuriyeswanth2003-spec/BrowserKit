@@ -139,11 +139,11 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
     const url = URL.createObjectURL(zipBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'imagetoolkit_compressed.zip';
+    a.download = 'browserkit_compressed.zip';
     a.click();
     URL.revokeObjectURL(url);
 
-    onDownloadTrigger('imagetoolkit_compressed.zip', doneItems.length, doneFiles);
+    onDownloadTrigger('browserkit_compressed.zip', doneItems.length, doneFiles);
   };
 
   const removeItem = (id: string) => {

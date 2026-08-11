@@ -108,7 +108,7 @@ export async function compressImage(
 
 export async function createBatchZip(
   items: ProcessedImage[],
-  zipFilename = 'imagetoolkit_compressed.zip'
+  zipFilename = 'browserkit_compressed.zip'
 ): Promise<Blob> {
   const zip = new JSZip();
 

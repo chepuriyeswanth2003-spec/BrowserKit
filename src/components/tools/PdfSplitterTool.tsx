@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropzone } from '../Dropzone';
 import { Scissors, FileText, Download, Loader2, Trash2 } from 'lucide-react';
 import { splitPDF, getPDFPageCount } from '../../lib/pdfProcessor';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { ToolPageShell } from './ToolPageShell';
 
 export const PdfSplitterTool: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -81,45 +81,41 @@ export const PdfSplitterTool: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="border-b border-slate-100 pb-4">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-            <Scissors className="w-6 h-6 text-rose-600" />
-            Split PDF & Extract Pages
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Extract specific page ranges (e.g. 1-3, 5, 8-10) or split pages into a new PDF document.
-          </p>
-        </div>
-
+    <ToolPageShell
+      categoryBadge="PDF Suite"
+      categoryBadgeColor="rose"
+      title="Split PDF & Extract Pages Online"
+      description="Extract specific page ranges (e.g. 1-3, 5, 8-10) or split pages into a new PDF document."
+      icon={<Scissors className="w-6 h-6 text-rose-600" />}
+    >
+      <div className="space-y-6">
         {!pdfFile ? (
           <Dropzone
             onFilesSelected={handleFileSelected}
             title="Drop PDF File to Extract or Split Pages"
             subtitle="Select specific page ranges (e.g. 1, 3, 5-8) to split locally"
-            accept="application/pdf,.pdf"
+            accept=".pdf"
             multiple={false}
           />
         ) : (
-          <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
+          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400">
+                <div className="p-2.5 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400">
                   <FileText className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate max-w-xs sm:max-w-md">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
                     {pdfFile.name}
                   </h3>
-                  <p className="text-xs font-mono text-neutral-500 mt-0.5">
-                    Total Document Pages: <span className="font-bold text-neutral-900 dark:text-neutral-100">{totalPages} Pages</span>
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                    Total Document Pages: <span className="font-bold text-slate-900 dark:text-white">{totalPages} Pages</span>
                   </p>
                 </div>
               </div>
               <button
                 onClick={clearFile}
-                className="p-2 rounded-lg text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                 title="Remove File"
               >
                 <Trash2 className="w-4 h-4" />
@@ -128,7 +124,7 @@ export const PdfSplitterTool: React.FC = () => {
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-neutral-800 dark:text-neutral-200 block">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Enter Page Numbers to Extract (e.g., 1, 3, 5-8)
                 </label>
                 <input
@@ -136,9 +132,9 @@ export const PdfSplitterTool: React.FC = () => {
                   value={pageSelection}
                   onChange={(e) => setPageSelection(e.target.value)}
                   placeholder="e.g. 1-3, 5, 7"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-mono text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
-                <p className="text-[11px] text-neutral-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Use commas for individual pages and hyphens for page ranges.
                 </p>
               </div>
@@ -148,7 +144,7 @@ export const PdfSplitterTool: React.FC = () => {
               <button
                 onClick={handleSplit}
                 disabled={isSplitting}
-                className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-xs flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95"
+                className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-md flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
               >
                 {isSplitting ? (
                   <>
@@ -156,7 +152,7 @@ export const PdfSplitterTool: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Scissors className="w-4 h-4" /> Extract Selected Pages
+                    <Scissors className="w-4 h-4 text-emerald-400 dark:text-white" /> Extract Selected Pages
                   </>
                 )}
               </button>
@@ -164,8 +160,6 @@ export const PdfSplitterTool: React.FC = () => {
           </div>
         )}
       </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };

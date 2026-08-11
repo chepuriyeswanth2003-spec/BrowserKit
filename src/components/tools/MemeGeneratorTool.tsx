@@ -110,9 +110,9 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
     if (!previewUrl) return;
     const a = document.createElement('a');
     a.href = previewUrl;
-    a.download = `imagetoolkit_meme_${Date.now()}.png`;
+    a.download = `browserkit_meme_${Date.now()}.png`;
     a.click();
-    onDownloadTrigger('imagetoolkit_meme.png');
+    onDownloadTrigger('browserkit_meme.png');
   };
 
   return (

@@ -31,12 +31,12 @@ describe('Image Utility Functions', () => {
   });
 
   it('generates valid sitemap XML and robots.txt', () => {
-    const sitemap = generateSitemapXML('https://imagetoolkit.app');
+    const sitemap = generateSitemapXML('https://browserkit.co.in');
     expect(sitemap).toContain('<?xml');
-    expect(sitemap).toContain('https://imagetoolkit.app/compressor');
+    expect(sitemap).toContain('https://browserkit.co.in/compressor');
 
-    const robots = generateRobotsTxt('https://imagetoolkit.app');
+    const robots = generateRobotsTxt('https://browserkit.co.in');
     expect(robots).toContain('User-agent: *');
-    expect(robots).toContain('Sitemap: https://imagetoolkit.app/sitemap.xml');
+    expect(robots).toContain('Sitemap: https://browserkit.co.in/sitemap.xml');
   });
 });

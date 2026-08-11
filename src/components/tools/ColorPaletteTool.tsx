@@ -99,10 +99,10 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
     const url = URL.createObjectURL(zipBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'imagetoolkit_favicon_pack.zip';
+    a.download = 'browserkit_favicon_pack.zip';
     a.click();
     URL.revokeObjectURL(url);
-    onDownloadTrigger('imagetoolkit_favicon_pack.zip');
+    onDownloadTrigger('browserkit_favicon_pack.zip');
   };
 
   return (
