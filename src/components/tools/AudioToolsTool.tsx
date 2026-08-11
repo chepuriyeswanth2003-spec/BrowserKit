@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropzone } from '../Dropzone';
 import { Music, Download, Loader2, Trash2 } from 'lucide-react';
 import { extractAudioFromVideo } from '../../lib/videoProcessor';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { ToolPageShell } from './ToolPageShell';
 
 export const AudioToolsTool: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -39,18 +39,14 @@ export const AudioToolsTool: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="border-b border-slate-100 pb-4">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-            <Music className="w-6 h-6 text-purple-600" />
-            Video Audio Extractor (WAV)
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Extract an uncompressed WAV audio track from compatible local video files.
-          </p>
-        </div>
-
+    <ToolPageShell
+      categoryBadge="Video & Audio"
+      categoryBadgeColor="purple"
+      title="Video Audio Extractor (WAV)"
+      description="Extract an uncompressed WAV audio track from compatible local video files."
+      icon={<Music className="w-6 h-6 text-purple-600" />}
+    >
+      <div className="space-y-6">
         {!file ? (
           <Dropzone
             onFilesSelected={handleFileSelected}
@@ -60,24 +56,25 @@ export const AudioToolsTool: React.FC = () => {
             multiple={false}
           />
         ) : (
-          <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
+          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
+                <div className="p-2.5 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
                   <Music className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate max-w-xs sm:max-w-md">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
                     {file.name}
                   </h3>
-                  <p className="text-xs font-mono text-neutral-500">
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
                     File Size: {(file.size / (1024 * 1024)).toFixed(2)} MB
                   </p>
                 </div>
               </div>
               <button
                 onClick={clearFile}
-                className="p-2 rounded-lg text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                title="Remove File"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -87,7 +84,7 @@ export const AudioToolsTool: React.FC = () => {
               <button
                 onClick={handleExtractAudio}
                 disabled={isExtracting}
-                className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-xs flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95"
+                className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-md flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
               >
                 {isExtracting ? (
                   <>
@@ -95,7 +92,7 @@ export const AudioToolsTool: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Download className="w-4 h-4" /> Extract Audio to WAV
+                    <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Extract Audio to WAV
                   </>
                 )}
               </button>
@@ -103,8 +100,6 @@ export const AudioToolsTool: React.FC = () => {
           </div>
         )}
       </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };

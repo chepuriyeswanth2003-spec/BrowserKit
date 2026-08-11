@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dropzone } from '../Dropzone';
 import { Code, Download, Copy, Check, Trash2 } from 'lucide-react';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { ToolPageShell } from './ToolPageShell';
 
 export const SvgOptimizerTool: React.FC = () => {
   const [svgContent, setSvgContent] = useState<string>('');
@@ -78,18 +78,14 @@ export const SvgOptimizerTool: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="border-b border-slate-100 pb-4">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-            <Code className="w-6 h-6 text-indigo-600" />
-            SVG Vector Code Minifier & Optimizer
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Strip comments, sanitize SVG markup, and reduce vector file sizes 100% in-browser.
-          </p>
-        </div>
-
+    <ToolPageShell
+      categoryBadge="Vector & Code"
+      categoryBadgeColor="cyan"
+      title="SVG Vector Code Minifier & Optimizer"
+      description="Strip comments, sanitize SVG markup, and reduce vector file sizes 100% in-browser."
+      icon={<Code className="w-6 h-6 text-cyan-600" />}
+    >
+      <div className="space-y-6">
         {!svgContent ? (
           <Dropzone
             onFilesSelected={handleSvgSelected}
@@ -99,24 +95,25 @@ export const SvgOptimizerTool: React.FC = () => {
             multiple={false}
           />
         ) : (
-          <div className="p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100">
+                <div className="p-2.5 rounded-xl bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400">
                   <Code className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate max-w-md">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-md">
                     {fileName}
                   </h3>
-                  <p className="text-xs font-mono text-slate-500">
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
                     Original: {svgContent.length} chars | Optimized: {cleanedSvg.length} chars
                   </p>
                 </div>
               </div>
               <button
                 onClick={clearAll}
-                className="p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                title="Clear SVG"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -127,7 +124,7 @@ export const SvgOptimizerTool: React.FC = () => {
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                   Rendered Vector Preview
                 </span>
-                <div className="p-6 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 min-h-64 flex items-center justify-center overflow-hidden">
+                <div className="p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 min-h-64 flex items-center justify-center overflow-hidden">
                   <div
                     dangerouslySetInnerHTML={{ __html: cleanedSvg }}
                     className="max-w-full max-h-64 flex items-center justify-center [&_svg]:max-w-full [&_svg]:max-h-64 [&_svg]:h-auto"
@@ -142,7 +139,7 @@ export const SvgOptimizerTool: React.FC = () => {
                   </span>
                   <button
                     onClick={handleCopy}
-                    className="text-xs font-mono font-bold flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                    className="text-xs font-mono font-bold flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer"
                   >
                     {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     {copied ? 'Copied Code!' : 'Copy SVG'}
@@ -151,7 +148,7 @@ export const SvgOptimizerTool: React.FC = () => {
                 <textarea
                   value={cleanedSvg}
                   onChange={(e) => setCleanedSvg(e.target.value)}
-                  className="w-full h-64 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-[11px] font-mono text-slate-900 dark:text-slate-100 focus:outline-none resize-none"
+                  className="w-full h-64 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-[11px] font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                 />
               </div>
             </div>
@@ -159,22 +156,20 @@ export const SvgOptimizerTool: React.FC = () => {
             <div className="pt-2 flex flex-wrap justify-end gap-3">
               <button
                 onClick={handleRasterizePng}
-                className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 transition-all cursor-pointer"
               >
                 Convert to High-DPI PNG
               </button>
               <button
                 onClick={handleDownloadSvg}
-                className="px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-xs flex items-center gap-2 transition-all active:scale-95"
+                className="px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-md flex items-center gap-2 transition-all cursor-pointer"
               >
-                <Download className="w-4 h-4" /> Download Clean SVG
+                <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Download Clean SVG
               </button>
             </div>
           </div>
         )}
       </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };

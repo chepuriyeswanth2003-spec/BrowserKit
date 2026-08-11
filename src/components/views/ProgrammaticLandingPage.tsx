@@ -8,13 +8,19 @@ const FormatConverterTool = lazy(() => import('../tools/FormatConverterTool').th
 const CompressorTool = lazy(() => import('../tools/CompressorTool').then((m) => ({ default: m.CompressorTool })));
 const PdfMergerTool = lazy(() => import('../tools/PdfMergerTool').then((m) => ({ default: m.PdfMergerTool })));
 const PdfSplitterTool = lazy(() => import('../tools/PdfSplitterTool').then((m) => ({ default: m.PdfSplitterTool })));
+const PdfPasswordRemoverTool = lazy(() => import('../tools/PdfPasswordRemoverTool').then((m) => ({ default: m.PdfPasswordRemoverTool })));
 const ImagesToPdfTool = lazy(() => import('../tools/ImagesToPdfTool').then((m) => ({ default: m.ImagesToPdfTool })));
+const PdfSuiteTools = lazy(() => import('../tools/PdfSuiteTools').then((m) => ({ default: m.PdfSuiteTools })));
 const ZipArchiverTool = lazy(() => import('../tools/ZipArchiverTool').then((m) => ({ default: m.ZipArchiverTool })));
 const ZipExtractorTool = lazy(() => import('../tools/ZipExtractorTool').then((m) => ({ default: m.ZipExtractorTool })));
+const ZipPasswordRemoverTool = lazy(() => import('../tools/ZipPasswordRemoverTool').then((m) => ({ default: m.ZipPasswordRemoverTool })));
 const AudioToolsTool = lazy(() => import('../tools/AudioToolsTool').then((m) => ({ default: m.AudioToolsTool })));
 const FileEncryptorTool = lazy(() => import('../tools/FileEncryptorTool').then((m) => ({ default: m.FileEncryptorTool })));
 const ResizerCropperTool = lazy(() => import('../tools/ResizerCropperTool').then((m) => ({ default: m.ResizerCropperTool })));
+const VideoTrimmerTool = lazy(() => import('../tools/VideoTrimmerTool').then((m) => ({ default: m.VideoTrimmerTool })));
 const VideoFrameExtractorTool = lazy(() => import('../tools/VideoFrameExtractorTool').then((m) => ({ default: m.VideoFrameExtractorTool })));
+const MediaSuiteTools = lazy(() => import('../tools/MediaSuiteTools').then((m) => ({ default: m.MediaSuiteTools })));
+const ImageSuiteTools = lazy(() => import('../tools/ImageSuiteTools').then((m) => ({ default: m.ImageSuiteTools })));
 const MemeGeneratorTool = lazy(() => import('../tools/MemeGeneratorTool').then((m) => ({ default: m.MemeGeneratorTool })));
 const SvgOptimizerTool = lazy(() => import('../tools/SvgOptimizerTool').then((m) => ({ default: m.SvgOptimizerTool })));
 
@@ -80,9 +86,9 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
     return (
       <Suspense
         fallback={
-          <div className="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3 my-8 shadow-xs">
-            <div className="w-10 h-10 border-4 border-slate-900 border-t-emerald-500 rounded-full animate-spin mx-auto" />
-            <p className="text-sm font-bold text-slate-800">Loading Tool Workspace...</p>
+          <div className="bg-white dark:bg-slate-900 p-12 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3 my-8 shadow-xs">
+            <div className="w-10 h-10 border-4 border-slate-900 dark:border-slate-100 border-t-emerald-500 rounded-full animate-spin mx-auto" />
+            <p className="text-sm font-bold text-slate-800 dark:text-white">Loading Tool Workspace...</p>
           </div>
         }
       >
@@ -96,20 +102,75 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
               return <PdfMergerTool />;
             case 'pdf-splitter':
               return <PdfSplitterTool />;
+            case 'pdf-password-remover':
+              return <PdfPasswordRemoverTool onDownloadTrigger={onDownloadTrigger} />;
+            case 'pdf-compressor':
+            case 'pdf-to-jpg':
+            case 'pdf-to-word':
+            case 'pdf-to-ppt':
+            case 'pdf-to-excel':
+            case 'word-to-pdf':
+            case 'ppt-to-pdf':
+            case 'excel-to-pdf':
+            case 'html-to-pdf':
+            case 'pdf-editor':
+            case 'pdf-signer':
+            case 'pdf-watermark':
+            case 'pdf-rotator':
+            case 'pdf-organizer':
+            case 'pdf-to-pdfa':
+            case 'pdf-repair':
+            case 'pdf-page-numbers':
+            case 'pdf-ocr':
+            case 'pdf-compare':
+            case 'pdf-redact':
+            case 'pdf-cropper':
+            case 'pdf-forms':
+            case 'pdf-to-markdown':
+              return <PdfSuiteTools toolType={route.toolType} onDownloadTrigger={onDownloadTrigger} />;
             case 'images-to-pdf':
               return <ImagesToPdfTool />;
             case 'zip-archiver':
               return <ZipArchiverTool />;
             case 'zip-extractor':
               return <ZipExtractorTool />;
+            case 'zip-password-remover':
+              return <ZipPasswordRemoverTool onDownloadTrigger={onDownloadTrigger} />;
             case 'audio-tools':
               return <AudioToolsTool />;
             case 'file-encryptor':
               return <FileEncryptorTool />;
             case 'resizer':
               return <ResizerCropperTool onDownloadTrigger={onDownloadTrigger} />;
+            case 'video-trimmer':
+              return <VideoTrimmerTool />;
             case 'video-to-gif':
               return <VideoFrameExtractorTool />;
+            case 'aspect-ratio-resizer':
+            case 'video-to-audio':
+            case 'audio-cutter':
+            case 'thumbnail-grabber':
+            case 'social-video-downloader':
+            case 'social-audio-extractor':
+            case 'social-batch-downloader':
+            case 'video-format-swapper':
+            case 'gif-maker':
+            case 'video-codec-transcoder':
+              return <MediaSuiteTools toolType={route.toolType} onDownloadTrigger={onDownloadTrigger} />;
+            case 'passport-photo-maker':
+            case 'add-name-and-dob':
+            case 'signature-resizer':
+            case 'image-dpi-converter':
+            case 'circle-crop':
+            case 'merge-photo-signature':
+            case 'join-images':
+            case 'image-watermark':
+            case 'image-rotate-flip':
+            case 'image-effects':
+            case 'official-size-resizer':
+            case 'social-media-resizer':
+            case 'target-kb-compressor':
+              return <ImageSuiteTools toolType={route.toolType} onDownloadTrigger={onDownloadTrigger} />;
             case 'meme':
               return <MemeGeneratorTool onDownloadTrigger={onDownloadTrigger} />;
             case 'svg-optimizer':
@@ -139,129 +200,53 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
           Convert and process your <span className="font-bold text-slate-900 dark:text-white">{route.sourceFormat}</span> files to{' '}
           <span className="font-bold text-slate-900 dark:text-white">{route.targetFormat}</span> instantly inside your web browser. Enjoy complete data privacy with guaranteed zero remote server transfers.
         </p>
-
-        {/* Feature Pill Indicators */}
-        <div className="pt-1 flex flex-wrap justify-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-          <span className="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-md">
-            <Cpu className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> Browser-Native Processing
-          </span>
-          <span className="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-md">
-            <HardDrive className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> On-Device Memory
-          </span>
-          <span className="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-md">
-            <Lock className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> AES-256 Vault Ready
-          </span>
-        </div>
       </header>
 
-      {/* Main Interactive Utility Container */}
-      <main id="app-root" className="w-full">
+      {/* Embedded Tool Component Workspace */}
+      <section className="w-full">
         {renderInteractiveUtility()}
-      </main>
-
-      {/* Dynamic Content & Feature Highlights */}
-      <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 sm:p-8 space-y-6 shadow-sm">
-        <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
-          <Sparkles className="w-5 h-5 text-slate-900 dark:text-slate-100" />
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-            Why Use BrowserKit for {route.sourceFormat} Conversions?
-          </h2>
-        </div>
-
-        <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {route.primaryBenefits.map((benefit, idx) => (
-            <li
-              key={`benefit-${idx}`}
-              className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 flex items-start gap-3"
-            >
-              <CheckCircle2 className="w-5 h-5 text-slate-900 dark:text-white shrink-0 mt-0.5" />
-              <p className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 leading-snug">
-                {benefit}
-              </p>
-            </li>
-          ))}
-        </ul>
       </section>
 
-      {/* How-To Guide Block for Search Intent Relevance */}
-      <section className="bg-slate-900 dark:bg-slate-950 text-white rounded-2xl p-6 sm:p-8 space-y-6 shadow-lg border border-slate-800">
+      {/* Key Benefits */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        {route.primaryBenefits.map((benefit, idx) => (
+          <div
+            key={idx}
+            className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-sm">
+              0{idx + 1}
+            </div>
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+              {benefit}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      {/* Step-by-Step Instructions */}
+      <section className="p-8 rounded-3xl bg-slate-900 dark:bg-slate-900 border border-slate-800 text-white space-y-6 shadow-md">
         <div className="space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">
-            Step-by-Step Instructions
-          </span>
-          <h2 className="text-lg sm:text-xl font-bold tracking-tight">
-            How to Convert {route.sourceFormat} to {route.targetFormat} On-Device
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-emerald-400" />
+            How to use this tool
           </h2>
+          <p className="text-xs text-slate-400 font-mono">
+            3 simple steps to process your files 100% locally
+          </p>
         </div>
 
-        <ol className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
           {route.steps.map((step, idx) => (
-            <li key={`step-${idx}`} className="space-y-2 relative">
-              <div className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-full bg-slate-800 text-emerald-400 border border-slate-700 font-mono text-xs font-bold flex items-center justify-center">
-                  {idx + 1}
-                </span>
-                <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Step {idx + 1}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium pl-1">{step}</p>
-            </li>
+            <div key={idx} className="space-y-2 border-l-2 border-emerald-500/40 pl-4">
+              <span className="text-xs font-mono font-bold text-emerald-400 uppercase">
+                Step {idx + 1}
+              </span>
+              <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                {step}
+              </p>
+            </div>
           ))}
-        </ol>
-      </section>
-
-      {/* Cross-Link Related Tools */}
-      <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 sm:p-8 space-y-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
-            Explore Other Privacy-First Converter Utilities
-          </h3>
-          <span className="text-xs text-slate-500 font-medium">100% In-Browser Execution</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-          <button
-            onClick={() => onNavigateRoute('heic-to-jpg')}
-            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-left transition-colors flex items-center justify-between group cursor-pointer"
-          >
-            <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-700">HEIC to JPG</div>
-              <div className="text-[10px] font-mono text-slate-500">iPhone Photo Convert</div>
-            </div>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <button
-            onClick={() => onNavigateRoute('compress-pdf-to-200kb')}
-            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-left transition-colors flex items-center justify-between group cursor-pointer"
-          >
-            <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-700">Compress PDF</div>
-              <div className="text-[10px] font-mono text-slate-500">Target Under 200KB</div>
-            </div>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <button
-            onClick={() => onNavigateRoute('passport-photo-maker')}
-            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-left transition-colors flex items-center justify-between group cursor-pointer"
-          >
-            <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-700">Passport Photo Maker</div>
-              <div className="text-[10px] font-mono text-slate-500">Official 3.5x4.5cm</div>
-            </div>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          <button
-            onClick={() => onNavigateRoute('remove-pdf-password')}
-            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-left transition-colors flex items-center justify-between group cursor-pointer"
-          >
-            <div>
-              <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-700">Unlock PDF</div>
-              <div className="text-[10px] font-mono text-slate-500">Remove Restrictions</div>
-            </div>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </button>
         </div>
       </section>
     </div>

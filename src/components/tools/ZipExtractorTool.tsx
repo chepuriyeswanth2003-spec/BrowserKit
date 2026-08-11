@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Dropzone } from '../Dropzone';
-import { FolderArchive, Download, Trash2, Loader2, FileText, Check } from 'lucide-react';
+import { FolderArchive, Download, Trash2, Loader2, FileText } from 'lucide-react';
 import { readZipEntries, extractZipEntry, extractAllZipEntries } from '../../lib/zipProcessor';
 import JSZip from 'jszip';
 import { ZipEntryItem } from '../../types';
-import { PrivacyBadge } from '../PrivacyBadge';
+import { ToolPageShell } from './ToolPageShell';
 
 export const ZipExtractorTool: React.FC = () => {
   const [zipFile, setZipFile] = useState<File | null>(null);
@@ -36,7 +36,6 @@ export const ZipExtractorTool: React.FC = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      // strip parent path for filename
       const cleanName = entryName.split('/').pop() || entryName;
       a.download = cleanName;
       document.body.appendChild(a);
@@ -75,18 +74,14 @@ export const ZipExtractorTool: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
-        <div className="border-b border-slate-100 pb-4">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight">
-            <FolderArchive className="w-6 h-6 text-amber-600" />
-            ZIP File Extractor & Viewer
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Unpack .zip archives, view contained files, and extract individual items locally.
-          </p>
-        </div>
-
+    <ToolPageShell
+      categoryBadge="Vault Suite"
+      categoryBadgeColor="amber"
+      title="ZIP File Extractor & Viewer"
+      description="Unpack .zip archives, view contained files, and extract individual items locally."
+      icon={<FolderArchive className="w-6 h-6 text-amber-600" />}
+    >
+      <div className="space-y-6">
         {!zipFile ? (
           <Dropzone
             onFilesSelected={handleZipSelected}
@@ -96,17 +91,17 @@ export const ZipExtractorTool: React.FC = () => {
             multiple={false}
           />
         ) : (
-          <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4">
+          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-700">
-                  <FolderArchive className="w-5 h-5 text-amber-500" />
+                <div className="p-2.5 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                  <FolderArchive className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate max-w-xs sm:max-w-md">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
                     {zipFile.name}
                   </h3>
-                  <p className="text-xs font-mono text-neutral-500">
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
                     Contained Files: {entries.length} | Size: {(zipFile.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
@@ -115,14 +110,14 @@ export const ZipExtractorTool: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleExtractAll}
-                  className="px-4 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all shadow-xs"
+                  className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all"
                 >
                   <Download className="w-3.5 h-3.5" /> Extract All
                 </button>
 
                 <button
                   onClick={clearZip}
-                  className="p-2 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                  className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                   title="Remove archive"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -132,19 +127,19 @@ export const ZipExtractorTool: React.FC = () => {
 
             {isLoading ? (
               <div className="py-12 text-center space-y-2">
-                <Loader2 className="w-8 h-8 text-neutral-700 animate-spin mx-auto" />
-                <p className="text-xs font-mono font-bold text-neutral-600">Reading ZIP Central Directory...</p>
+                <Loader2 className="w-8 h-8 text-amber-600 dark:text-amber-400 animate-spin mx-auto" />
+                <p className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">Reading ZIP Central Directory...</p>
               </div>
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 flex items-center justify-between gap-3"
+                    className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
-                      <FileText className="w-4 h-4 text-neutral-500 shrink-0" />
-                      <span className="text-xs font-mono font-bold text-neutral-900 dark:text-neutral-100 truncate">
+                      <FileText className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span className="text-xs font-mono font-bold text-slate-900 dark:text-white truncate">
                         {entry.name}
                       </span>
                     </div>
@@ -152,7 +147,7 @@ export const ZipExtractorTool: React.FC = () => {
                     {!entry.isDirectory && (
                       <button
                         onClick={() => handleExtractSingle(entry.name)}
-                        className="p-1.5 rounded-md bg-neutral-200 dark:bg-neutral-700 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-neutral-800 dark:text-neutral-200 text-xs font-mono font-bold flex items-center gap-1 transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer"
                       >
                         <Download className="w-3.5 h-3.5" /> Extract
                       </button>
@@ -164,8 +159,6 @@ export const ZipExtractorTool: React.FC = () => {
           </div>
         )}
       </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };
