@@ -12,6 +12,7 @@ import { ProcessedFileItem } from '../PostDownloadAdModal';
 import { ToolPageShell } from './ToolPageShell';
 import { 
   extractPDFPagesText, 
+  extractPDFPagesStructuredText,
   renderPDFPagesToJPGs, 
   createDocxFromPDFText, 
   createPptxFromPDFText, 
@@ -68,15 +69,15 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
 
       switch (toolType) {
         case 'pdf-to-word': {
-          const pageTexts = await extractPDFPagesText(file);
-          outBlob = await createDocxFromPDFText(pageTexts, file.name);
+          const structuredPages = await extractPDFPagesStructuredText(file);
+          outBlob = await createDocxFromPDFText(structuredPages);
           outFileName = `${file.name.replace(/\.pdf$/i, '')}.docx`;
           break;
         }
 
         case 'pdf-to-ppt': {
-          const pageTexts = await extractPDFPagesText(file);
-          outBlob = await createPptxFromPDFText(pageTexts, file.name);
+          const structuredPages = await extractPDFPagesStructuredText(file);
+          outBlob = await createPptxFromPDFText(structuredPages);
           outFileName = `${file.name.replace(/\.pdf$/i, '')}.pptx`;
           break;
         }
@@ -102,15 +103,16 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         case 'html-to-pdf': {
           const rawText = await file.text().catch(() => 'HTML Document');
           const pdfDoc = await PDFDocument.create();
-          const page = pdfDoc.addPage([595.28, 841.89]);
+          let page = pdfDoc.addPage([595.28, 841.89]);
           const lines = rawText.replace(/<[^>]+>/g, ' ').split('\n').filter(l => l.trim().length > 0);
 
-          let y = 800;
-          page.drawText(`Converted HTML Document: ${file.name}`, { x: 50, y, size: 16, color: rgb(0.1, 0.1, 0.1) });
-          y -= 35;
-
-          for (const l of lines.slice(0, 40)) {
-            page.drawText(l.substring(0, 80), { x: 50, y, size: 10, color: rgb(0.2, 0.2, 0.2) });
+          let y = 790;
+          for (const l of lines) {
+            if (y < 50) {
+              page = pdfDoc.addPage([595.28, 841.89]);
+              y = 790;
+            }
+            page.drawText(l.substring(0, 95), { x: 50, y, size: 10, color: rgb(0.12, 0.16, 0.23) });
             y -= 16;
           }
           const pdfBytes = await pdfDoc.save();
@@ -120,14 +122,13 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
 
         case 'pdf-to-excel': {
-          const pageTexts = await extractPDFPagesText(file);
-          let csvContent = `Page,Line Number,Extracted Text Content\n`;
-          pageTexts.forEach((pageText, pIdx) => {
-            const lines = pageText.split(/(?<=[.?!])\s+/);
-            lines.forEach((l, lIdx) => {
-              if (l.trim()) {
-                const escaped = l.replace(/"/g, '""');
-                csvContent += `${pIdx + 1},${lIdx + 1},"${escaped}"\n`;
+          const structuredPages = await extractPDFPagesStructuredText(file);
+          let csvContent = '';
+          structuredPages.forEach((page) => {
+            page.paragraphs.forEach((para) => {
+              if (para.trim()) {
+                const escaped = para.replace(/"/g, '""');
+                csvContent += `"${escaped}"\n`;
               }
             });
           });
@@ -137,11 +138,10 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
 
         case 'pdf-to-markdown': {
-          const pageTexts = await extractPDFPagesText(file);
-          const mdLines = [`# ${file.name.replace(/\.pdf$/i, '')}\n\n*Extracted via BrowserKit Local Engine*\n`];
-          pageTexts.forEach((pText, idx) => {
-            mdLines.push(`## Page ${idx + 1}\n`);
-            mdLines.push(pText);
+          const structuredPages = await extractPDFPagesStructuredText(file);
+          const mdLines: string[] = [];
+          structuredPages.forEach((p) => {
+            mdLines.push(p.text);
             mdLines.push('\n---\n');
           });
           const fullMd = mdLines.join('\n');
@@ -152,8 +152,8 @@ export const PdfSuiteTools: React.FC<PdfSuiteToolsProps> = ({ toolType, onDownlo
         }
 
         case 'pdf-ocr': {
-          const pageTexts = await extractPDFPagesText(file);
-          const ocrText = `OCR Text Extraction Output for "${file.name}":\n\n` + pageTexts.join('\n\n--- Page Break ---\n\n');
+          const structuredPages = await extractPDFPagesStructuredText(file);
+          const ocrText = structuredPages.map((p) => p.text).join('\n\n');
           setExtractedText(ocrText);
           outBlob = new Blob([ocrText], { type: 'text/plain' });
           outFileName = `${file.name.replace(/\.pdf$/i, '')}_ocr.txt`;

@@ -12,27 +12,113 @@ if (typeof window !== 'undefined' && pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version || '4.10.38'}/pdf.worker.min.mjs`;
 }
 
-export async function extractPDFPagesText(file: File): Promise<string[]> {
+export interface PDFStructuredPage {
+  pageIndex: number;
+  text: string;
+  paragraphs: string[];
+}
+
+/**
+ * Extracts structured text from PDF preserving line breaks, paragraph structure, and reading order.
+ */
+export async function extractPDFPagesStructuredText(file: File): Promise<PDFStructuredPage[]> {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     const pdfDoc = await loadingTask.promise;
-    const pageTexts: string[] = [];
+    const pages: PDFStructuredPage[] = [];
 
     for (let i = 1; i <= pdfDoc.numPages; i++) {
       const page = await pdfDoc.getPage(i);
       const textContent = await page.getTextContent();
-      const pageStr = textContent.items
-        .map((item: any) => item.str)
-        .join(' ')
-        .replace(/\s+/g, ' ');
-      pageTexts.push(pageStr.trim() || `[Page ${i} Image / Scanned Content]`);
+      const items = textContent.items as any[];
+
+      if (!items || items.length === 0) {
+        pages.push({ pageIndex: i, text: '', paragraphs: [] });
+        continue;
+      }
+
+      // Extract text items with X/Y positioning
+      const positionedItems: { x: number; y: number; str: string }[] = [];
+      items.forEach((item) => {
+        if (!item.str) return;
+        const transform = item.transform || [1, 0, 0, 1, 0, 0];
+        const x = transform[4];
+        const y = transform[5];
+        positionedItems.push({ x, y, str: item.str });
+      });
+
+      // Group items into horizontal lines (y within 3.5px threshold)
+      const lines: { y: number; text: string }[] = [];
+      // Sort vertically top-to-bottom (y descending)
+      positionedItems.sort((a, b) => b.y - a.y || a.x - b.x);
+
+      let currentLineItems: { x: number; str: string }[] = [];
+      let currentY: number | null = null;
+
+      positionedItems.forEach((item) => {
+        if (currentY === null || Math.abs(currentY - item.y) <= 3.5) {
+          if (currentY === null) currentY = item.y;
+          currentLineItems.push({ x: item.x, str: item.str });
+        } else {
+          // Flush current line
+          currentLineItems.sort((a, b) => a.x - b.x);
+          const lineStr = currentLineItems.map((ci) => ci.str).join(' ').replace(/\s+/g, ' ');
+          lines.push({ y: currentY, text: lineStr });
+
+          currentY = item.y;
+          currentLineItems = [{ x: item.x, str: item.str }];
+        }
+      });
+
+      if (currentLineItems.length > 0 && currentY !== null) {
+        currentLineItems.sort((a, b) => a.x - b.x);
+        const lineStr = currentLineItems.map((ci) => ci.str).join(' ').replace(/\s+/g, ' ');
+        lines.push({ y: currentY, text: lineStr });
+      }
+
+      // Group lines into paragraphs based on vertical spacing
+      const paragraphs: string[] = [];
+      let currentParaLines: string[] = [];
+      let lastY: number | null = null;
+
+      lines.forEach((line) => {
+        const trimmed = line.text.trim();
+        if (!trimmed) return;
+
+        if (lastY !== null && Math.abs(lastY - line.y) > 16) {
+          // Larger vertical gap signifies paragraph break
+          if (currentParaLines.length > 0) {
+            paragraphs.push(currentParaLines.join(' '));
+            currentParaLines = [];
+          }
+        }
+
+        currentParaLines.push(trimmed);
+        lastY = line.y;
+      });
+
+      if (currentParaLines.length > 0) {
+        paragraphs.push(currentParaLines.join(' '));
+      }
+
+      pages.push({
+        pageIndex: i,
+        text: paragraphs.join('\n\n'),
+        paragraphs,
+      });
     }
-    return pageTexts;
+
+    return pages;
   } catch (err) {
-    console.warn('PDFjs extraction fallback:', err);
-    return [`Content from ${file.name}`];
+    console.warn('PDFjs structured extraction fallback:', err);
+    return [{ pageIndex: 1, text: file.name, paragraphs: [file.name] }];
   }
+}
+
+export async function extractPDFPagesText(file: File): Promise<string[]> {
+  const structuredPages = await extractPDFPagesStructuredText(file);
+  return structuredPages.map((p) => p.text);
 }
 
 export async function renderPDFPagesToJPGs(file: File): Promise<{ blob: Blob; filename: string }[]> {
@@ -66,82 +152,89 @@ export async function renderPDFPagesToJPGs(file: File): Promise<{ blob: Blob; fi
   return results;
 }
 
-export async function createDocxFromPDFText(pageTexts: string[], documentTitle: string): Promise<Blob> {
-  const paragraphs: Paragraph[] = [
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: documentTitle.replace(/\.pdf$/i, ''),
-          bold: true,
-          size: 32,
-        }),
-      ],
-    }),
-  ];
+/**
+ * Creates a clean Word document (.docx) matching original document paragraph structures
+ * WITHOUT adding artificial title headers or Page 1 / Page 2 text.
+ */
+export async function createDocxFromPDFText(
+  inputData: string[] | PDFStructuredPage[],
+  _documentTitle?: string
+): Promise<Blob> {
+  const docParagraphs: Paragraph[] = [];
 
-  pageTexts.forEach((pageText, idx) => {
-    paragraphs.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Page ${idx + 1}`,
-            bold: true,
-            size: 24,
-            color: '1E293B',
-          }),
-        ],
-      })
-    );
+  // Determine if input is PDFStructuredPage array or string array
+  let structuredPages: { paragraphs: string[] }[] = [];
+  if (Array.isArray(inputData) && inputData.length > 0 && typeof inputData[0] === 'object') {
+    structuredPages = inputData as PDFStructuredPage[];
+  } else {
+    structuredPages = (inputData as string[]).map((pageText) => ({
+      paragraphs: pageText.split('\n\n').filter((p) => p.trim().length > 0),
+    }));
+  }
 
-    const sentences = pageText.split(/(?<=[.?!])\s+/);
-    sentences.forEach((sentence) => {
-      if (sentence.trim()) {
-        paragraphs.push(
-          new Paragraph({
-            children: [new TextRun({ text: sentence.trim(), size: 22 })],
-          })
-        );
-      }
+  structuredPages.forEach((page) => {
+    page.paragraphs.forEach((paraText) => {
+      if (!paraText.trim()) return;
+
+      docParagraphs.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: paraText.trim(),
+              size: 23, // ~11.5pt standard font
+              font: 'Calibri',
+            }),
+          ],
+          spacing: {
+            after: 140, // ~7pt space after paragraph
+            line: 276,  // 1.15 line spacing
+          },
+        })
+      );
     });
   });
 
   const doc = new Document({
-    sections: [{ children: paragraphs }],
+    sections: [{ children: docParagraphs }],
   });
 
   return await Packer.toBlob(doc);
 }
 
-export async function createPptxFromPDFText(pageTexts: string[], documentTitle: string): Promise<Blob> {
+/**
+ * Creates a PowerPoint presentation (.pptx) matching original document structure
+ * WITHOUT adding artificial slide titles or document header text.
+ */
+export async function createPptxFromPDFText(
+  inputData: string[] | PDFStructuredPage[],
+  documentTitle?: string
+): Promise<Blob> {
   const pres = new pptxgen();
-  pres.title = documentTitle;
+  if (documentTitle) pres.title = documentTitle;
 
-  pageTexts.forEach((pageText, idx) => {
+  let structuredPages: { paragraphs: string[] }[] = [];
+  if (Array.isArray(inputData) && inputData.length > 0 && typeof inputData[0] === 'object') {
+    structuredPages = inputData as PDFStructuredPage[];
+  } else {
+    structuredPages = (inputData as string[]).map((pageText) => ({
+      paragraphs: pageText.split('\n\n').filter((p) => p.trim().length > 0),
+    }));
+  }
+
+  structuredPages.forEach((page) => {
     const slide = pres.addSlide();
-    slide.addText(`${documentTitle.replace(/\.pdf$/i, '')} — Slide ${idx + 1}`, {
-      x: 0.5,
-      y: 0.4,
-      w: 9,
-      h: 0.6,
-      fontSize: 22,
-      bold: true,
-      color: '0F172A',
-    });
 
-    const lines = pageText
-      .split(/(?<=[.?!])\s+/)
-      .filter((l) => l.trim().length > 0)
-      .slice(0, 6);
-
-    const bulletItems = lines.map((l) => ({ text: l.trim() }));
-    slide.addText(bulletItems.length > 0 ? bulletItems : [{ text: pageText.substring(0, 200) }], {
-      x: 0.5,
-      y: 1.2,
-      w: 9,
-      h: 5.0,
+    const slideContent = page.paragraphs.join('\n\n');
+    slide.addText(slideContent || ' ', {
+      x: 0.8,
+      y: 0.8,
+      w: 8.4,
+      h: 5.8,
       fontSize: 14,
-      bullet: true,
-      color: '334155',
+      fontFace: 'Arial',
+      color: '1E293B',
+      align: 'left',
+      valign: 'top',
     });
   });
 
@@ -149,40 +242,66 @@ export async function createPptxFromPDFText(pageTexts: string[], documentTitle: 
   return blob as Blob;
 }
 
+/**
+ * Converts Word document (.docx) to PDF WITHOUT prepending artificial title header text.
+ */
 export async function convertWordToPdfBlob(file: File): Promise<Blob> {
   const arrayBuffer = await file.arrayBuffer();
   let extractedText = '';
 
   try {
     const result = await mammoth.extractRawText({ arrayBuffer });
-    extractedText = result.value || 'Extracted Document Content';
+    extractedText = result.value || '';
   } catch {
     extractedText = await file.text();
   }
 
   const pdfDoc = await PDFDocument.create();
-  const lines = extractedText.split('\n').filter((l) => l.trim().length > 0);
+  const rawParagraphs = extractedText.split('\n').filter((l) => l.trim().length > 0);
 
   let page = pdfDoc.addPage([595.28, 841.89]);
-  let y = 800;
+  let y = 790;
+  const margin = 50;
+  const maxLineWidth = 495; // 595 - 2*50
 
-  page.drawText(`Converted Document: ${file.name}`, { x: 50, y, size: 16, color: rgb(0.1, 0.1, 0.1) });
-  y -= 40;
+  for (const para of rawParagraphs) {
+    // Wrap paragraph text into lines fitting 495px width
+    const words = para.trim().split(' ');
+    let currentLine = '';
 
-  for (const line of lines) {
-    if (y < 50) {
-      page = pdfDoc.addPage([595.28, 841.89]);
-      y = 800;
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      // Approx font char width ~ 5.5px at size 10
+      if (testLine.length * 5.5 > maxLineWidth && currentLine.length > 0) {
+        if (y < 50) {
+          page = pdfDoc.addPage([595.28, 841.89]);
+          y = 790;
+        }
+        page.drawText(currentLine, { x: margin, y, size: 10, color: rgb(0.12, 0.16, 0.23) });
+        y -= 14;
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
     }
-    const cleanLine = line.substring(0, 85).replace(/[\r\n]/g, '');
-    page.drawText(cleanLine, { x: 50, y, size: 10, color: rgb(0.2, 0.2, 0.2) });
-    y -= 18;
+
+    if (currentLine) {
+      if (y < 50) {
+        page = pdfDoc.addPage([595.28, 841.89]);
+        y = 790;
+      }
+      page.drawText(currentLine, { x: margin, y, size: 10, color: rgb(0.12, 0.16, 0.23) });
+      y -= 18; // Paragraph spacing gap
+    }
   }
 
   const pdfBytes = await pdfDoc.save();
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
+/**
+ * Converts Excel spreadsheet (.xlsx) to PDF WITHOUT prepending artificial title header text.
+ */
 export async function convertExcelToPdfBlob(file: File): Promise<Blob> {
   const arrayBuffer = await file.arrayBuffer();
   const workbook = XLSX.read(arrayBuffer, { type: 'array' });
@@ -192,19 +311,18 @@ export async function convertExcelToPdfBlob(file: File): Promise<Blob> {
 
   const pdfDoc = await PDFDocument.create();
   let page = pdfDoc.addPage([595.28, 841.89]);
-  let y = 800;
+  let y = 790;
 
-  page.drawText(`Excel Spreadsheet: ${file.name} (${sheetName})`, { x: 50, y, size: 16, color: rgb(0.1, 0.1, 0.1) });
-  y -= 40;
-
-  for (const row of rows.slice(0, 45)) {
+  for (const row of rows) {
+    if (!row || row.length === 0) continue;
     if (y < 50) {
       page = pdfDoc.addPage([595.28, 841.89]);
-      y = 800;
+      y = 790;
     }
-    const rowStr = row.map((cell) => String(cell || '')).join(' | ');
-    const cleanStr = rowStr.substring(0, 90);
-    page.drawText(cleanStr, { x: 50, y, size: 9, color: rgb(0.2, 0.2, 0.2) });
+
+    const rowStr = row.map((cell) => String(cell ?? '')).join('   |   ');
+    const cleanStr = rowStr.substring(0, 100);
+    page.drawText(cleanStr, { x: 45, y, size: 9, color: rgb(0.12, 0.16, 0.23) });
     y -= 16;
   }
 
@@ -212,6 +330,9 @@ export async function convertExcelToPdfBlob(file: File): Promise<Blob> {
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
+/**
+ * Converts PowerPoint presentation (.pptx) to PDF WITHOUT prepending artificial title header text.
+ */
 export async function convertPptxToPdfBlob(file: File): Promise<Blob> {
   const arrayBuffer = await file.arrayBuffer();
   const zip = await JSZip.loadAsync(arrayBuffer);
@@ -220,22 +341,21 @@ export async function convertPptxToPdfBlob(file: File): Promise<Blob> {
   const pdfDoc = await PDFDocument.create();
 
   if (slideFiles.length === 0) {
-    const page = pdfDoc.addPage([595.28, 841.89]);
-    page.drawText(`Presentation Document: ${file.name}`, { x: 50, y: 780, size: 16 });
+    pdfDoc.addPage([841.89, 595.28]);
   } else {
     for (let idx = 0; idx < slideFiles.length; idx++) {
       const slideContent = await zip.files[slideFiles[idx]].async('text');
       const textMatches = slideContent.match(/<a:t[^>]*>([^<]+)<\/a:t>/g) || [];
       const textRuns = textMatches.map((m) => m.replace(/<[^>]+>/g, '')).filter((t) => t.trim());
 
-      const page = pdfDoc.addPage([841.89, 595.28]); // Landscape for slides
-      page.drawText(`Slide ${idx + 1} — ${file.name}`, { x: 40, y: 550, size: 18, color: rgb(0.1, 0.1, 0.1) });
+      const page = pdfDoc.addPage([841.89, 595.28]); // Landscape slide
+      let y = 540;
 
-      let y = 500;
-      for (const run of textRuns.slice(0, 15)) {
-        if (y < 60) break;
-        page.drawText(`• ${run.substring(0, 100)}`, { x: 50, y, size: 11, color: rgb(0.2, 0.2, 0.2) });
-        y -= 24;
+      for (const run of textRuns) {
+        if (y < 50) break;
+        const lineStr = run.trim().substring(0, 110);
+        page.drawText(lineStr, { x: 50, y, size: 12, color: rgb(0.12, 0.16, 0.23) });
+        y -= 22;
       }
     }
   }
