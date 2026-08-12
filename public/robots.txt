@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Disallow draft or internal dynamic preview routes if any
+Disallow: /*?*preview=
+
 Sitemap: https://browserkit.co.in/sitemap.xml
