@@ -19,31 +19,21 @@ import {
   Menu,
   X,
   Lock,
-  Unlock,
   Search,
   Sparkles,
-  Edit3,
   Image as ImageIcon,
   PenTool,
-  Stamp,
-  RotateCw,
   Layers,
-  FileCheck,
   Wand2,
-  Hash,
-  Eye,
-  ShieldAlert,
-  CheckCircle,
-  Languages,
-  FileCode,
-  UserCheck,
-  Calendar,
   Sliders,
+  Calendar,
+  UserCheck,
+  Unlock,
 } from 'lucide-react';
-import { ActivePage, ToolType } from '../types';
+import type { ActivePage, ToolType } from '../types';
 import { TOOL_METADATA } from '../lib/seoData';
 import { PROGRAMMATIC_ROUTES } from '../data/toolsData';
-import { isPublicTool, PUBLIC_PROGRAMMATIC_SLUGS } from '../lib/publicTools';
+import { isPublicTool } from '../lib/publicTools';
 
 interface NavbarProps {
   activePage: ActivePage;
@@ -67,212 +57,168 @@ export const Navbar: React.FC<NavbarProps> = ({
     {
       title: 'Image Suite',
       tools: [
-        { id: 'compressor' as ToolType, label: 'Image Compressor', icon: <Minimize2 className="w-4 h-4 text-emerald-600" /> },
-        { id: 'target-kb-compressor' as ToolType, label: 'Reduce KB Size', icon: <Minimize2 className="w-4 h-4 text-emerald-600" /> },
-        { id: 'passport-photo-maker' as ToolType, label: 'Passport Photo Maker', icon: <UserCheck className="w-4 h-4 text-emerald-600" /> },
-        { id: 'add-name-and-dob' as ToolType, label: 'Add Name & DOB', icon: <Calendar className="w-4 h-4 text-blue-600" /> },
-        { id: 'signature-resizer' as ToolType, label: 'Resize Signature', icon: <PenTool className="w-4 h-4 text-indigo-600" /> },
-        { id: 'image-dpi-converter' as ToolType, label: 'Convert DPI (300 DPI)', icon: <Sliders className="w-4 h-4 text-purple-600" /> },
-        { id: 'converter' as ToolType, label: 'Format Converter', icon: <RefreshCw className="w-4 h-4 text-emerald-600" /> },
-        { id: 'resizer' as ToolType, label: 'Resize & Crop', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
-        { id: 'circle-crop' as ToolType, label: 'Circle Crop', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
-        { id: 'merge-photo-signature' as ToolType, label: 'Merge Photo & Sign', icon: <Layers className="w-4 h-4 text-amber-600" /> },
-        { id: 'palette' as ToolType, label: 'Color Extractor', icon: <Palette className="w-4 h-4 text-emerald-600" /> },
-        { id: 'meme' as ToolType, label: 'Meme Generator', icon: <Smile className="w-4 h-4 text-emerald-600" /> },
+        { id: 'compressor' as ToolType, label: 'Image Compressor', icon: <Minimize2 className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'target-kb-compressor' as ToolType, label: 'Reduce KB Size', icon: <Minimize2 className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'passport-photo-maker' as ToolType, label: 'Passport Photo Maker', icon: <UserCheck className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'add-name-and-dob' as ToolType, label: 'Add Name & DOB', icon: <Calendar className="size-4 text-blue-600 dark:text-blue-400" /> },
+        { id: 'signature-resizer' as ToolType, label: 'Resize Signature', icon: <PenTool className="size-4 text-indigo-600 dark:text-indigo-400" /> },
+        { id: 'image-dpi-converter' as ToolType, label: 'Convert DPI (300 DPI)', icon: <Sliders className="size-4 text-purple-600 dark:text-purple-400" /> },
+        { id: 'converter' as ToolType, label: 'Format Converter', icon: <RefreshCw className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'resizer' as ToolType, label: 'Resize & Crop', icon: <Crop className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'circle-crop' as ToolType, label: 'Circle Crop', icon: <Crop className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'merge-photo-signature' as ToolType, label: 'Merge Photo & Sign', icon: <Layers className="size-4 text-amber-600 dark:text-amber-400" /> },
+        { id: 'palette' as ToolType, label: 'Color Extractor', icon: <Palette className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'meme' as ToolType, label: 'Meme Generator', icon: <Smile className="size-4 text-emerald-600 dark:text-emerald-400" /> },
       ],
     },
     {
       title: 'Video Tools',
       tools: [
-        { id: 'video-trimmer' as ToolType, label: 'Video Trimmer', icon: <Video className="w-4 h-4 text-blue-600" /> },
-        { id: 'aspect-ratio-resizer' as ToolType, label: 'Aspect Ratio 9:16', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
-        { id: 'video-to-audio' as ToolType, label: 'Video to MP3 Audio', icon: <Music className="w-4 h-4 text-purple-600" /> },
-        { id: 'audio-cutter' as ToolType, label: 'Audio Cutter / Ringtone', icon: <Scissors className="w-4 h-4 text-rose-600" /> },
-        { id: 'thumbnail-grabber' as ToolType, label: 'Thumbnail Grabber', icon: <ImageIcon className="w-4 h-4 text-amber-600" /> },
-        { id: 'social-video-downloader' as ToolType, label: 'Social Video Downloader', icon: <Video className="w-4 h-4 text-blue-600" /> },
-        { id: 'video-format-swapper' as ToolType, label: 'MOV to MP4 Swapper', icon: <RefreshCw className="w-4 h-4 text-indigo-600" /> },
-        { id: 'gif-maker' as ToolType, label: 'Video to Animated GIF', icon: <Sparkles className="w-4 h-4 text-amber-600" /> },
-        { id: 'video-to-gif' as ToolType, label: 'Frame Extractor', icon: <Film className="w-4 h-4 text-sky-600" /> },
+        { id: 'video-trimmer' as ToolType, label: 'Video Trimmer', icon: <Video className="size-4 text-blue-600 dark:text-blue-400" /> },
+        { id: 'aspect-ratio-resizer' as ToolType, label: 'Aspect Ratio 9:16', icon: <Crop className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'video-to-audio' as ToolType, label: 'Video to MP3 Audio', icon: <Music className="size-4 text-purple-600 dark:text-purple-400" /> },
+        { id: 'audio-cutter' as ToolType, label: 'Audio Cutter / Ringtone', icon: <Scissors className="size-4 text-rose-600 dark:text-rose-400" /> },
+        { id: 'thumbnail-grabber' as ToolType, label: 'Thumbnail Grabber', icon: <ImageIcon className="size-4 text-amber-600 dark:text-amber-400" /> },
+        { id: 'social-video-downloader' as ToolType, label: 'Social Video Downloader', icon: <Video className="size-4 text-blue-600 dark:text-blue-400" /> },
+        { id: 'video-format-swapper' as ToolType, label: 'MOV to MP4 Swapper', icon: <RefreshCw className="size-4 text-indigo-600 dark:text-indigo-400" /> },
+        { id: 'gif-maker' as ToolType, label: 'Video to Animated GIF', icon: <Sparkles className="size-4 text-amber-600 dark:text-amber-400" /> },
+        { id: 'video-to-gif' as ToolType, label: 'Frame Extractor', icon: <Film className="size-4 text-sky-600 dark:text-sky-400" /> },
       ],
     },
     {
       title: 'PDF Suite',
       tools: [
-        { id: 'pdf-merger' as ToolType, label: 'Merge PDF', icon: <FileText className="w-4 h-4 text-red-600" /> },
-        { id: 'pdf-splitter' as ToolType, label: 'Split PDF', icon: <Scissors className="w-4 h-4 text-red-600" /> },
-        { id: 'pdf-compressor' as ToolType, label: 'Compress PDF', icon: <Minimize2 className="w-4 h-4 text-emerald-600" /> },
-        { id: 'pdf-to-word' as ToolType, label: 'PDF to Word', icon: <FileText className="w-4 h-4 text-blue-600" /> },
-        { id: 'pdf-to-ppt' as ToolType, label: 'PDF to PowerPoint', icon: <FileText className="w-4 h-4 text-amber-600" /> },
-        { id: 'pdf-to-excel' as ToolType, label: 'PDF to Excel', icon: <FileText className="w-4 h-4 text-emerald-600" /> },
-        { id: 'word-to-pdf' as ToolType, label: 'Word to PDF', icon: <FilePlus className="w-4 h-4 text-blue-600" /> },
-        { id: 'pdf-editor' as ToolType, label: 'Edit PDF', icon: <Edit3 className="w-4 h-4 text-purple-600" /> },
-        { id: 'pdf-to-jpg' as ToolType, label: 'PDF to JPG', icon: <ImageIcon className="w-4 h-4 text-rose-600" /> },
-        { id: 'images-to-pdf' as ToolType, label: 'JPG to PDF', icon: <FilePlus className="w-4 h-4 text-red-600" /> },
-        { id: 'pdf-signer' as ToolType, label: 'Sign PDF', icon: <PenTool className="w-4 h-4 text-indigo-600" /> },
-        { id: 'pdf-watermark' as ToolType, label: 'Watermark PDF', icon: <Stamp className="w-4 h-4 text-rose-600" /> },
-        { id: 'pdf-rotator' as ToolType, label: 'Rotate PDF', icon: <RotateCw className="w-4 h-4 text-sky-600" /> },
-        { id: 'pdf-password-remover' as ToolType, label: 'Unlock PDF', icon: <Unlock className="w-4 h-4 text-rose-600" /> },
-        { id: 'pdf-protector' as ToolType, label: 'Protect PDF', icon: <Lock className="w-4 h-4 text-emerald-600" /> },
-        { id: 'pdf-organizer' as ToolType, label: 'Organize PDF', icon: <Layers className="w-4 h-4 text-indigo-600" /> },
-        { id: 'pdf-to-pdfa' as ToolType, label: 'PDF to PDF/A', icon: <FileCheck className="w-4 h-4 text-teal-600" /> },
-        { id: 'pdf-repair' as ToolType, label: 'Repair PDF', icon: <Wand2 className="w-4 h-4 text-amber-600" /> },
-        { id: 'pdf-page-numbers' as ToolType, label: 'Page Numbers', icon: <Hash className="w-4 h-4 text-blue-600" /> },
-        { id: 'pdf-ocr' as ToolType, label: 'OCR PDF', icon: <Search className="w-4 h-4 text-purple-600" /> },
-        { id: 'pdf-compare' as ToolType, label: 'Compare PDF', icon: <Eye className="w-4 h-4 text-indigo-600" /> },
-        { id: 'pdf-redact' as ToolType, label: 'Redact PDF', icon: <ShieldAlert className="w-4 h-4 text-rose-600" /> },
-        { id: 'pdf-cropper' as ToolType, label: 'Crop PDF', icon: <Crop className="w-4 h-4 text-emerald-600" /> },
-        { id: 'pdf-forms' as ToolType, label: 'PDF Forms', icon: <CheckCircle className="w-4 h-4 text-cyan-600" /> },
-        { id: 'pdf-to-markdown' as ToolType, label: 'PDF to Markdown', icon: <FileCode className="w-4 h-4 text-slate-800" /> },
+        { id: 'pdf-to-word' as ToolType, label: 'PDF to Word (.docx)', icon: <FileText className="size-4 text-rose-600 dark:text-rose-400" /> },
+        { id: 'pdf-to-ppt' as ToolType, label: 'PDF to PowerPoint (.pptx)', icon: <FileText className="size-4 text-amber-600 dark:text-amber-400" /> },
+        { id: 'word-to-pdf' as ToolType, label: 'Word to PDF', icon: <FileText className="size-4 text-rose-600 dark:text-rose-400" /> },
+        { id: 'excel-to-pdf' as ToolType, label: 'Excel to PDF', icon: <FileText className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'ppt-to-pdf' as ToolType, label: 'PowerPoint to PDF', icon: <FileText className="size-4 text-amber-600 dark:text-amber-400" /> },
+        { id: 'html-to-pdf' as ToolType, label: 'HTML to PDF', icon: <Code className="size-4 text-blue-600 dark:text-blue-400" /> },
+        { id: 'pdf-to-excel' as ToolType, label: 'PDF to Excel / CSV', icon: <FileText className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'pdf-to-markdown' as ToolType, label: 'PDF to Markdown', icon: <FileText className="size-4 text-indigo-600 dark:text-indigo-400" /> },
+        { id: 'pdf-ocr' as ToolType, label: 'PDF OCR Text Extractor', icon: <Wand2 className="size-4 text-purple-600 dark:text-purple-400" /> },
+        { id: 'pdf-compare' as ToolType, label: 'Compare 2 PDFs', icon: <FileText className="size-4 text-sky-600 dark:text-sky-400" /> },
+        { id: 'pdf-merger' as ToolType, label: 'Merge PDF Documents', icon: <FilePlus className="size-4 text-rose-600 dark:text-rose-400" /> },
+        { id: 'pdf-splitter' as ToolType, label: 'Split PDF Pages', icon: <Scissors className="size-4 text-rose-600 dark:text-rose-400" /> },
+        { id: 'images-to-pdf' as ToolType, label: 'Images to PDF', icon: <FileText className="size-4 text-rose-600 dark:text-rose-400" /> },
+        { id: 'pdf-password-remover' as ToolType, label: 'Remove PDF Password', icon: <Unlock className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'pdf-compressor' as ToolType, label: 'Compress PDF File', icon: <Minimize2 className="size-4 text-rose-600 dark:text-rose-400" /> },
       ],
     },
     {
-      title: 'Archives & Utility',
+      title: 'Archives & Vault',
       tools: [
-        { id: 'zip-archiver' as ToolType, label: 'ZIP Archiver', icon: <Archive className="w-4 h-4 text-amber-600" /> },
-        { id: 'zip-extractor' as ToolType, label: 'ZIP Extractor', icon: <FolderArchive className="w-4 h-4 text-amber-600" /> },
-        { id: 'zip-password-remover' as ToolType, label: 'Unlock ZIP', icon: <Unlock className="w-4 h-4 text-amber-600" /> },
-        { id: 'audio-tools' as ToolType, label: 'Audio Converter', icon: <Music className="w-4 h-4 text-purple-600" /> },
-        { id: 'svg-optimizer' as ToolType, label: 'SVG Optimizer', icon: <Code className="w-4 h-4 text-indigo-600" /> },
-        { id: 'file-encryptor' as ToolType, label: 'File Encryptor', icon: <Lock className="w-4 h-4 text-emerald-600" /> },
+        { id: 'zip-archiver' as ToolType, label: 'Zip Archiver', icon: <Archive className="size-4 text-indigo-600 dark:text-indigo-400" /> },
+        { id: 'zip-extractor' as ToolType, label: 'Zip Extractor', icon: <FolderArchive className="size-4 text-indigo-600 dark:text-indigo-400" /> },
+        { id: 'zip-password-remover' as ToolType, label: 'Unlock Zip File', icon: <Unlock className="size-4 text-emerald-600 dark:text-emerald-400" /> },
+        { id: 'file-encryptor' as ToolType, label: 'AES-256 File Encryptor', icon: <Lock className="size-4 text-indigo-600 dark:text-indigo-400" /> },
       ],
     },
   ];
 
-  // All searchable tool items
-  const allSearchableTools = [
-    ...Object.entries(TOOL_METADATA).filter(([key]) => isPublicTool(key as ToolType)).map(([key, meta]) => ({
-      id: key,
-      type: 'tool',
-      title: meta.title,
-      description: meta.metaDescription,
-      category: meta.category,
-      slug: '',
-      toolType: key as ActivePage,
-    })),
-    ...PROGRAMMATIC_ROUTES.filter((route) => PUBLIC_PROGRAMMATIC_SLUGS.has(route.slug)).map((route) => ({
-      id: route.slug,
-      type: 'route',
-      title: route.h1,
-      description: route.metaDescription,
-      category: route.toolCategory,
-      slug: route.slug,
-      toolType: route.toolType,
-    })),
-  ];
-
-  const filteredSearchResults = searchQuery.trim()
-    ? allSearchableTools.filter(
-        (tool) =>
-          tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const searchResults = searchQuery.trim()
+    ? PROGRAMMATIC_ROUTES.filter((r) =>
+        r.h1.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.metaDescription.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo */}
-        <button
-          onClick={() => {
-            if (onNavigateRoute) onNavigateRoute('');
-            setActivePage('home');
-          }}
-          className="flex items-center gap-2.5 group cursor-pointer"
-        >
-          <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-emerald-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
-            <Wrench className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col text-left">
-            <span className="font-mono font-bold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-              BrowserKit <span className="text-emerald-600 dark:text-emerald-400">Studio</span>
-              <span className="text-[10px] font-sans font-medium px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                PRO
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-colors">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        {/* Brand Logo & Title */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (onNavigateRoute) onNavigateRoute('');
+              setActivePage('home');
+            }}
+            className="flex items-center gap-2 text-left group cursor-pointer focus:outline-none"
+          >
+            <div className="p-2 rounded-2xl bg-slate-900 text-white dark:bg-emerald-600 dark:text-white shadow-xs group-hover:scale-105 transition-transform">
+              <Wrench className="size-5" />
+            </div>
+            <div>
+              <span className="font-extrabold text-lg text-slate-900 dark:text-white tracking-tight block leading-none">
+                Browser<span className="text-emerald-600 dark:text-emerald-400">Kit</span>
               </span>
-            </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 tracking-wider uppercase font-semibold">
-              100% Private Web Media Suite
-            </span>
-          </div>
-        </button>
+              <span className="text-[10px] font-mono font-semibold text-slate-500 dark:text-slate-400 block tracking-wider uppercase mt-0.5">
+                Studio PRO
+              </span>
+            </div>
+          </button>
+        </div>
 
-        {/* Search Bar Container */}
-        <div className="relative flex-1 max-w-md hidden md:block">
+        {/* Global Instant Search Bar */}
+        <div className="relative flex-1 max-w-md hidden sm:block">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            <Search className="size-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
+              placeholder="Search 30+ browser utilities (e.g. compress pdf, heic to jpg)..."
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setSearchOpen(true);
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchOpen(true)}
-              placeholder="Search 20+ private browser tools..."
-              className="w-full pl-9 pr-4 py-1.5 text-xs rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-emerald-500 transition-all placeholder:text-slate-500 dark:placeholder:text-slate-400 cursor-text"
+              className="w-full pl-9 pr-4 py-2 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
           </div>
 
-          {/* Search Dropdown */}
-          {searchOpen && searchQuery.trim() && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden z-50 max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredSearchResults.length > 0 ? (
-                filteredSearchResults.map((item) => (
-                  <button
-                    key={`${item.type}-${item.id}`}
-                    onClick={() => {
-                      if (item.slug && onNavigateRoute) {
-                        onNavigateRoute(item.slug);
-                      } else {
-                        if (onNavigateRoute) onNavigateRoute('');
-                        setActivePage(item.toolType);
-                      }
-                      setSearchQuery('');
-                      setSearchOpen(false);
-                    }}
-                    className="w-full px-4 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/80 flex items-start gap-3 transition-colors group cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
-                    <div>
-                      <div className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 flex items-center gap-2">
-                        {item.title}
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase font-mono font-normal">
-                          {item.category}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-1">
-                        {item.description}
-                      </div>
-                    </div>
-                  </button>
-                ))
-              ) : (
-                <div className="px-4 py-4 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  No matching tools found. Try searching for "unlock", "convert", or "compress".
-                </div>
-              )}
+          {/* Search Dropdown Results */}
+          {searchOpen && searchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 p-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl max-h-80 overflow-y-auto space-y-1 z-50 animate-fade-in">
+              <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 px-2 py-1">
+                Matching Tools ({searchResults.length})
+              </div>
+              {searchResults.map((res) => (
+                <button
+                  key={res.slug}
+                  onClick={() => {
+                    if (onNavigateRoute) onNavigateRoute(res.slug);
+                    setSearchOpen(false);
+                    setSearchQuery('');
+                  }}
+                  className="w-full text-left p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between gap-3 cursor-pointer"
+                >
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 dark:text-white">{res.h1}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-xs">{res.metaDescription}</div>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 shrink-0">
+                    /{res.slug}
+                  </span>
+                </button>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Desktop Navigation Category Dropdowns */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {categories.map((cat) => ({ ...cat, tools: cat.tools.filter((tool) => isPublicTool(tool.id)) })).map((cat) => (
+        {/* Desktop Navigation Category Links */}
+        <nav className="hidden md:flex items-center gap-1">
+          {categories.map((cat) => (
             <div
               key={cat.title}
-              className="relative py-2"
+              className="relative"
               onMouseEnter={() => setActiveDropdown(cat.title)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+              <button className="px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 cursor-pointer">
                 <span>{cat.title}</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+                <ChevronDown className="size-3.5 opacity-70" />
               </button>
 
+              {/* Dropdown Card */}
               {activeDropdown === cat.title && (
-                <div className="absolute top-full left-0 pt-0.5 w-56 z-50">
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl p-2 space-y-1 animate-fade-in">
-                    {cat.tools.map((tool) => (
+                <div className="absolute top-full left-0 mt-1 w-64 p-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-50 animate-fade-in">
+                  <div className="flex flex-col gap-1">
+                    {cat.tools.filter((t) => isPublicTool(t.id)).map((tool) => (
                       <button
                         key={tool.id}
                         onClick={() => {
@@ -287,7 +233,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }`}
                       >
                         {tool.icon}
-                        <span>{tool.label}</span>
+                        <span className="truncate">{tool.label}</span>
                       </button>
                     ))}
                   </div>
@@ -314,8 +260,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right Action Items */}
         <div className="flex items-center gap-2">
           {/* Privacy Indicator Badge */}
-          <div className="hidden lg:flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-            <Lock className="w-3 h-3 text-slate-900 dark:text-emerald-400" /> Zero Uploads
+          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-bold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 border border-slate-800 dark:border-slate-700 shadow-xs select-none whitespace-nowrap">
+            <Lock className="size-3.5 text-emerald-400 shrink-0" />
+            <span>Zero Uploads</span>
           </div>
 
           {/* Mobile Menu Button */}
@@ -324,16 +271,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95 cursor-pointer"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-3 animate-fade-in max-h-[80vh] overflow-y-auto">
+        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 flex flex-col gap-3 animate-fade-in max-h-[80vh] overflow-y-auto">
           {categories.map((cat) => ({ ...cat, tools: cat.tools.filter((tool) => isPublicTool(tool.id)) })).map((cat) => (
-            <div key={cat.title} className="space-y-1">
+            <div key={cat.title} className="flex flex-col gap-1">
               <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2">
                 {cat.title}
               </div>
@@ -352,13 +299,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   {tool.icon}
-                  <span>{tool.label}</span>
+                  <span className="truncate">{tool.label}</span>
                 </button>
               ))}
             </div>
           ))}
 
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-1">
             <button
               onClick={() => {
                 if (onNavigateRoute) onNavigateRoute('');
