@@ -253,8 +253,8 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         onDrop={handleDrop}
         className={`relative rounded-3xl border-2 border-dashed p-8 sm:p-12 text-center transition-all duration-200 flex flex-col items-center justify-center gap-6 shadow-xs ${
           isDragOver
-            ? 'border-slate-900 bg-slate-100 dark:border-emerald-400 dark:bg-slate-800 scale-[1.01]'
-            : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-700 bg-white dark:bg-slate-900/90'
+            ? 'border-slate-900 bg-white dark:border-emerald-400 dark:bg-slate-900 scale-[1.01]'
+            : 'border-slate-200 dark:border-slate-800/80 hover:border-slate-900 dark:hover:border-slate-700 bg-white dark:bg-slate-950'
         }`}
       >
         <input

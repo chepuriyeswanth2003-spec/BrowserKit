@@ -7,22 +7,22 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --color-brand-bg: #0b0f17;
-  --color-brand-surface: #131b2e;
-  --color-brand-border: #1e293b;
+  --color-brand-bg: #ffffff;
+  --color-brand-surface: #ffffff;
+  --color-brand-border: #e2e8f0;
   --color-brand-cyan: #06b6d4;
   --color-brand-emerald: #10b981;
 }
 
 @layer base {
   html {
-    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white;
+    @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white;
     font-family: 'Inter', system-ui, sans-serif;
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen antialiased tracking-normal;
+    @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen antialiased tracking-normal;
     font-family: 'Inter', system-ui, sans-serif;
   }
 
@@ -84,37 +84,28 @@
   }
 
   .btn-primary {
-    @apply px-6 py-3 rounded-2xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:shadow-emerald-500/15 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer;
+    @apply px-6 py-3 rounded-2xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-xs hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer;
   }
 
   .btn-secondary {
-    @apply px-5 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs uppercase tracking-wider border border-slate-200 dark:border-slate-700 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer;
+    @apply px-5 py-3 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-200 font-bold text-xs uppercase tracking-wider border border-slate-200 dark:border-slate-800 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer;
   }
 
   .btn-ghost {
-    @apply px-4 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-150 ease-out active:scale-95 flex items-center justify-center gap-2 cursor-pointer;
+    @apply px-4 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-150 ease-out active:scale-95 flex items-center justify-center gap-2 cursor-pointer;
   }
 
   .card-minimalist {
-    @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-shadow duration-300;
+    @apply bg-white dark:bg-slate-950 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-shadow duration-300;
   }
 }
 
 /* Custom Micro-Keyframe Animations */
 @keyframes subtle-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.03); }
-}
-
-@keyframes float-subtle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
+  50% { opacity: 0.85; transform: scale(1.02); }
 }
 
 .animate-subtle-pulse {
   animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-float-subtle {
-  animation: float-subtle 4s ease-in-out infinite;
 }

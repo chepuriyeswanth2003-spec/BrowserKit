@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, onNavigateRoute }
   const [sitemapModalOpen, setSitemapModalOpen] = useState(false);
 
   return (
-    <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-xs transition-colors mt-12">
+    <footer className="w-full border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 text-xs transition-colors mt-12">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
           {/* Column 1: Brand & Trust */}
