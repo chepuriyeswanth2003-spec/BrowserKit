@@ -33,7 +33,7 @@ describe('Image Utility Functions', () => {
   it('generates valid sitemap XML and robots.txt', () => {
     const sitemap = generateSitemapXML('https://browserkit.co.in');
     expect(sitemap).toContain('<?xml');
-    expect(sitemap).toContain('https://browserkit.co.in/compressor');
+    expect(sitemap).toContain('https://browserkit.co.in/image-tools');
 
     const robots = generateRobotsTxt('https://browserkit.co.in');
     expect(robots).toContain('User-agent: *');

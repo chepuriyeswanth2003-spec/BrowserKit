@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Dropzone } from '../Dropzone';
-import { PrivacyBadge } from '../PrivacyBadge';
-import { AdSlot } from '../AdSlot';
 import { TOOL_METADATA } from '../../lib/seoData';
 import {
   convertImageFormat,
@@ -23,6 +21,7 @@ import {
 } from 'lucide-react';
 import { trackEvent } from '../../lib/analyticsSentry';
 import { formatBytes } from '../../lib/imageCompressor';
+import { ToolPageShell } from './ToolPageShell';
 
 interface FormatConverterToolProps {
   onDownloadTrigger: (
@@ -49,60 +48,55 @@ interface ConvertItem {
   error?: string;
 }
 
-export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({
-  onDownloadTrigger,
-}) => {
+export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDownloadTrigger }) => {
   const meta = TOOL_METADATA.converter;
   const [items, setItems] = useState<ConvertItem[]>([]);
-  const [globalFormatMode, setGlobalFormatMode] = useState<GlobalFormatMode>('auto');
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [globalMode, setGlobalMode] = useState<GlobalFormatMode>('auto');
 
   const handleFilesSelected = async (files: File[]) => {
-    trackEvent('format_converter_files_uploaded', { count: files.length });
-    setIsProcessing(true);
+    trackEvent('converter_files_uploaded', { count: files.length });
 
-    const newItemsWithDetect = await Promise.all(
-      files.map(async (f) => {
-        const autoResult = await detectOptimalFormat(f);
-        const targetFmt =
-          globalFormatMode === 'auto' ? autoResult.targetFormat : globalFormatMode;
+    const newItems: ConvertItem[] = await Promise.all(
+      files.map(async (file) => {
+        const auto = await detectOptimalFormat(file);
+        let targetFormat: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif' = auto.targetFormat;
+
+        if (globalMode !== 'auto') {
+          targetFormat = globalMode;
+        }
 
         return {
           id: Math.random().toString(36).substring(2, 9),
-          file: f,
-          name: f.name,
-          size: f.size,
-          targetFormat: targetFmt,
-          autoDetection: autoResult,
+          file,
+          name: file.name,
+          size: file.size,
+          targetFormat,
+          autoDetection: auto,
           status: 'idle' as const,
         };
       })
     );
 
-    const allItems = [...items, ...newItemsWithDetect];
-    setItems(allItems);
-    processBatch(allItems, globalFormatMode);
+    const fullList = [...items, ...newItems];
+    setItems(fullList);
+    processAllItems(fullList, globalMode);
   };
 
-  const processBatch = async (list: ConvertItem[], mode: GlobalFormatMode) => {
-    setIsProcessing(true);
-
+  const processAllItems = async (list: ConvertItem[], mode: GlobalFormatMode) => {
     const updated = await Promise.all(
       list.map(async (item) => {
-        const targetFmt =
-          mode === 'auto'
-            ? item.autoDetection?.targetFormat || 'image/webp'
-            : mode;
+        let fmt = item.targetFormat;
+        if (mode !== 'auto') {
+          fmt = mode;
+        } else if (item.autoDetection) {
+          fmt = item.autoDetection.targetFormat;
+        }
 
         try {
-          const res = await convertImageFormat(item.file, {
-            targetFormat: targetFmt,
-            quality: 0.92,
-          });
-
+          const res = await convertImageFormat(item.file, { targetFormat: fmt });
           return {
             ...item,
-            targetFormat: targetFmt,
+            targetFormat: fmt,
             convertedBlob: res.blob,
             convertedUrl: res.url,
             outFilename: res.filename,
@@ -112,54 +106,43 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({
         } catch (err: any) {
           return {
             ...item,
-            targetFormat: targetFmt,
+            targetFormat: fmt,
             status: 'error' as const,
-            error: err.message || 'Conversion error',
+            error: err.message || 'Conversion failed',
           };
         }
       })
     );
 
     setItems(updated);
-    setIsProcessing(false);
   };
 
-  const handleGlobalFormatModeChange = (mode: GlobalFormatMode) => {
-    setGlobalFormatMode(mode);
-    if (items.length > 0) {
-      processBatch(items, mode);
-    }
+  const handleGlobalModeChange = (mode: GlobalFormatMode) => {
+    setGlobalMode(mode);
+    processAllItems(items, mode);
   };
 
-  const handleItemFormatChange = async (
-    itemId: string,
-    newFormat: 'image/jpeg' | 'image/png' | 'image/webp'
-  ) => {
-    const item = items.find((i) => i.id === itemId);
-    if (!item) return;
-
-    // Set converting state
+  const handleSingleFormatChange = async (id: string, newFmt: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif') => {
     setItems((prev) =>
-      prev.map((i) => (i.id === itemId ? { ...i, status: 'converting' } : i))
+      prev.map((i) => (i.id === id ? { ...i, targetFormat: newFmt, status: 'converting' as const } : i))
     );
 
-    try {
-      const res = await convertImageFormat(item.file, {
-        targetFormat: newFormat,
-        quality: 0.92,
-      });
+    const targetItem = items.find((i) => i.id === id);
+    if (!targetItem) return;
 
+    try {
+      const res = await convertImageFormat(targetItem.file, { targetFormat: newFmt });
       setItems((prev) =>
         prev.map((i) =>
-          i.id === itemId
+          i.id === id
             ? {
                 ...i,
-                targetFormat: newFormat,
+                targetFormat: newFmt,
                 convertedBlob: res.blob,
                 convertedUrl: res.url,
                 outFilename: res.filename,
                 outSize: res.blob.size,
-                status: 'done',
+                status: 'done' as const,
               }
             : i
         )
@@ -167,9 +150,7 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({
     } catch (err: any) {
       setItems((prev) =>
         prev.map((i) =>
-          i.id === itemId
-            ? { ...i, status: 'error', error: err.message || 'Conversion failed' }
-            : i
+          i.id === id ? { ...i, status: 'error' as const, error: err.message || 'Failed' } : i
         )
       );
     }
@@ -225,245 +206,186 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({
   };
 
   return (
-    <div className="w-full space-y-8 animate-fade-in">
-      <div className="text-center space-y-2 max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          {meta.title}
-        </h1>
-        <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
-          {meta.subtitle}
-        </p>
-      </div>
+    <ToolPageShell
+      categoryBadge="Image Suite"
+      categoryBadgeColor="emerald"
+      title={meta.title}
+      description={meta.subtitle}
+      icon={<RefreshCw className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />}
+    >
+      <div className="space-y-6">
+        <Dropzone
+          onFilesSelected={handleFilesSelected}
+          accept="image/*,.heic,.heif,.pdf,.svg"
+          title="Drop images, SVGs, or HEIC files to convert"
+          subtitle="Auto-detects optimal formats (HEIC → JPG, PNG → WebP) or batch convert manually."
+        />
 
-      <Dropzone
-        onFilesSelected={handleFilesSelected}
-        accept="image/*,.heic,.heif,.pdf,.svg"
-        title="Drop images, SVGs, or HEIC files to convert"
-        subtitle="Auto-detects optimal formats (HEIC → JPG, PNG → WebP) or batch convert manually."
-      />
-
-      {items.length > 0 && (
-        <div className="space-y-6">
-          {/* Controls Bar */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <RefreshCw className="w-5 h-5 text-emerald-600 shrink-0" />
-                <div>
-                  <h3 className="text-sm font-bold flex items-center gap-2">
-                    Target Output Format
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    Select a global mode or customize per file
-                  </p>
+        {items.length > 0 && (
+          <div className="space-y-6">
+            {/* Controls Bar */}
+            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <RefreshCw className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      Target Output Format
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Select a global mode or customize per file
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              {/* Format Switcher */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <button
-                  onClick={() => handleGlobalFormatModeChange('auto')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
-                    globalFormatMode === 'auto'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  Auto-Detect (Recommended)
-                </button>
-
-                <button
-                  onClick={() => handleGlobalFormatModeChange('image/jpeg')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                    globalFormatMode === 'image/jpeg'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  JPG
-                </button>
-
-                <button
-                  onClick={() => handleGlobalFormatModeChange('image/png')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                    globalFormatMode === 'image/png'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  PNG
-                </button>
-
-                <button
-                  onClick={() => handleGlobalFormatModeChange('image/webp')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                    globalFormatMode === 'image/webp'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  WebP
-                </button>
+                <div className="flex flex-wrap gap-1.5 w-full sm:w-auto">
+                  <button
+                    onClick={() => handleGlobalModeChange('auto')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      globalMode === 'auto'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    <Wand2 className="w-3.5 h-3.5" /> Smart Auto-Detect
+                  </button>
+                  <button
+                    onClick={() => handleGlobalModeChange('image/webp')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                      globalMode === 'image/webp'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    WEBP
+                  </button>
+                  <button
+                    onClick={() => handleGlobalModeChange('image/jpeg')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                      globalMode === 'image/jpeg'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    JPG
+                  </button>
+                  <button
+                    onClick={() => handleGlobalModeChange('image/png')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                      globalMode === 'image/png'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    PNG
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Auto-Detect Informational Banner */}
-            {globalFormatMode === 'auto' && (
-              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2.5">
-                <Wand2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            {/* Global Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-900 dark:text-emerald-300">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span>
-                  <strong>Smart Auto-Detect Active:</strong> Each file is analyzed based on mime type, original structure, and transparency to pair with its most efficient format.
+                  {items.filter((i) => i.status === 'done').length} of {items.length} files converted locally
                 </span>
               </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-              Files ({items.length})
-            </span>
-
-            <button
-              onClick={handleDownloadAllZip}
-              disabled={isProcessing}
-              className="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md flex items-center gap-2 transition-all disabled:opacity-50"
-            >
-              <Archive className="w-4 h-4" /> Download All as ZIP
-            </button>
-          </div>
-
-          {/* Item Cards List */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between gap-3"
+              <button
+                onClick={handleDownloadAllZip}
+                disabled={items.filter((i) => i.status === 'done').length === 0}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50 transition-all cursor-pointer"
               >
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
+                <Archive className="w-4 h-4" /> Download All as ZIP
+              </button>
+            </div>
+
+            {/* Converted Files List */}
+            <div className="space-y-3">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs"
+                >
+                  <div className="flex items-center gap-3 overflow-hidden w-full md:w-auto">
+                    {item.convertedUrl ? (
+                      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                        <img
+                          src={item.convertedUrl}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center font-mono text-xs text-slate-500 font-bold border border-slate-200 dark:border-slate-700">
+                        FILE
+                      </div>
+                    )}
+
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
-                        {item.name}
-                      </p>
-                      <p className="text-[11px] font-mono text-slate-500">
-                        Original: {formatBytes(item.size)}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-xs">
+                          {item.name}
+                        </h4>
+                        {item.autoDetection && globalMode === 'auto' && (
+                          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-mono font-bold">
+                            <Sparkles className="w-3 h-3" /> {item.autoDetection.reason}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                        <span>{formatBytes(item.size)}</span>
+                        {item.outSize && (
+                          <>
+                            <span>→</span>
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                              {formatBytes(item.outSize)}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between md:justify-end gap-3 w-full md:w-auto">
+                    {/* Per-item target format selector */}
+                    <select
+                      value={item.targetFormat}
+                      onChange={(e) =>
+                        handleSingleFormatChange(
+                          item.id,
+                          e.target.value as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
+                        )
+                      }
+                      className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white cursor-pointer"
+                    >
+                      <option value="image/webp">Convert to WEBP</option>
+                      <option value="image/jpeg">Convert to JPG</option>
+                      <option value="image/png">Convert to PNG</option>
+                    </select>
+
+                    <button
+                      onClick={() => handleDownloadSingle(item)}
+                      disabled={item.status !== 'done'}
+                      className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50 hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Download
+                    </button>
 
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="p-1 rounded text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                      title="Remove file"
+                      className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-
-                  {/* Auto-Detection Badge & Reason */}
-                  {item.autoDetection && (
-                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-[11px] space-y-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-amber-400" />
-                          Suggested: {item.autoDetection.badgeLabel}
-                        </span>
-                        {item.autoDetection.savingsEstimate && (
-                          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 font-bold">
-                            {item.autoDetection.savingsEstimate}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-slate-600 dark:text-slate-400 leading-snug">
-                        {item.autoDetection.reason}
-                      </p>
-                    </div>
-                  )}
                 </div>
-
-                {/* Status, Conversion Info & Actions */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    {/* Per-Item Format Selector */}
-                    <select
-                      value={item.targetFormat}
-                      onChange={(e) =>
-                        handleItemFormatChange(
-                          item.id,
-                          e.target.value as 'image/jpeg' | 'image/png' | 'image/webp'
-                        )
-                      }
-                      className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                    >
-                      <option value="image/jpeg">JPG</option>
-                      <option value="image/png">PNG</option>
-                      <option value="image/webp">WebP</option>
-                    </select>
-
-                    {item.status === 'converting' && (
-                      <span className="text-[11px] font-mono text-slate-500 flex items-center gap-1">
-                        <Loader2 className="w-3 h-3 animate-spin text-emerald-500" /> Converting...
-                      </span>
-                    )}
-
-                    {item.status === 'done' && item.outFilename && (
-                      <div className="flex items-center gap-1 text-[11px] font-mono text-slate-500">
-                        <ArrowRight className="w-3 h-3 text-slate-400" />
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 truncate max-w-[120px]">
-                          {item.outFilename}
-                        </span>
-                        {item.outSize && (
-                          <span className="text-slate-400">
-                            ({formatBytes(item.outSize)})
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {item.status === 'error' && (
-                      <span className="text-[11px] font-mono text-rose-500 font-bold">
-                        Failed
-                      </span>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => handleDownloadSingle(item)}
-                    disabled={item.status !== 'done'}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all disabled:opacity-40"
-                    title="Download converted file"
-                  >
-                    <Download className="w-3.5 h-3.5" /> Save
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <AdSlot type="below-tool" />
-
-      <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 space-y-4">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-          Frequently Asked Questions
-        </h3>
-        <div className="space-y-3">
-          {meta.faqs.map((faq, idx) => (
-            <div key={idx} className="space-y-1">
-              <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                {faq.question}
-              </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                {faq.answer}
-              </p>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
-
-      <PrivacyBadge />
-    </div>
+    </ToolPageShell>
   );
 };
-

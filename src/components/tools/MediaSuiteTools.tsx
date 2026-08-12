@@ -1,64 +1,21 @@
 import React, { useState, useRef } from 'react';
 import {
-  Upload,
-  Download,
   Video,
   Music,
+  Download,
   Film,
-  Scissors,
   Sparkles,
-  RefreshCw,
-  Image as ImageIcon,
   Link,
-  Layers,
-  Crop,
-  CheckCircle,
-  Play,
-  Pause,
+  Loader2,
   Sliders,
+  Play,
+  Volume2,
 } from 'lucide-react';
 import { ToolType } from '../../types';
 import { ProcessedFileItem } from '../PostDownloadAdModal';
 import { TOOL_METADATA } from '../../lib/seoData';
+import { Dropzone } from '../Dropzone';
 import { ToolPageShell } from './ToolPageShell';
-
-function audioBufferToWavBlob(audioBuffer: AudioBuffer): Blob {
-  const numOfChan = audioBuffer.numberOfChannels;
-  const length = audioBuffer.length * numOfChan * 2 + 44;
-  const buffer = new ArrayBuffer(length);
-  const view = new DataView(buffer);
-
-  const writeString = (offset: number, string: string) => {
-    for (let i = 0; i < string.length; i++) {
-      view.setUint8(offset + i, string.charCodeAt(i));
-    }
-  };
-
-  writeString(0, 'RIFF');
-  view.setUint32(4, 36 + audioBuffer.length * numOfChan * 2, true);
-  writeString(8, 'WAVE');
-  writeString(12, 'fmt ');
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true);
-  view.setUint16(22, numOfChan, true);
-  view.setUint32(24, audioBuffer.sampleRate, true);
-  view.setUint32(28, audioBuffer.sampleRate * numOfChan * 2, true);
-  view.setUint16(32, numOfChan * 2, true);
-  view.setUint16(34, 16, true);
-  writeString(36, 'data');
-  view.setUint32(40, audioBuffer.length * numOfChan * 2, true);
-
-  let offset = 44;
-  for (let i = 0; i < audioBuffer.length; i++) {
-    for (let channel = 0; channel < numOfChan; channel++) {
-      const sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(channel)[i]));
-      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-      offset += 2;
-    }
-  }
-
-  return new Blob([buffer], { type: 'audio/wav' });
-}
 
 interface MediaSuiteToolsProps {
   toolType: ToolType;
@@ -74,256 +31,198 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
   onDownloadTrigger,
 }) => {
   const meta = TOOL_METADATA[toolType] || {
-    title: 'Media & Video Tool',
-    subtitle: 'Process video and audio files in your browser.',
-    description: 'High-speed client-side media processor.',
+    title: 'Video & Media Suite Tool',
+    subtitle: 'Client-side high performance video & audio processing.',
+    description: '100% private in-browser video converter & extractor.',
   };
 
   const [file, setFile] = useState<File | null>(null);
   const [mediaUrl, setMediaUrl] = useState<string>('');
-  const [socialLink, setSocialLink] = useState<string>('');
   const [processing, setProcessing] = useState(false);
   const [resultUrl, setResultUrl] = useState<string>('');
-  const [resultSize, setResultSize] = useState<number>(0);
   const [resultFormat, setResultFormat] = useState<string>('video/mp4');
+
+  // Custom tool parameters
+  const [socialUrl, setSocialUrl] = useState('');
+  const [aspectRatio, setAspectRatio] = useState<'16:9' | '9:16' | '1:1'>('9:16');
+  const [audioFormat, setAudioFormat] = useState<'mp3' | 'wav'>('mp3');
+  const [gifFps, setGifFps] = useState<number>(10);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
 
-  // Tool Specific States
-  const [aspectRatio, setAspectRatio] = useState<'9:16' | '1:1' | '16:9'>('9:16');
-  const [audioFormat, setAudioFormat] = useState<'mp3' | 'wav'>('mp3');
-  const [startTime, setStartTime] = useState<number>(0);
-  const [endTime, setEndTime] = useState<number>(10);
-  const [duration, setDuration] = useState<number>(0);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selected = e.target.files[0];
-      setFile(selected);
-      setMediaUrl(URL.createObjectURL(selected));
-      setResultUrl('');
-    }
+  const handleFilesSelected = (files: File[]) => {
+    if (files.length === 0) return;
+    const selectedFile = files[0];
+    setFile(selectedFile);
+    setMediaUrl(URL.createObjectURL(selectedFile));
+    setResultUrl('');
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const selected = e.dataTransfer.files[0];
-      setFile(selected);
-      setMediaUrl(URL.createObjectURL(selected));
-      setResultUrl('');
-    }
-  };
-
-  const extractYoutubeId = (url: string) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
-
-  const handleSocialLinkGrabber = () => {
-    if (!socialLink) return;
-    setProcessing(true);
-
-    const ytId = extractYoutubeId(socialLink);
-    if (ytId) {
-      const maxResThumb = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
-      setThumbnailUrl(maxResThumb);
-      setResultUrl(maxResThumb);
-      setResultFormat('image/jpeg');
-    } else {
-      // Generic thumbnail placeholder for social links
-      const sampleThumb = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80';
-      setThumbnailUrl(sampleThumb);
-      setResultUrl(sampleThumb);
-      setResultFormat('image/jpeg');
-    }
-    setProcessing(false);
-  };
-
-  const processMedia = async () => {
+  const handleProcessMedia = async () => {
+    if (!file && !socialUrl) return;
     setProcessing(true);
 
     try {
-      if (toolType === 'thumbnail-grabber' || toolType === 'social-video-downloader' || toolType === 'social-audio-extractor') {
-        handleSocialLinkGrabber();
-        return;
-      }
+      if (file) {
+        if (toolType === 'video-to-audio') {
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const arrayBuffer = await file.arrayBuffer();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-      if (!file || !mediaUrl) {
-        throw new Error('Please select a video or audio file first.');
-      }
+          const duration = audioBuffer.duration;
+          const sampleRate = audioBuffer.sampleRate;
+          const numberOfChannels = audioBuffer.numberOfChannels;
 
-      if (toolType === 'video-to-audio') {
-        const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const response = await fetch(mediaUrl);
-        const arrayBuffer = await response.arrayBuffer();
-        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-        const wavBlob = audioBufferToWavBlob(audioBuffer);
+          const offlineCtx = new OfflineAudioContext(
+            numberOfChannels,
+            sampleRate * duration,
+            sampleRate
+          );
+          const source = offlineCtx.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(offlineCtx.destination);
+          source.start();
 
-        setResultUrl(URL.createObjectURL(wavBlob));
-        setResultSize(wavBlob.size);
-        setResultFormat('audio/wav');
-        setProcessing(false);
-        return;
-      }
+          const renderedBuffer = await offlineCtx.startRendering();
+          const wavBlob = bufferToWave(renderedBuffer, sampleRate * duration);
+          setResultUrl(URL.createObjectURL(wavBlob));
+          setResultFormat('audio/wav');
+        } else if (toolType === 'aspect-ratio-resizer') {
+          const videoEl = document.createElement('video');
+          videoEl.src = mediaUrl;
+          await new Promise((resolve) => (videoEl.onloadedmetadata = resolve));
 
-      if (toolType === 'aspect-ratio-resizer') {
-        const video = document.createElement('video');
-        video.crossOrigin = 'anonymous';
-        video.src = mediaUrl;
-        await new Promise((r) => (video.onloadeddata = r));
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        if (!ctx) throw new Error('Canvas unavailable');
-
-        if (aspectRatio === '9:16') {
-          canvas.width = 1080;
-          canvas.height = 1920;
-        } else if (aspectRatio === '1:1') {
-          canvas.width = 1080;
-          canvas.height = 1080;
-        } else {
-          canvas.width = 1920;
-          canvas.height = 1080;
-        }
-
-        // Fill blurred background
-        ctx.fillStyle = '#0F172A';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw centered video frame
-        const scale = Math.min(canvas.width / video.videoWidth, canvas.height / video.videoHeight);
-        const x = (canvas.width - video.videoWidth * scale) / 2;
-        const y = (canvas.height - video.videoHeight * scale) / 2;
-        ctx.drawImage(video, x, y, video.videoWidth * scale, video.videoHeight * scale);
-
-        canvas.toBlob((blob) => {
-          if (blob) {
-            setResultUrl(URL.createObjectURL(blob));
-            setResultSize(blob.size);
-            setResultFormat('image/jpeg');
+          const canvas = document.createElement('canvas');
+          if (aspectRatio === '9:16') {
+            canvas.width = 1080;
+            canvas.height = 1920;
+          } else if (aspectRatio === '1:1') {
+            canvas.width = 1080;
+            canvas.height = 1080;
+          } else {
+            canvas.width = 1920;
+            canvas.height = 1080;
           }
-          setProcessing(false);
-        }, 'image/jpeg', 0.95);
-        return;
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const scale = Math.min(canvas.width / videoEl.videoWidth, canvas.height / videoEl.videoHeight);
+            const x = (canvas.width - videoEl.videoWidth * scale) / 2;
+            const y = (canvas.height - videoEl.videoHeight * scale) / 2;
+            ctx.drawImage(videoEl, x, y, videoEl.videoWidth * scale, videoEl.videoHeight * scale);
+          }
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              setResultUrl(URL.createObjectURL(blob));
+              setResultFormat('image/jpeg');
+            }
+          }, 'image/jpeg', 0.95);
+        } else {
+          setResultUrl(mediaUrl);
+          setResultFormat(file.type || 'video/mp4');
+        }
       }
 
-      // Default fallback processing
-      setResultUrl(mediaUrl);
-      setResultSize(file.size);
       setProcessing(false);
     } catch (err: any) {
-      alert(err.message || 'Media processing failed.');
+      alert(err.message || 'Media processing error');
       setProcessing(false);
     }
+  };
+
+  const bufferToWave = (abuffer: AudioBuffer, len: number) => {
+    const numOfChan = abuffer.numberOfChannels;
+    const length = len * numOfChan * 2 + 44;
+    const buffer = new ArrayBuffer(length);
+    const view = new DataView(buffer);
+    const channels: Float32Array[] = [];
+    let sample = 0;
+    let offset = 0;
+    let pos = 0;
+
+    function setUint16(data: number) {
+      view.setUint16(pos, data, true);
+      pos += 2;
+    }
+
+    function setUint32(data: number) {
+      view.setUint32(pos, data, true);
+      pos += 4;
+    }
+
+    setUint32(0x46464952); // "RIFF"
+    setUint32(length - 8);
+    setUint32(0x45564157); // "WAVE"
+    setUint32(0x20746d66); // "fmt " chunk
+    setUint32(16);
+    setUint16(1); // PCM
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16);
+    setUint32(0x61746164); // "data" chunk
+    setUint32(length - pos - 4);
+
+    for (let i = 0; i < abuffer.numberOfChannels; i++) {
+      channels.push(abuffer.getChannelData(i));
+    }
+
+    while (offset < len) {
+      for (let i = 0; i < numOfChan; i++) {
+        sample = Math.max(-1, Math.min(1, channels[i][offset]));
+        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+        view.setInt16(pos, sample, true);
+        pos += 2;
+      }
+      offset++;
+    }
+
+    return new Blob([buffer], { type: 'audio/wav' });
   };
 
   const handleDownload = () => {
     if (!resultUrl) return;
-    const ext = resultFormat.includes('audio') ? (audioFormat === 'mp3' ? 'mp3' : 'wav') : resultFormat.includes('image') ? 'jpg' : 'mp4';
+    const ext = resultFormat.includes('audio') ? 'wav' : resultFormat.includes('image') ? 'jpg' : 'mp4';
+    const filename = `browserkit_${toolType}_${file?.name || 'media'}.${ext}`;
+
     const a = document.createElement('a');
     a.href = resultUrl;
-    a.download = `browserkit_${toolType}_export.${ext}`;
+    a.download = filename;
     a.click();
 
     if (onDownloadTrigger) {
-      onDownloadTrigger(`browserkit_${toolType}_export.${ext}`, 1);
+      onDownloadTrigger(filename, 1);
     }
   };
 
-  const isUrlTool =
-    toolType === 'thumbnail-grabber' ||
-    toolType === 'social-video-downloader' ||
-    toolType === 'social-audio-extractor' ||
-    toolType === 'social-batch-downloader';
-
   return (
     <ToolPageShell
-      categoryBadge="Media Suite"
+      categoryBadge="Video & Media"
       categoryBadgeColor="blue"
       title={meta.title}
       description={meta.subtitle}
-      icon={<Video className="w-6 h-6 text-blue-600" />}
+      icon={<Video className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
     >
-      {isUrlTool ? (
-          /* Link Input Dropzone */
-          <div className="space-y-4">
-            <label className="font-bold text-slate-800 text-sm block">
-              Paste Social Media Video or Post URL
-            </label>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <div className="relative flex-1 w-full">
-                <Link className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  value={socialLink}
-                  onChange={(e) => setSocialLink(e.target.value)}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900"
-                />
-              </div>
-              <button
-                onClick={handleSocialLinkGrabber}
-                disabled={processing || !socialLink}
-                className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-50"
-              >
-                {processing ? 'Extracting...' : 'Grab Media'}
-              </button>
-            </div>
-
-            {thumbnailUrl && (
-              <div className="p-4 bg-slate-50 rounded-2xl border space-y-3 text-center">
-                <span className="text-xs font-bold text-slate-700">Extracted Artwork / Thumbnail</span>
-                <img src={thumbnailUrl} alt="Thumbnail" className="max-h-64 object-contain mx-auto rounded-xl shadow-sm" />
-                <button
-                  onClick={handleDownload}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer"
-                >
-                  <Download className="w-4 h-4 inline mr-2" /> Download Cover Image (HD)
-                </button>
-              </div>
-            )}
-          </div>
-        ) : !mediaUrl ? (
-          /* File Upload Dropzone */
-          <label
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4 block relative"
-          >
-            <input
-              type="file"
-              accept="video/*,audio/*"
-              onChange={handleFileChange}
-              className="sr-only"
-            />
-            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto">
-              <Upload className="w-8 h-8" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-slate-900">
-                Click or drop Video / Audio file here to browse
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 font-mono">
-                Supports MP4, WebM, MOV, AVI, MP3, WAV (Max 500MB)
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md cursor-pointer">
-              Select Media File
-            </span>
-          </label>
+      <div className="space-y-6">
+        {!file && !socialUrl ? (
+          <Dropzone
+            onFilesSelected={handleFilesSelected}
+            accept="video/*,audio/*"
+            title="Drop Video or Audio file here"
+            subtitle="Supports MP4, WebM, MOV, AVI, MP3, WAV (100% Client-Side Execution)"
+            multiple={false}
+          />
         ) : (
-          /* Custom Controls & Render */
           <div className="space-y-6">
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
                 <div className="flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-blue-600" />
-                  <h3 className="text-sm font-bold text-slate-900">Tool Options</h3>
+                  <Sliders className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Tool Options</h3>
                 </div>
                 <button
                   onClick={() => {
@@ -331,7 +230,7 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
                     setMediaUrl('');
                     setResultUrl('');
                   }}
-                  className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
+                  className="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold cursor-pointer"
                 >
                   Change File
                 </button>
@@ -340,24 +239,26 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
               {/* Aspect Ratio Resizer Options */}
               {toolType === 'aspect-ratio-resizer' && (
                 <div className="space-y-2 text-xs">
-                  <label className="font-bold text-slate-700 block">Select Target Social Aspect Ratio</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                    Select Target Social Aspect Ratio
+                  </label>
                   <div className="flex flex-wrap gap-3">
                     <button
                       onClick={() => setAspectRatio('9:16')}
                       className={`px-4 py-2 rounded-xl font-bold border cursor-pointer ${
                         aspectRatio === '9:16'
-                          ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-white text-slate-700 border-slate-300'
+                          ? 'bg-slate-900 dark:bg-emerald-600 text-white border-transparent'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                       }`}
                     >
-                      📱 9:16 (TikTok / Reels / Shorts)
+                      📱 9:16 (TikTok & Instagram Shorts)
                     </button>
                     <button
                       onClick={() => setAspectRatio('1:1')}
                       className={`px-4 py-2 rounded-xl font-bold border cursor-pointer ${
                         aspectRatio === '1:1'
-                          ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-white text-slate-700 border-slate-300'
+                          ? 'bg-slate-900 dark:bg-emerald-600 text-white border-transparent'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                       }`}
                     >
                       📷 1:1 (Instagram Feed Square)
@@ -366,8 +267,8 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
                       onClick={() => setAspectRatio('16:9')}
                       className={`px-4 py-2 rounded-xl font-bold border cursor-pointer ${
                         aspectRatio === '16:9'
-                          ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-white text-slate-700 border-slate-300'
+                          ? 'bg-slate-900 dark:bg-emerald-600 text-white border-transparent'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                       }`}
                     >
                       🖥️ 16:9 (YouTube Landscape)
@@ -379,14 +280,16 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
               {/* Video to Audio Options */}
               {toolType === 'video-to-audio' && (
                 <div className="space-y-2 text-xs">
-                  <label className="font-bold text-slate-700 block">Output Audio Format & Quality</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                    Output Audio Format & Quality
+                  </label>
                   <div className="flex gap-3">
                     <button
                       onClick={() => setAudioFormat('mp3')}
                       className={`px-4 py-2 rounded-xl font-bold border cursor-pointer ${
                         audioFormat === 'mp3'
-                          ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-white text-slate-700 border-slate-300'
+                          ? 'bg-slate-900 dark:bg-emerald-600 text-white border-transparent'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                       }`}
                     >
                       🎵 MP3 (320 kbps High Quality)
@@ -395,29 +298,28 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
                       onClick={() => setAudioFormat('wav')}
                       className={`px-4 py-2 rounded-xl font-bold border cursor-pointer ${
                         audioFormat === 'wav'
-                          ? 'bg-slate-900 text-white border-slate-900'
-                          : 'bg-white text-slate-700 border-slate-300'
+                          ? 'bg-slate-900 dark:bg-emerald-600 text-white border-transparent'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                       }`}
                     >
-                      🎼 WAV (Uncompressed Lossless)
+                      🎼 WAV (Lossless Uncompressed)
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Process Action */}
               <button
-                onClick={processMedia}
+                onClick={handleProcessMedia}
                 disabled={processing}
-                className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-3 rounded-xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
               >
                 {processing ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" /> Processing Media...
+                    <Loader2 className="w-4 h-4 animate-spin" /> Processing Media...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" /> Export Processed Media
+                    <Sparkles className="w-4 h-4 text-emerald-400 dark:text-white" /> Export Processed Media
                   </>
                 )}
               </button>
@@ -425,8 +327,10 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
 
             {/* Result Preview & Download */}
             {resultUrl && (
-              <div className="p-5 bg-slate-50 border rounded-2xl space-y-4 text-center">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">Export Ready</span>
+              <div className="p-5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-4 text-center">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider block">
+                  Export Ready
+                </span>
                 {resultFormat.includes('video') ? (
                   <video src={resultUrl} controls className="max-h-64 mx-auto rounded-xl shadow-sm" />
                 ) : resultFormat.includes('image') ? (
@@ -437,14 +341,15 @@ export const MediaSuiteTools: React.FC<MediaSuiteToolsProps> = ({
 
                 <button
                   onClick={handleDownload}
-                  className="px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
+                  className="px-6 py-3 rounded-xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white text-xs font-bold shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
                 >
-                  <Download className="w-4 h-4 text-emerald-400" /> Download Exported File
+                  <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Download Exported File
                 </button>
               </div>
             )}
           </div>
         )}
+      </div>
     </ToolPageShell>
   );
 };
