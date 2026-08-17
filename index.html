@@ -18,9 +18,8 @@
     <script>
       (function() {
         try {
-          var saved = localStorage.getItem('browserkit_theme') || localStorage.getItem('mediacraft_theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var isDark = saved ? saved === 'dark' : prefersDark;
+          var saved = localStorage.getItem('browserkit_theme');
+          var isDark = saved === 'dark';
           if (isDark) {
             document.documentElement.classList.add('dark');
             document.documentElement.style.colorScheme = 'dark';

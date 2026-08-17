@@ -3,9 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
+import { reticle } from '@reticlehq/vite-plugin';
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [reticle(),react(), tailwindcss()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
