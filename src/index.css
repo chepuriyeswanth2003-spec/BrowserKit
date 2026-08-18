@@ -34,16 +34,16 @@
 @layer base {
   html {
     @apply text-[#2d2d2d] dark:text-[#f3ede2] selection:bg-[#ff4d4d] selection:text-white;
-    background-color: #fdfbf7;
+    background-color: #ffffff;
     font-family: 'Patrick Hand', cursive, system-ui, sans-serif;
     scroll-behavior: smooth;
-    background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
   html.dark {
-    background-color: #262220;
-    background-image: radial-gradient(#3a352f 1px, transparent 1px);
+    background-color: #18181b;
+    background-image: radial-gradient(#27272a 1px, transparent 1px);
     background-size: 24px 24px;
   }
 

@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     : [];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b-[3px] border-[#2d2d2d] dark:border-[#f3ede2] bg-[#fdfbf7] dark:bg-[#262220] transition-colors">
+    <header className="sticky top-0 z-40 w-full border-b-[3px] border-[#2d2d2d] dark:border-[#f3ede2] bg-white dark:bg-[#18181b] transition-colors shadow-sm">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo & Title */}
         <div className="flex items-center gap-3">
@@ -152,14 +152,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Global Instant Search Bar */}
         <div className="relative flex-1 max-w-md hidden sm:block">
           <div className="relative">
-            <Search className="size-4 text-[#2d2d2d]/50 dark:text-[#f3ede2]/50 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="size-4 text-[#2d2d2d]/70 dark:text-[#f3ede2]/70 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search 30+ browser utilities (e.g. compress pdf, heic to jpg)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchOpen(true)}
-              className="w-full pl-9 pr-4 py-2 wobbly-pill bg-white dark:bg-[#2d2822] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-xs text-[#2d2d2d] dark:text-[#f3ede2] placeholder-[#2d2d2d]/40 dark:placeholder-[#f3ede2]/40 focus:outline-none focus:border-[#2d5da1] transition-all font-medium"
+              className="w-full pl-9 pr-4 py-2 wobbly-pill bg-[#fafafa] dark:bg-[#27272a] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-xs text-[#2d2d2d] dark:text-[#f3ede2] placeholder-[#2d2d2d]/60 dark:placeholder-[#f3ede2]/60 focus:outline-none focus:border-[#2d5da1] transition-all font-medium"
             />
             {searchQuery && (
               <button
@@ -173,7 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Search Dropdown Results */}
           {searchOpen && searchResults.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 p-2 wobbly-md bg-white dark:bg-[#2d2822] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand max-h-80 overflow-y-auto space-y-1 z-50 animate-fade-in">
+            <div className="absolute top-full left-0 right-0 mt-2 p-2 wobbly-md bg-white dark:bg-[#27272a] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand max-h-80 overflow-y-auto space-y-1 z-50 animate-fade-in">
               <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#2d2d2d]/70 dark:text-[#f3ede2]/60 px-2 py-1">
                 Matching Tools ({searchResults.length})
               </div>
@@ -185,13 +185,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setSearchOpen(false);
                     setSearchQuery('');
                   }}
-                  className="w-full text-left p-2.5 wobbly-sm hover:bg-[#fff9c4] dark:hover:bg-[#3a352f] transition-colors flex items-center justify-between gap-3 cursor-pointer"
+                  className="w-full text-left p-2.5 wobbly-sm hover:bg-[#fff9c4] dark:hover:bg-[#3f3f46] transition-colors flex items-center justify-between gap-3 cursor-pointer"
                 >
                   <div>
                     <div className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]">{res.h1}</div>
                     <div className="text-[11px] text-[#2d2d2d]/70 dark:text-[#f3ede2]/60 truncate max-w-xs">{res.metaDescription}</div>
                   </div>
-                  <span className="text-[10px] font-mono text-[#2d5da1] bg-[#e5e0d8] dark:bg-[#3a352f] px-2 py-0.5 wobbly-pill border-[1px] border-[2px] border-[#2d2d2d]/30 dark:border-[#f3ede2]/30 shrink-0">
+                  <span className="text-[10px] font-mono text-[#2d5da1] dark:text-[#60a5fa] bg-[#f4f4f5] dark:bg-[#3f3f46] px-2 py-0.5 wobbly-pill border-[2px] border-[#2d2d2d]/30 dark:border-[#f3ede2]/30 shrink-0 font-bold">
                     /{res.slug}
                   </span>
                 </button>
@@ -209,14 +209,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               onMouseEnter={() => setActiveDropdown(cat.title)}
               onMouseLeave={() => setActiveDropdown(null)}
             >
-              <button className="px-3 py-2 wobbly-sm text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#fff9c4] dark:hover:bg-[#3a352f] transition-colors flex items-center gap-1 cursor-pointer">
+              <button className="px-3 py-2 wobbly-sm text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#f4f4f5] dark:hover:bg-[#27272a] transition-colors flex items-center gap-1 cursor-pointer">
                 <span>{cat.title}</span>
                 <ChevronDown className="size-3.5 opacity-70" />
               </button>
 
               {/* Dropdown Card */}
               {activeDropdown === cat.title && (
-                <div className="absolute top-full left-0 mt-1 w-64 p-2 wobbly-md bg-white dark:bg-[#2d2822] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand z-50 animate-fade-in">
+                <div className="absolute top-full left-0 mt-1 w-64 p-2 wobbly-md bg-white dark:bg-[#27272a] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand z-50 animate-fade-in">
                   <div className="flex flex-col gap-1">
                     {cat.tools.filter((t) => isPublicTool(t.id)).map((tool) => (
                       <button
@@ -229,7 +229,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         className={`w-full flex items-center gap-2.5 px-3 py-2 wobbly-sm text-xs font-medium transition-colors cursor-pointer ${
                           activePage === tool.id
                             ? 'bg-[#ff4d4d] text-white font-bold border-[2px] border-[#2d2d2d] dark:border-[#f3ede2]'
-                            : 'text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#fff9c4] dark:hover:bg-[#3a352f]'
+                            : 'text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#fff9c4] dark:hover:bg-[#3f3f46]'
                         }`}
                       >
                         {tool.icon}
@@ -250,7 +250,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`px-3 py-2 wobbly-sm text-xs font-medium transition-colors cursor-pointer ${
               activePage === 'guides'
                 ? 'bg-[#ff4d4d] text-white font-bold border-[2px] border-[#2d2d2d] dark:border-[#f3ede2]'
-                : 'text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#fff9c4] dark:hover:bg-[#3a352f]'
+                : 'text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#f4f4f5] dark:hover:bg-[#27272a]'
             }`}
           >
             Guides
@@ -260,8 +260,8 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right Action Items */}
         <div className="flex items-center gap-2">
           {/* Privacy Indicator Badge */}
-          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 wobbly-pill text-xs font-mono font-bold bg-[#2d2d2d] text-[#fdfbf7] dark:bg-[#f3ede2] dark:text-[#f3ede2] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm select-none whitespace-nowrap">
-            <Lock className="size-3.5 text-[#ff4d4d] shrink-0" />
+          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 wobbly-pill text-xs font-mono font-bold bg-[#ff4d4d] text-white border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm select-none whitespace-nowrap">
+            <Lock className="size-3.5 text-white shrink-0" />
             <span>Zero Uploads</span>
           </div>
 

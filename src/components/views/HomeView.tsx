@@ -130,10 +130,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'PDF Tools Suite',
       subtitle: 'Merge, split and create PDFs privately',
       count: allTools.filter((t) => t.category === 'pdf').length,
-      icon: <FileText className="w-5 h-5 text-[#ff4d4d] group-hover:text-white transition-colors" />,
-      iconBox: 'bg-[#ff4d4d] border border-[#ff4d4d]/80 group-hover:bg-white/10 group-hover:border-white/20',
-      badgeBg: 'bg-[#ff4d4d]/60 text-[#ff4d4d] border border-[#ff4d4d]/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
-      btnBg: 'bg-[#2d2d2d] text-white group-hover:bg-white group-hover:text-[#2d2d2d]',
+      icon: <FileText className="w-5 h-5 text-white" />,
+      iconBox: 'bg-[#ff4d4d] border-[2px] border-[#2d2d2d]',
+      badgeBg: 'bg-[#ff4d4d] text-white border-[2px] border-[#2d2d2d]',
+      btnBg: 'bg-[#ff4d4d] text-white group-hover:bg-white group-hover:text-[#2d2d2d] border-[2px] border-[#2d2d2d]',
       btnText: 'Open PDF Tools →',
     },
     {
@@ -141,10 +141,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'Image Tools Suite',
       subtitle: 'Compress KB, Passports & HEIC to JPG',
       count: allTools.filter((t) => t.category === 'image').length,
-      icon: <Crop className="w-5 h-5 text-[#2f7a4f] group-hover:text-white transition-colors" />,
-      iconBox: 'bg-[#2f7a4f] border border-[#2f7a4f]/80 group-hover:bg-white/10 group-hover:border-white/20',
-      badgeBg: 'bg-[#2f7a4f]/60 text-[#2f7a4f] border border-[#2f7a4f]/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
-      btnBg: 'bg-[#2d2d2d] text-white group-hover:bg-white group-hover:text-[#2d2d2d]',
+      icon: <Crop className="w-5 h-5 text-white" />,
+      iconBox: 'bg-[#2f7a4f] border-[2px] border-[#2d2d2d]',
+      badgeBg: 'bg-[#2f7a4f] text-white border-[2px] border-[#2d2d2d]',
+      btnBg: 'bg-[#2f7a4f] text-white group-hover:bg-white group-hover:text-[#2d2d2d] border-[2px] border-[#2d2d2d]',
       btnText: 'Open Image Tools →',
     },
     {
@@ -152,10 +152,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'Video & Audio Suite',
       subtitle: 'Extract video frames and WAV audio',
       count: allTools.filter((t) => t.category === 'video' || t.category === 'audio').length,
-      icon: <Video className="w-5 h-5 text-[#2d5da1] group-hover:text-white transition-colors" />,
-      iconBox: 'bg-[#2d5da1] border border-[#2d5da1]/80 group-hover:bg-white/10 group-hover:border-white/20',
-      badgeBg: 'bg-[#2d5da1]/60 text-[#2d5da1] border border-[#2d5da1]/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
-      btnBg: 'bg-[#2d2d2d] text-white group-hover:bg-white group-hover:text-[#2d2d2d]',
+      icon: <Video className="w-5 h-5 text-white" />,
+      iconBox: 'bg-[#2d5da1] border-[2px] border-[#2d2d2d]',
+      badgeBg: 'bg-[#2d5da1] text-white border-[2px] border-[#2d2d2d]',
+      btnBg: 'bg-[#2d5da1] text-white group-hover:bg-white group-hover:text-[#2d2d2d] border-[2px] border-[#2d2d2d]',
       btnText: 'Open Media Tools →',
     },
     {
@@ -163,10 +163,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       title: 'Archive & Vault Suite',
       subtitle: 'ZIP Archiver, Unlock ZIP & AES Vault',
       count: allTools.filter((t) => t.category === 'zip').length,
-      icon: <Archive className="w-5 h-5 text-[#b8860b] group-hover:text-white transition-colors" />,
-      iconBox: 'bg-[#b8860b] border border-[#b8860b]/80 group-hover:bg-white/10 group-hover:border-white/20',
-      badgeBg: 'bg-[#b8860b]/60 text-[#b8860b] border border-[#b8860b]/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30',
-      btnBg: 'bg-[#2d2d2d] text-white group-hover:bg-white group-hover:text-[#2d2d2d]',
+      icon: <Archive className="w-5 h-5 text-white" />,
+      iconBox: 'bg-[#d97706] border-[2px] border-[#2d2d2d]',
+      badgeBg: 'bg-[#d97706] text-white border-[2px] border-[#2d2d2d]',
+      btnBg: 'bg-[#d97706] text-white group-hover:bg-white group-hover:text-[#2d2d2d] border-[2px] border-[#2d2d2d]',
       btnText: 'Open Vault Tools →',
     },
   ];
@@ -174,20 +174,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
   return (
     <div className="space-y-6">
       {/* Hero & Horizontal 4-Column Tool Suite Selection Grid */}
-      <section className="bg-white dark:bg-[#332e29] p-6 sm:p-7 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-5">
+      <section className="bg-white dark:bg-[#27272a] p-6 sm:p-7 wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm space-y-5">
         {/* Title Header */}
-        <div className="space-y-2 border-b border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] pb-4">
+        <div className="space-y-2 border-b border-[#2d2d2d]/20 dark:border-[#f3ede2]/30 pb-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 px-3 py-1 wobbly-pill bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.92] dark:text-[#f3ede2]/[0.55] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-mono font-bold">
+            <span className="inline-flex items-center gap-2 px-3 py-1 wobbly-pill bg-[#f4f4f5] dark:bg-[#3f3f46] text-[#2d2d2d] dark:text-[#f3ede2] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-xs font-mono font-bold">
               <span className="w-2 h-2 wobbly-pill bg-[#2f7a4f] animate-pulse" />
               SELECTABLE CATEGORY SUITES BELOW
             </span>
-            <span className="text-xs font-mono text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] font-semibold">100% Private Local Browser Studio</span>
+            <span className="text-xs font-mono text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 font-bold">100% Private Local Browser Studio</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#2d2d2d] dark:text-white tracking-tight">
-            BrowserKit <span className="text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55]">Studio</span>. Select Tool Suite Below.
+            BrowserKit <span className="text-[#ff4d4d]">Studio</span>. Select Tool Suite Below.
           </h1>
-          <p className="text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] text-xs sm:text-sm leading-relaxed font-medium">
+          <p className="text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 text-xs sm:text-sm leading-relaxed font-medium">
             Click any suite button below to open its full workspace. Zero cloud uploads.
           </p>
         </div>
@@ -198,14 +198,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
             <button
               key={suite.id}
               onClick={() => setActivePage(suite.id)}
-              className="group p-5 wobbly-md bg-[#fdfbf7]/80 dark:bg-[#332e29]/80 hover:bg-[#2d2d2d] dark:hover:bg-[#262220] text-[#2d2d2d] dark:text-white hover:text-white border border-[2px] border-[#2d2d2d]/[0.3]/90 dark:border-[#f3ede2] hover:border-[#2d2d2d] transition-all duration-200 cursor-pointer shadow-hand-sm hover:shadow-hand-lg hover:-translate-y-0.5 text-left flex flex-col justify-between space-y-4"
+              className="group p-5 wobbly-md bg-[#fafafa] dark:bg-[#3f3f46] hover:bg-[#2d2d2d] dark:hover:bg-[#18181b] text-[#2d2d2d] dark:text-white hover:text-white border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] hover:border-[#2d2d2d] transition-all duration-200 cursor-pointer shadow-hand-sm hover:shadow-hand-lg hover:-translate-y-0.5 text-left flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className={`p-2.5 wobbly-sm ${suite.iconBox} transition-colors shadow-hand-sm`}>
+                  <div className={`p-2.5 wobbly-sm ${suite.iconBox} shadow-hand-sm`}>
                     {suite.icon}
                   </div>
-                  <span className={`px-2.5 py-0.5 wobbly-pill text-[10px] font-mono font-bold ${suite.badgeBg} transition-colors`}>
+                  <span className={`px-2.5 py-0.5 wobbly-pill text-[10px] font-mono font-bold ${suite.badgeBg}`}>
                     {suite.count} Tools
                   </span>
                 </div>
@@ -214,14 +214,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
                   <h2 className="text-base font-extrabold text-[#2d2d2d] dark:text-white group-hover:text-white transition-colors">
                     {suite.title}
                   </h2>
-                  <p className="text-xs text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] group-hover:text-[#2d2d2d]/[0.7] mt-1 line-clamp-2 leading-relaxed font-medium transition-colors">
+                  <p className="text-xs text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 group-hover:text-white/90 mt-1 line-clamp-2 leading-relaxed font-medium transition-colors">
                     {suite.subtitle}
                   </p>
                 </div>
               </div>
 
               {/* High-Contrast Interactive CTA Button */}
-              <div className={`w-full py-2.5 px-3 wobbly-sm ${suite.btnBg} text-xs font-extrabold text-center shadow-hand-sm flex items-center justify-center gap-1.5 transition-all group-hover:shadow-hand`}>
+              <div className={`w-full py-2.5 px-3 wobbly-sm ${suite.btnBg} text-xs font-extrabold text-center shadow-hand-sm flex items-center justify-center gap-1.5 transition-all`}>
                 <span>{suite.btnText}</span>
               </div>
             </button>
@@ -233,13 +233,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       <AdSlot type="in-flow" />
 
       {/* Most Used Tools Grid */}
-      <section className="space-y-4 bg-white dark:bg-[#332e29] p-6 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm">
+      <section className="space-y-4 bg-white dark:bg-[#27272a] p-6 wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-[#b8860b] fill-amber-500" />
+            <Star className="w-5 h-5 text-[#d97706] fill-amber-500" />
             <h2 className="text-lg font-bold text-[#2d2d2d] dark:text-white">Most Used Tools</h2>
           </div>
-          <span className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] font-medium">Quick 1-click access to top tools</span>
+          <span className="text-xs text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 font-bold">Quick 1-click access to top tools</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -247,14 +247,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
             <div
               key={tool.id}
               onClick={() => setActivePage(tool.id)}
-              className="group p-5 bg-[#fdfbf7] dark:bg-[#332e29] hover:bg-[#2d2d2d] dark:hover:bg-[#262220] text-[#2d2d2d] dark:text-white hover:text-white wobbly-md border border-[2px] border-[#2d2d2d]/[0.3]/80 dark:border-[#f3ede2] hover:border-[#2d2d2d] transition-all cursor-pointer flex flex-col justify-between"
+              className="group p-5 bg-[#fafafa] dark:bg-[#3f3f46] hover:bg-[#2d2d2d] dark:hover:bg-[#18181b] text-[#2d2d2d] dark:text-white hover:text-white wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] hover:border-[#2d2d2d] transition-all cursor-pointer flex flex-col justify-between shadow-hand-sm hover:shadow-hand"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="p-2.5 wobbly-sm bg-white dark:bg-[#332e29] group-hover:bg-[#2d2d2d] transition-colors shadow-hand-sm">
+                  <div className="p-2.5 wobbly-sm bg-white dark:bg-[#27272a] group-hover:bg-[#ff4d4d] transition-colors shadow-hand-sm border-[2px] border-[#2d2d2d] dark:border-[#f3ede2]">
                     {toolIcons[tool.id]}
                   </div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 wobbly-pill bg-white dark:bg-[#332e29] group-hover:bg-[#2d2d2d] text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] group-hover:text-[#2f7a4f] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] group-hover:border-[#2d2d2d]">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 wobbly-pill bg-[#ff4d4d] text-white border-[2px] border-[#2d2d2d]">
                     {tool.badge}
                   </span>
                 </div>
@@ -263,15 +263,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
                   <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white group-hover:text-white transition-colors">
                     {tool.title}
                   </h3>
-                  <p className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] group-hover:text-[#2d2d2d]/[0.7] mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 group-hover:text-white/90 mt-1 line-clamp-2 leading-relaxed font-medium">
                     {tool.subtitle}
                   </p>
                 </div>
               </div>
 
-              <div className="pt-3 mt-3 border-t border-[#2d2d2d]/[0.3]/60 dark:border-[#f3ede2] group-hover:border-[#2d2d2d] flex items-center justify-between text-xs font-semibold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] group-hover:text-[#2f7a4f]">
+              <div className="pt-3 mt-3 border-t border-[#2d2d2d]/20 dark:border-[#f3ede2]/30 group-hover:border-white/30 flex items-center justify-between text-xs font-extrabold text-[#2d2d2d] dark:text-[#f3ede2] group-hover:text-white">
                 <span>Launch Tool</span>
-                <ArrowRight className="w-4 h-4 text-[#2d2d2d]/[0.7] group-hover:text-[#2f7a4f] group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 text-[#ff4d4d] group-hover:text-white group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           ))}
@@ -279,10 +279,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
       </section>
 
       {/* Popular SEO Programmatic Routes Section */}
-      <section className="bg-white dark:bg-[#332e29] p-6 sm:p-7 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] space-y-4">
+      <section className="bg-white dark:bg-[#27272a] p-6 sm:p-7 wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] space-y-4 shadow-hand-sm">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-[#2d2d2d] dark:text-white">Popular Quick Utility Routes</h2>
-          <span className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">1-click format targets</span>
+          <span className="text-xs text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 font-bold">1-click format targets</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -292,17 +292,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ setActivePage, onNavigateRou
               onClick={() => {
                 if (onNavigateRoute) onNavigateRoute(route.slug);
               }}
-              className="p-3 wobbly-sm bg-[#fdfbf7] dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] hover:border-[#2d2d2d]/[0.4] dark:hover:border-[#2d2d2d]/[0.5] text-left transition-colors flex items-center justify-between group cursor-pointer"
+              className="p-3 wobbly-sm bg-[#fafafa] dark:bg-[#3f3f46] hover:bg-[#fff9c4] dark:hover:bg-[#27272a] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-left transition-colors flex items-center justify-between group cursor-pointer"
             >
               <div>
-                <div className="text-xs font-bold text-[#2d2d2d] dark:text-white group-hover:text-[#2f7a4f] dark:group-hover:text-[#2f7a4f]">
+                <div className="text-xs font-bold text-[#2d2d2d] dark:text-white group-hover:text-[#2d5da1]">
                   {route.h1}
                 </div>
-                <div className="text-[10px] font-mono text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] mt-0.5">
-                  {route.sourceFormat} → {route.targetFormat}
+                <div className="text-[11px] text-[#2d2d2d]/70 dark:text-[#f3ede2]/70 line-clamp-1">
+                  {route.metaDescription}
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#2d2d2d]/[0.7] group-hover:translate-x-1 transition-transform shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#2d2d2d]/50 dark:text-[#f3ede2]/50 group-hover:text-[#2d5da1] group-hover:translate-x-1 transition-all shrink-0" />
             </button>
           ))}
         </div>
