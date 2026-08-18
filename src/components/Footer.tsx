@@ -31,9 +31,9 @@ export const Footer: React.FC<FooterProps> = ({ setActivePage, onNavigateRoute }
             </p>
 
             <div className="pt-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 wobbly-pill text-xs font-mono font-bold bg-[#2d2d2d] text-[#fdfbf7] dark:bg-[#f3ede2] dark:text-[#f3ede2] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm select-none whitespace-nowrap">
-                <Lock className="size-3.5 text-[#ff4d4d] shrink-0" />
-                <span>100% Private On-Device Processing</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 wobbly-pill text-xs font-mono font-bold bg-[#ff4d4d] text-white border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm select-none whitespace-nowrap">
+                <Lock className="size-3.5 text-white shrink-0" />
+                <span className="text-white">100% Private On-Device Processing</span>
               </div>
             </div>
           </div>

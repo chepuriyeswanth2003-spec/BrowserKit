@@ -308,7 +308,7 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
 
                     <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                       {savings > 0 && (
-                        <span className="px-2.5 py-1 wobbly-pill bg-[#2f7a4f] dark:bg-[#2f7a4f]/80 text-[#2f7a4f] dark:text-[#2f7a4f] font-mono font-bold text-[11px]">
+                        <span className="px-2.5 py-1 wobbly-pill bg-[#2f7a4f] text-white font-mono font-bold text-[11px] border-[2px] border-[#2d2d2d]">
                           -{savings}%
                         </span>
                       )}

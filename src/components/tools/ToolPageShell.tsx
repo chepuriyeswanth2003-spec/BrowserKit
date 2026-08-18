@@ -32,7 +32,7 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
             )}
             <div className="space-y-1.5 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider px-3 py-0.5 wobbly-pill border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-[#2d2d2d] dark:text-[#f3ede2] bg-[#fdfbf7] dark:bg-[#262220] rotate-1 inline-block">
+                <span className="text-xs font-bold uppercase tracking-wider px-3 py-0.5 wobbly-pill border-[2px] border-[#2d2d2d] text-white bg-[#ff4d4d] rotate-1 inline-block shadow-hand-sm">
                   {categoryBadge}
                 </span>
               </div>

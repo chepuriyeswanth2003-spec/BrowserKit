@@ -195,7 +195,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
                 </div>
                 <div className="flex items-center gap-3">
                   <span>{article.readTime}</span>
-                  <span className="px-2 py-0.5 wobbly-pill bg-[#2f7a4f] dark:bg-[#2f7a4f] text-[#2f7a4f] dark:text-[#2f7a4f] font-bold">
+                  <span className="px-2 py-0.5 wobbly-pill bg-[#2f7a4f] text-white font-bold border-[2px] border-[#2d2d2d]">
                     100% Client-Side
                   </span>
                 </div>

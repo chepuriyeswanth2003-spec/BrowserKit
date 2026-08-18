@@ -197,32 +197,32 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
               </p>
             </div>
           </div>
-          <span className="px-3 py-1 wobbly-pill text-xs font-mono font-bold bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white shadow-hand-sm">
+          <span className="px-3 py-1 wobbly-pill text-xs font-mono font-bold bg-[#ff4d4d] text-white shadow-hand-sm border-[2px] border-[#2d2d2d]">
             {categoryTools.length} Tools Available
           </span>
         </div>
       </section>
 
       {/* Tools Filter Bar & Grid */}
-      <section className="bg-white dark:bg-[#332e29] p-6 sm:p-8 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] pb-4">
+      <section className="bg-white dark:bg-[#27272a] p-6 sm:p-8 wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2d2d2d]/20 dark:border-[#f3ede2]/30 pb-4">
           <div>
             <h2 className="text-lg font-bold text-[#2d2d2d] dark:text-white">
               Browse {suiteInfo.title}
             </h2>
-            <p className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
+            <p className="text-xs text-[#2d2d2d]/80 dark:text-[#f3ede2]/80 font-bold">
               Select any tool to process your files 100% locally on device
             </p>
           </div>
 
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.65] pointer-events-none" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2d2d2d]/70 dark:text-[#f3ede2]/70 pointer-events-none" />
             <input
               type="text"
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               placeholder="Filter tools..."
-              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-[#fdfbf7] dark:bg-[#332e29] wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] focus:bg-white dark:focus:bg-[#332e29] focus:outline-none focus:ring-2 focus:ring-[#2d2d2d] dark:focus:ring-[#2f7a4f] text-[#2d2d2d] dark:text-white transition-all"
+              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-[#fafafa] dark:bg-[#3f3f46] wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] focus:bg-white dark:focus:bg-[#27272a] focus:outline-none focus:ring-2 focus:ring-[#2d5da1] text-[#2d2d2d] dark:text-white transition-all font-medium"
             />
           </div>
         </div>
@@ -234,14 +234,14 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
               <div
                 key={tool.id}
                 onClick={() => setActivePage(tool.id)}
-                className="group relative p-6 bg-white dark:bg-[#332e29]/80 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]/80 shadow-hand-sm hover:shadow-hand-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
+                className="group relative p-6 bg-[#fafafa] dark:bg-[#3f3f46] hover:bg-[#2d2d2d] dark:hover:bg-[#18181b] text-[#2d2d2d] dark:text-white hover:text-white wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] hover:border-[#2d2d2d] shadow-hand-sm hover:shadow-hand-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="p-3 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] group-hover:bg-[#2d2d2d] dark:group-hover:bg-[#2f7a4f] group-hover:text-white transition-colors">
+                    <div className="p-3 wobbly-sm bg-white dark:bg-[#27272a] group-hover:bg-[#ff4d4d] transition-colors shadow-hand-sm border-[2px] border-[#2d2d2d]">
                       {toolIcons[tool.id]}
                     </div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 wobbly-pill bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 wobbly-pill bg-[#ff4d4d] text-white border-[2px] border-[#2d2d2d]">
                       {tool.badge}
                     </span>
                   </div>
