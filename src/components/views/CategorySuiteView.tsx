@@ -29,6 +29,7 @@ import {
   CheckCircle,
   Eye,
   SlidersHorizontal,
+  Info,
 } from 'lucide-react';
 import { ActivePage, ToolCategory, ToolType } from '../../types';
 import { TOOL_METADATA } from '../../lib/seoData';
@@ -61,97 +62,98 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
   })();
 
   const toolIcons: Record<ToolType, React.ReactNode> = {
-    compressor: <Minimize2 className="w-5 h-5 text-emerald-600" />,
-    converter: <RefreshCw className="w-5 h-5 text-blue-600" />,
-    resizer: <Crop className="w-5 h-5 text-purple-600" />,
-    palette: <Palette className="w-5 h-5 text-amber-600" />,
-    meme: <Smile className="w-5 h-5 text-rose-600" />,
-    'passport-photo-maker': <UserCheck className="w-5 h-5 text-emerald-600" />,
-    'add-name-and-dob': <Calendar className="w-5 h-5 text-blue-600" />,
-    'signature-resizer': <PenTool className="w-5 h-5 text-indigo-600" />,
-    'image-dpi-converter': <SlidersHorizontal className="w-5 h-5 text-purple-600" />,
-    'circle-crop': <Crop className="w-5 h-5 text-emerald-600" />,
-    'merge-photo-signature': <Layers className="w-5 h-5 text-amber-600" />,
-    'join-images': <FilePlus className="w-5 h-5 text-indigo-600" />,
-    'image-watermark': <FileText className="w-5 h-5 text-rose-600" />,
-    'image-rotate-flip': <RotateCw className="w-5 h-5 text-sky-600" />,
-    'image-effects': <Eye className="w-5 h-5 text-purple-600" />,
-    'official-size-resizer': <UserCheck className="w-5 h-5 text-emerald-600" />,
-    'social-media-resizer': <Crop className="w-5 h-5 text-blue-600" />,
-    'target-kb-compressor': <Minimize2 className="w-5 h-5 text-emerald-600" />,
-    'social-video-downloader': <Video className="w-5 h-5 text-blue-600" />,
-    'social-audio-extractor': <Music className="w-5 h-5 text-purple-600" />,
-    'social-batch-downloader': <Layers className="w-5 h-5 text-amber-600" />,
-    'thumbnail-grabber': <ImageIcon className="w-5 h-5 text-rose-600" />,
-    'video-to-audio': <Music className="w-5 h-5 text-purple-600" />,
-    'video-format-swapper': <RefreshCw className="w-5 h-5 text-indigo-600" />,
-    'gif-maker': <Sparkles className="w-5 h-5 text-amber-600" />,
+    compressor: <Minimize2 className="w-5 h-5 text-[#2f7a4f]" />,
+    converter: <RefreshCw className="w-5 h-5 text-[#2d5da1]" />,
+    resizer: <Crop className="w-5 h-5 text-[#6b4fa0]" />,
+    palette: <Palette className="w-5 h-5 text-[#b8860b]" />,
+    meme: <Smile className="w-5 h-5 text-[#ff4d4d]" />,
+    'passport-photo-maker': <UserCheck className="w-5 h-5 text-[#2f7a4f]" />,
+    'add-name-and-dob': <Calendar className="w-5 h-5 text-[#2d5da1]" />,
+    'signature-resizer': <PenTool className="w-5 h-5 text-[#2d5da1]" />,
+    'image-dpi-converter': <SlidersHorizontal className="w-5 h-5 text-[#6b4fa0]" />,
+    'circle-crop': <Crop className="w-5 h-5 text-[#2f7a4f]" />,
+    'merge-photo-signature': <Layers className="w-5 h-5 text-[#b8860b]" />,
+    'join-images': <FilePlus className="w-5 h-5 text-[#2d5da1]" />,
+    'image-watermark': <FileText className="w-5 h-5 text-[#ff4d4d]" />,
+    'image-rotate-flip': <RotateCw className="w-5 h-5 text-[#2d5da1]" />,
+    'image-effects': <Eye className="w-5 h-5 text-[#6b4fa0]" />,
+    'official-size-resizer': <UserCheck className="w-5 h-5 text-[#2f7a4f]" />,
+    'social-media-resizer': <Crop className="w-5 h-5 text-[#2d5da1]" />,
+    'target-kb-compressor': <Minimize2 className="w-5 h-5 text-[#2f7a4f]" />,
+    'social-video-downloader': <Video className="w-5 h-5 text-[#2d5da1]" />,
+    'social-audio-extractor': <Music className="w-5 h-5 text-[#6b4fa0]" />,
+    'social-batch-downloader': <Layers className="w-5 h-5 text-[#b8860b]" />,
+    'thumbnail-grabber': <ImageIcon className="w-5 h-5 text-[#ff4d4d]" />,
+    'video-to-audio': <Music className="w-5 h-5 text-[#6b4fa0]" />,
+    'video-format-swapper': <RefreshCw className="w-5 h-5 text-[#2d5da1]" />,
+    'gif-maker': <Sparkles className="w-5 h-5 text-[#b8860b]" />,
     'video-codec-transcoder': <Code className="w-5 h-5 text-teal-600" />,
-    'video-trimmer': <Video className="w-5 h-5 text-blue-600" />,
-    'video-to-gif': <Film className="w-5 h-5 text-indigo-600" />,
-    'audio-cutter': <Scissors className="w-5 h-5 text-rose-600" />,
-    'aspect-ratio-resizer': <Crop className="w-5 h-5 text-emerald-600" />,
-    'pdf-merger': <FileText className="w-5 h-5 text-red-600" />,
-    'pdf-splitter': <Scissors className="w-5 h-5 text-red-600" />,
-    'pdf-compressor': <Minimize2 className="w-5 h-5 text-emerald-600" />,
-    'pdf-password-remover': <Unlock className="w-5 h-5 text-rose-600" />,
-    'pdf-protector': <Lock className="w-5 h-5 text-emerald-600" />,
-    'images-to-pdf': <FilePlus className="w-5 h-5 text-red-600" />,
-    'pdf-to-jpg': <ImageIcon className="w-5 h-5 text-rose-600" />,
-    'pdf-to-word': <FileText className="w-5 h-5 text-blue-600" />,
-    'pdf-to-ppt': <FileText className="w-5 h-5 text-amber-600" />,
-    'pdf-to-excel': <FileText className="w-5 h-5 text-emerald-600" />,
-    'word-to-pdf': <FilePlus className="w-5 h-5 text-blue-600" />,
-    'ppt-to-pdf': <FilePlus className="w-5 h-5 text-amber-600" />,
-    'excel-to-pdf': <FilePlus className="w-5 h-5 text-emerald-600" />,
-    'html-to-pdf': <Code className="w-5 h-5 text-cyan-600" />,
-    'pdf-editor': <FileText className="w-5 h-5 text-purple-600" />,
-    'pdf-signer': <PenTool className="w-5 h-5 text-indigo-600" />,
-    'pdf-watermark': <FileText className="w-5 h-5 text-rose-600" />,
-    'pdf-rotator': <RotateCw className="w-5 h-5 text-sky-600" />,
-    'pdf-organizer': <Layers className="w-5 h-5 text-indigo-600" />,
+    'video-trimmer': <Video className="w-5 h-5 text-[#2d5da1]" />,
+    'video-to-gif': <Film className="w-5 h-5 text-[#2d5da1]" />,
+    'audio-cutter': <Scissors className="w-5 h-5 text-[#ff4d4d]" />,
+    'aspect-ratio-resizer': <Crop className="w-5 h-5 text-[#2f7a4f]" />,
+    'pdf-merger': <FileText className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-splitter': <Scissors className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-compressor': <Minimize2 className="w-5 h-5 text-[#2f7a4f]" />,
+    'pdf-password-remover': <Unlock className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-protector': <Lock className="w-5 h-5 text-[#2f7a4f]" />,
+    'images-to-pdf': <FilePlus className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-to-jpg': <ImageIcon className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-to-word': <FileText className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-to-ppt': <FileText className="w-5 h-5 text-[#b8860b]" />,
+    'pdf-to-excel': <FileText className="w-5 h-5 text-[#2f7a4f]" />,
+    'word-to-pdf': <FilePlus className="w-5 h-5 text-[#2d5da1]" />,
+    'ppt-to-pdf': <FilePlus className="w-5 h-5 text-[#b8860b]" />,
+    'excel-to-pdf': <FilePlus className="w-5 h-5 text-[#2f7a4f]" />,
+    'html-to-pdf': <Code className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-editor': <FileText className="w-5 h-5 text-[#6b4fa0]" />,
+    'pdf-signer': <PenTool className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-metadata': <Info className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-watermark': <FileText className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-rotator': <RotateCw className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-organizer': <Layers className="w-5 h-5 text-[#2d5da1]" />,
     'pdf-to-pdfa': <CheckCircle className="w-5 h-5 text-teal-600" />,
-    'pdf-repair': <Sparkles className="w-5 h-5 text-amber-600" />,
-    'pdf-page-numbers': <FileText className="w-5 h-5 text-blue-600" />,
-    'pdf-ocr': <Sparkles className="w-5 h-5 text-purple-600" />,
-    'pdf-compare': <FileText className="w-5 h-5 text-indigo-600" />,
-    'pdf-redact': <Lock className="w-5 h-5 text-rose-600" />,
-    'pdf-cropper': <Crop className="w-5 h-5 text-emerald-600" />,
-    'pdf-forms': <CheckCircle className="w-5 h-5 text-cyan-600" />,
-    'pdf-to-markdown': <Code className="w-5 h-5 text-slate-800" />,
-    'zip-archiver': <Archive className="w-5 h-5 text-amber-600" />,
-    'zip-extractor': <FolderArchive className="w-5 h-5 text-amber-600" />,
-    'zip-password-remover': <Unlock className="w-5 h-5 text-rose-600" />,
-    'audio-tools': <Music className="w-5 h-5 text-purple-600" />,
-    'svg-optimizer': <Code className="w-5 h-5 text-indigo-600" />,
-    'file-encryptor': <Lock className="w-5 h-5 text-emerald-600" />,
+    'pdf-repair': <Sparkles className="w-5 h-5 text-[#b8860b]" />,
+    'pdf-page-numbers': <FileText className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-ocr': <Sparkles className="w-5 h-5 text-[#6b4fa0]" />,
+    'pdf-compare': <FileText className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-redact': <Lock className="w-5 h-5 text-[#ff4d4d]" />,
+    'pdf-cropper': <Crop className="w-5 h-5 text-[#2f7a4f]" />,
+    'pdf-forms': <CheckCircle className="w-5 h-5 text-[#2d5da1]" />,
+    'pdf-to-markdown': <Code className="w-5 h-5 text-[#2d2d2d]/[0.92]" />,
+    'zip-archiver': <Archive className="w-5 h-5 text-[#b8860b]" />,
+    'zip-extractor': <FolderArchive className="w-5 h-5 text-[#b8860b]" />,
+    'zip-password-remover': <Unlock className="w-5 h-5 text-[#ff4d4d]" />,
+    'audio-tools': <Music className="w-5 h-5 text-[#6b4fa0]" />,
+    'svg-optimizer': <Code className="w-5 h-5 text-[#2d5da1]" />,
+    'file-encryptor': <Lock className="w-5 h-5 text-[#2f7a4f]" />,
   };
 
   const suiteInfoMap = {
     pdf: {
       title: 'PDF Tools Suite',
       subtitle: 'All 27+ PDF tools for merging, splitting, compressing, converting, signing, protecting, and editing PDF files.',
-      icon: <FileText className="w-6 h-6 text-rose-600" />,
+      icon: <FileText className="w-6 h-6 text-[#ff4d4d]" />,
     },
     image: {
       title: 'Image & Photo Suite',
       subtitle: 'All image editing tools for compressing under 100KB, Passport photos, HEIC conversion, resizing & signature editing.',
-      icon: <ImageIcon className="w-6 h-6 text-emerald-600" />,
+      icon: <ImageIcon className="w-6 h-6 text-[#2f7a4f]" />,
     },
     video: {
       title: 'Video & Audio Suite',
       subtitle: 'All media utilities for video trimming, frame extractions, GIF creation, and audio track conversion.',
-      icon: <Video className="w-6 h-6 text-indigo-600" />,
+      icon: <Video className="w-6 h-6 text-[#2d5da1]" />,
     },
     zip: {
       title: 'Archive & Security Vault',
       subtitle: 'All archive utilities for ZIP creation, extraction, ZIP password unlock, and AES-256 client-side file encryption.',
-      icon: <Archive className="w-6 h-6 text-amber-600" />,
+      icon: <Archive className="w-6 h-6 text-[#b8860b]" />,
     },
     audio: {
       title: 'Audio Tools Suite',
       subtitle: 'Convert audio formats and extract sound tracks.',
-      icon: <Music className="w-6 h-6 text-purple-600" />,
+      icon: <Music className="w-6 h-6 text-[#6b4fa0]" />,
     },
   };
 
@@ -174,53 +176,53 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
       {/* Back Button */}
       <button
         onClick={() => setActivePage('home')}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer"
+        className="inline-flex items-center gap-2 px-4 py-2 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] hover:bg-[#fdfbf7] dark:hover:bg-[#332e29] transition-all cursor-pointer"
       >
-        <ArrowLeft className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Back to Dashboard
+        <ArrowLeft className="w-4 h-4 text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]" /> Back to Dashboard
       </button>
 
       {/* Hero Header Section */}
-      <section className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+      <section className="bg-white dark:bg-[#332e29] p-6 sm:p-8 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+            <div className="p-3 bg-[#e5e0d8] dark:bg-[#332e29] wobbly-md">
               {suiteInfo.icon}
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#2d2d2d] dark:text-white tracking-tight">
                 {suiteInfo.title}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">
+              <p className="text-xs sm:text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] font-medium mt-0.5">
                 {suiteInfo.subtitle}
               </p>
             </div>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 dark:bg-emerald-600 text-white shadow-xs">
+          <span className="px-3 py-1 wobbly-pill text-xs font-mono font-bold bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white shadow-hand-sm">
             {categoryTools.length} Tools Available
           </span>
         </div>
       </section>
 
       {/* Tools Filter Bar & Grid */}
-      <section className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+      <section className="bg-white dark:bg-[#332e29] p-6 sm:p-8 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] pb-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-lg font-bold text-[#2d2d2d] dark:text-white">
               Browse {suiteInfo.title}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
               Select any tool to process your files 100% locally on device
             </p>
           </div>
 
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.65] pointer-events-none" />
             <input
               type="text"
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               placeholder="Filter tools..."
-              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500 text-slate-900 dark:text-white transition-all"
+              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm bg-[#fdfbf7] dark:bg-[#332e29] wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] focus:bg-white dark:focus:bg-[#332e29] focus:outline-none focus:ring-2 focus:ring-[#2d2d2d] dark:focus:ring-[#2f7a4f] text-[#2d2d2d] dark:text-white transition-all"
             />
           </div>
         </div>
@@ -232,41 +234,41 @@ export const CategorySuiteView: React.FC<CategorySuiteViewProps> = ({
               <div
                 key={tool.id}
                 onClick={() => setActivePage(tool.id)}
-                className="group relative p-6 bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
+                className="group relative p-6 bg-white dark:bg-[#332e29]/80 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]/80 shadow-hand-sm hover:shadow-hand-lg hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 group-hover:bg-slate-900 dark:group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                    <div className="p-3 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] group-hover:bg-[#2d2d2d] dark:group-hover:bg-[#2f7a4f] group-hover:text-white transition-colors">
                       {toolIcons[tool.id]}
                     </div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 wobbly-pill bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
                       {tool.badge}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-base font-bold text-[#2d2d2d] dark:text-white group-hover:text-[#2f7a4f] dark:group-hover:text-[#2f7a4f] transition-colors">
                       {tool.title}
                     </h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] mt-1 line-clamp-2 leading-relaxed">
                       {tool.subtitle}
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                <div className="pt-4 mt-4 border-t border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] flex items-center justify-between text-xs font-semibold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] group-hover:text-[#2f7a4f] dark:group-hover:text-[#2f7a4f]">
                   <span>Open Tool</span>
-                  <ArrowRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.65] group-hover:text-[#2f7a4f] dark:group-hover:text-[#2f7a4f] group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             ))
           ) : (
-            <div className="col-span-full py-12 text-center text-slate-500 dark:text-slate-400 text-sm font-medium">
+            <div className="col-span-full py-12 text-center text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] text-sm font-medium">
               No tools match your search criteria. Try a different query or clear the filter.
               <div className="mt-4">
                 <button
                   onClick={() => setSearchFilter('')}
-                  className="text-xs text-emerald-700 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                  className="text-xs text-[#2f7a4f] dark:text-[#2f7a4f] hover:underline font-semibold cursor-pointer"
                 >
                   Clear Filter
                 </button>

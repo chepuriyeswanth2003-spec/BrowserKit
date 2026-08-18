@@ -127,13 +127,13 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     <div
       className={`transition-all duration-300 ${getWidthConstraint()} ${
         isFilled || (isDemoClient && showPlaceholderInDev)
-          ? 'my-4 p-2.5 bg-slate-50/70 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden'
+          ? 'my-4 p-2.5 bg-[#fdfbf7] dark:bg-[#262220] wobbly-sm border-[2px] border-dashed border-[#2d2d2d]/40 dark:border-[#f3ede2]/40 flex flex-col items-center justify-center relative overflow-hidden'
           : 'my-0 p-0 border-0 bg-transparent overflow-hidden'
       } ${className}`}
     >
       {/* Show Advertisement label ONLY when an ad is actively loaded and filled */}
       {(isFilled || (isDemoClient && showPlaceholderInDev)) && (
-        <span className="text-[9px] font-mono tracking-wider uppercase text-slate-400 dark:text-slate-500 mb-1 select-none">
+        <span className="text-[9px] font-mono tracking-wider uppercase text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.65] mb-1 select-none">
           Advertisement
         </span>
       )}
@@ -152,9 +152,9 @@ export const AdSlot: React.FC<AdSlotProps> = ({
 
       {/* Visual placeholder only shown in dev if explicitly requested */}
       {isDemoClient && showPlaceholderInDev && (
-        <div className="flex flex-col items-center justify-center gap-1.5 py-4 px-3 text-slate-400 dark:text-slate-500 select-none">
-          <div className="flex items-center gap-2 text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="flex flex-col items-center justify-center gap-1.5 py-4 px-3 text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.65] select-none">
+          <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55]">
+            <span className="w-2 h-2 wobbly-pill bg-[#2f7a4f] animate-pulse" />
             AdSense Display Ad Slot ({type})
           </div>
         </div>

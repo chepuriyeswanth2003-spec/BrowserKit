@@ -5,20 +5,20 @@ export const TermsView: React.FC = () => {
   return (
     <div className="w-full max-w-3xl mx-auto space-y-8 animate-fade-in py-6">
       <div className="space-y-3 text-center">
-        <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 w-fit mx-auto">
+        <div className="p-3 wobbly-md bg-[#2d5da1]/10 text-[#2d5da1] dark:text-[#2d5da1] w-fit mx-auto">
           <FileText className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[#2d2d2d] dark:text-white">
           Terms of Service
         </h1>
-        <p className="text-xs font-mono text-slate-500">
+        <p className="text-xs font-mono text-[#2d2d2d]/[0.7]">
           Last Updated: August 2026
         </p>
       </div>
 
-      <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+      <div className="p-8 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6 text-sm text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] leading-relaxed font-medium">
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-bold text-[#2d2d2d] dark:text-white">
             1. Acceptance of Terms
           </h2>
           <p>
@@ -27,7 +27,7 @@ export const TermsView: React.FC = () => {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-bold text-[#2d2d2d] dark:text-white">
             2. Free Unlimited License
           </h2>
           <p>
@@ -36,7 +36,7 @@ export const TermsView: React.FC = () => {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-bold text-[#2d2d2d] dark:text-white">
             3. Disclaimer of Warranty
           </h2>
           <p>

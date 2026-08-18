@@ -110,7 +110,7 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
       categoryBadgeColor="purple"
       title={meta.title}
       description={meta.subtitle}
-      icon={<Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />}
+      icon={<Palette className="w-6 h-6 text-[#6b4fa0] dark:text-[#6b4fa0]" />}
     >
       <div className="space-y-6">
         {!imageSrc ? (
@@ -123,17 +123,17 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
         ) : (
           <div className="space-y-8">
             {/* Eyedropper Photo Inspection Canvas */}
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-700 pb-3">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Pipette className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Interactive Eyedropper Pixel Inspector
+            <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-3">
+                <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white flex items-center gap-2">
+                  <Pipette className="w-4 h-4 text-[#6b4fa0] dark:text-[#6b4fa0]" /> Interactive Eyedropper Pixel Inspector
                 </h3>
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <span className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] font-medium">
                   Hover over image to inspect • Click to copy HEX
                 </span>
               </div>
 
-              <div className="relative flex items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="relative flex items-center justify-center p-4 bg-white dark:bg-[#332e29] wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] overflow-hidden">
                 <img
                   ref={imageRef}
                   src={imageSrc}
@@ -141,7 +141,7 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
                   onMouseMove={handleMouseMove}
                   onMouseLeave={() => setHoveredColor(null)}
                   onClick={() => hoveredColor && handleCopyHex(hoveredColor.hex)}
-                  className="max-h-96 w-auto object-contain cursor-crosshair rounded-lg"
+                  className="max-h-96 w-auto object-contain cursor-crosshair wobbly-sm"
                 />
 
                 {/* Eyedropper Live Tooltip */}
@@ -154,30 +154,30 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
                       pointerEvents: 'none',
                       zIndex: 50,
                     }}
-                    className="p-3 rounded-xl bg-slate-900 text-white shadow-xl border border-slate-700 text-xs font-mono space-y-1 backdrop-blur-md"
+                    className="p-3 wobbly-sm bg-[#2d2d2d] text-white shadow-hand-lg border border-[2px] border-[#2d2d2d] text-xs font-mono space-y-1 backdrop-blur-md"
                   >
                     <div className="flex items-center gap-2">
                       <span
-                        className="w-4 h-4 rounded-full border border-white/40 shadow-xs"
+                        className="w-4 h-4 wobbly-pill border border-white/40 shadow-hand-sm"
                         style={{ backgroundColor: hoveredColor.hex }}
                       />
-                      <span className="font-bold text-emerald-400">{hoveredColor.hex}</span>
+                      <span className="font-bold text-[#2f7a4f]">{hoveredColor.hex}</span>
                     </div>
-                    <div className="text-[10px] text-slate-300">{hoveredColor.rgb}</div>
+                    <div className="text-[10px] text-[#2d2d2d]/[0.7]">{hoveredColor.rgb}</div>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Extracted Swatches List */}
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Extracted Color Palette ({swatches.length} Swatches)
+            <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-3">
+                <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white flex items-center gap-2">
+                  <Palette className="w-4 h-4 text-[#6b4fa0] dark:text-[#6b4fa0]" /> Extracted Color Palette ({swatches.length} Swatches)
                 </h3>
                 <button
                   onClick={handleDownloadFaviconPack}
-                  className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
+                  className="px-4 py-2 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] shadow-hand-sm transition-all cursor-pointer"
                 >
                   <Archive className="w-4 h-4" /> Download Favicon Icon Pack
                 </button>
@@ -188,19 +188,19 @@ export const ColorPaletteTool: React.FC<ColorPaletteToolProps> = ({ onDownloadTr
                   <div
                     key={idx}
                     onClick={() => handleCopyHex(swatch.hex)}
-                    className="group p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2 cursor-pointer hover:shadow-md transition-all"
+                    className="group p-3 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] space-y-2 cursor-pointer hover:shadow-hand transition-all"
                   >
                     <div
-                      className="w-full h-20 rounded-xl shadow-inner border border-black/10 flex items-end justify-end p-2 transition-transform group-hover:scale-105"
+                      className="w-full h-20 wobbly-sm shadow-inner border border-black/10 flex items-end justify-end p-2 transition-transform group-hover:scale-105"
                       style={{ backgroundColor: swatch.hex }}
                     >
-                      <span className="p-1 rounded-lg bg-black/40 text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                        {copiedHex === swatch.hex ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span className="p-1 wobbly-sm bg-black/40 text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                        {copiedHex === swatch.hex ? <Check className="w-3.5 h-3.5 text-[#2f7a4f]" /> : <Copy className="w-3.5 h-3.5" />}
                       </span>
                     </div>
                     <div className="space-y-0.5 text-center">
-                      <div className="text-xs font-mono font-bold text-slate-900 dark:text-white">{swatch.hex}</div>
-                      <div className="text-[10px] font-mono text-slate-400">{swatch.population}%</div>
+                      <div className="text-xs font-mono font-bold text-[#2d2d2d] dark:text-white">{swatch.hex}</div>
+                      <div className="text-[10px] font-mono text-[#2d2d2d]/[0.7]">{swatch.population}%</div>
                     </div>
                   </div>
                 ))}

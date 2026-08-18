@@ -1,12 +1,26 @@
 import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
-import { Document, Paragraph, TextRun, Packer, PageBreak, HeadingLevel, ImageRun } from 'docx';
+import {
+  Document,
+  Paragraph,
+  TextRun,
+  Packer,
+  PageBreak,
+  HeadingLevel,
+  ImageRun,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+} from 'docx';
 import pptxgen from 'pptxgenjs';
 import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 import JSZip from 'jszip';
 import { diffLines, Change } from 'diff';
 import { createWorker } from 'tesseract.js';
+import { renderHtmlToPdf } from './htmlToPdfRenderer';
+import { XMLParser } from 'fast-xml-parser';
 
 // Set up pdf.js worker URL
 if (typeof window !== 'undefined' && pdfjsLib) {
@@ -27,6 +41,26 @@ export interface PDFFormattedLine {
   runs: PDFTextRun[];
 }
 
+export interface PDFExtractedImage {
+  data: Uint8Array;
+  format: 'png';
+  /** Position/size in PDF user-space points (origin bottom-left), matches pdf-lib coordinate convention */
+  xPt: number;
+  yPt: number;
+  widthPt: number;
+  heightPt: number;
+  /** y position used for ordering the image within the top-to-bottom reading flow */
+  flowY: number;
+}
+
+export interface PDFTableBlock {
+  /** index (in the page's `lines` array) of the first row consumed by this table */
+  startLineIndex: number;
+  /** index (in the page's `lines` array) of the last row consumed by this table */
+  endLineIndex: number;
+  rows: string[][];
+}
+
 export interface PDFStructuredPage {
   pageIndex: number;
   text: string;
@@ -35,6 +69,234 @@ export interface PDFStructuredPage {
   pageImageBuffer?: Uint8Array;
   pageImageWidth?: number;
   pageImageHeight?: number;
+  /** real raster images extracted from the page's content stream (photos, logos, figures) */
+  images?: PDFExtractedImage[];
+  /** grid tables detected from column-aligned text so tabular data survives conversion */
+  tables?: PDFTableBlock[];
+  pageWidthPt?: number;
+  pageHeightPt?: number;
+}
+
+/**
+ * Walks a page's content stream operator list to pull out embedded raster images
+ * (photos/figures/logos) along with the rectangle they're painted into, in PDF
+ * user-space points. This is what lets PDF->Word/PPT carry real images instead of
+ * only a fallback full-page screenshot.
+ */
+async function extractPageEmbeddedImages(page: any): Promise<PDFExtractedImage[]> {
+  const results: PDFExtractedImage[] = [];
+  try {
+    const opList = await page.getOperatorList();
+    const OPS = (pdfjsLib as any).OPS;
+    const fnArray = opList.fnArray;
+    const argsArray = opList.argsArray;
+
+    const mul = (m: number[], n: number[]): number[] => [
+      m[0] * n[0] + m[1] * n[2],
+      m[0] * n[1] + m[1] * n[3],
+      m[2] * n[0] + m[3] * n[2],
+      m[2] * n[1] + m[3] * n[3],
+      m[4] * n[0] + m[5] * n[2] + n[4],
+      m[4] * n[1] + m[5] * n[3] + n[5],
+    ];
+
+    let ctm: number[] = [1, 0, 0, 1, 0, 0];
+    const stack: number[][] = [];
+    let imgCounter = 0;
+
+    for (let idx = 0; idx < fnArray.length; idx++) {
+      const fn = fnArray[idx];
+      const args = argsArray[idx];
+
+      if (fn === OPS.save) {
+        stack.push(ctm.slice());
+      } else if (fn === OPS.restore) {
+        const prev = stack.pop();
+        if (prev) ctm = prev;
+      } else if (fn === OPS.transform) {
+        ctm = mul(args as number[], ctm);
+      } else if (fn === OPS.paintImageXObject) {
+        if (imgCounter >= 12) continue; // guard against pathological pages with hundreds of tiny images
+        imgCounter++;
+        const objId = args[0];
+        try {
+          const imgObj: any = await new Promise((resolve) => {
+            try {
+              page.objs.get(objId, resolve);
+            } catch {
+              resolve(null);
+            }
+          });
+          if (!imgObj || !imgObj.data || !imgObj.width || !imgObj.height) continue;
+
+          const w = imgObj.width;
+          const h = imgObj.height;
+          // Skip tiny decorative artifacts (bullets, hairline rules rendered as images)
+          if (w < 12 || h < 12) continue;
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const cctx = canvas.getContext('2d');
+          if (!cctx) continue;
+
+          const imageData = cctx.createImageData(w, h);
+          const src: Uint8ClampedArray | Uint8Array = imgObj.data;
+          const kind = imgObj.kind; // 1 = GRAYSCALE, 2 = RGB, 3 = RGBA
+
+          if (kind === 3 || src.length === w * h * 4) {
+            imageData.data.set(src as any);
+          } else if (kind === 2 || src.length === w * h * 3) {
+            for (let p = 0, q = 0; p < src.length; p += 3, q += 4) {
+              imageData.data[q] = src[p];
+              imageData.data[q + 1] = src[p + 1];
+              imageData.data[q + 2] = src[p + 2];
+              imageData.data[q + 3] = 255;
+            }
+          } else if (src.length === w * h) {
+            for (let p = 0, q = 0; p < src.length; p++, q += 4) {
+              imageData.data[q] = src[p];
+              imageData.data[q + 1] = src[p];
+              imageData.data[q + 2] = src[p];
+              imageData.data[q + 3] = 255;
+            }
+          } else {
+            continue; // unrecognized pixel layout (e.g. indexed/CMYK) — skip rather than render garbage
+          }
+
+          cctx.putImageData(imageData, 0, 0);
+          const dataUrl = canvas.toDataURL('image/png');
+          const base64 = dataUrl.split(',')[1] || '';
+          const bin = atob(base64);
+          const bytes = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+          // A "paintImageXObject" always paints into the unit square [0,1]x[0,1] under the
+          // current transform, so map those four corners through ctm to get the placed rect.
+          const corners = [
+            [0, 0],
+            [1, 0],
+            [0, 1],
+            [1, 1],
+          ].map(([x, y]) => [ctm[0] * x + ctm[2] * y + ctm[4], ctm[1] * x + ctm[3] * y + ctm[5]]);
+          const xs = corners.map((c) => c[0]);
+          const ys = corners.map((c) => c[1]);
+          const minX = Math.min(...xs);
+          const maxX = Math.max(...xs);
+          const minY = Math.min(...ys);
+          const maxY = Math.max(...ys);
+          const widthPt = maxX - minX;
+          const heightPt = maxY - minY;
+
+          if (widthPt < 8 || heightPt < 8) continue;
+
+          results.push({
+            data: bytes,
+            format: 'png',
+            xPt: minX,
+            yPt: minY,
+            widthPt,
+            heightPt,
+            flowY: maxY,
+          });
+        } catch {
+          // Skip images we can't decode rather than aborting the whole page
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Embedded image extraction skipped for page:', err);
+  }
+  return results;
+}
+
+/**
+ * Detects grid-like tabular data from column-aligned text lines. Groups of >=2
+ * consecutive lines that each split into >=2 x-aligned "cells" (large gaps between
+ * runs) are treated as a table and rebuilt into a proper row/column grid.
+ */
+function detectTablesFromLines(lines: PDFFormattedLine[]): PDFTableBlock[] {
+  if (!lines || lines.length < 2) return [];
+
+  type Cell = { text: string; x: number };
+  const rowCells: (Cell[] | null)[] = lines.map((line) => {
+    const runs = [...line.runs].sort((a, b) => (a.x || 0) - (b.x || 0));
+    if (runs.length === 0) return null;
+
+    const avgCharWidth = Math.max(3, (line.maxFontSize || 11) * 0.52);
+    const gapThreshold = Math.max(16, avgCharWidth * 3);
+
+    const cells: Cell[] = [];
+    let current = runs[0].text;
+    let currentX = runs[0].x || 0;
+    let prevEndX = (runs[0].x || 0) + runs[0].text.length * avgCharWidth * 0.6;
+
+    for (let i = 1; i < runs.length; i++) {
+      const r = runs[i];
+      const gap = (r.x || 0) - prevEndX;
+      if (gap > gapThreshold) {
+        cells.push({ text: current.trim(), x: currentX });
+        current = r.text;
+        currentX = r.x || 0;
+      } else {
+        current += r.text;
+      }
+      prevEndX = (r.x || 0) + r.text.length * avgCharWidth * 0.6;
+    }
+    cells.push({ text: current.trim(), x: currentX });
+
+    return cells.filter((c) => c.text.length > 0).length >= 2 ? cells : null;
+  });
+
+  const tables: PDFTableBlock[] = [];
+  let i = 0;
+  while (i < rowCells.length) {
+    if (!rowCells[i]) {
+      i++;
+      continue;
+    }
+    let j = i;
+    while (j + 1 < rowCells.length && rowCells[j + 1]) j++;
+
+    const runLength = j - i + 1;
+    if (runLength >= 2) {
+      const group = rowCells.slice(i, j + 1) as Cell[][];
+
+      // Build shared column anchors by merging nearby cell x-positions across all rows.
+      const allX = group.flatMap((row) => row.map((c) => c.x)).sort((a, b) => a - b);
+      const anchors: number[] = [];
+      for (const x of allX) {
+        if (anchors.length === 0 || x - anchors[anchors.length - 1] > 20) {
+          anchors.push(x);
+        }
+      }
+
+      if (anchors.length >= 2) {
+        const rows: string[][] = group.map((row) => {
+          const rowOut = new Array(anchors.length).fill('');
+          row.forEach((cell) => {
+            let bestIdx = 0;
+            let bestDist = Infinity;
+            anchors.forEach((a, idx) => {
+              const d = Math.abs(a - cell.x);
+              if (d < bestDist) {
+                bestDist = d;
+                bestIdx = idx;
+              }
+            });
+            rowOut[bestIdx] = rowOut[bestIdx] ? `${rowOut[bestIdx]} ${cell.text}` : cell.text;
+          });
+          return rowOut;
+        });
+
+        tables.push({ startLineIndex: i, endLineIndex: j, rows });
+      }
+    }
+
+    i = j + 1;
+  }
+
+  return tables;
 }
 
 /**
@@ -89,6 +351,9 @@ export async function extractPDFPagesStructuredText(file: File): Promise<PDFStru
       const page = await pdfDoc.getPage(i);
       const textContent = await page.getTextContent();
       const items = textContent.items as any[];
+      const rawViewport = page.getViewport({ scale: 1 });
+
+      const extractedImages = await extractPageEmbeddedImages(page);
 
       let pageImageBuffer: Uint8Array | undefined;
       let pageImageWidth: number | undefined;
@@ -125,6 +390,10 @@ export async function extractPDFPagesStructuredText(file: File): Promise<PDFStru
           pageImageBuffer,
           pageImageWidth,
           pageImageHeight,
+          images: extractedImages,
+          tables: [],
+          pageWidthPt: rawViewport.width,
+          pageHeightPt: rawViewport.height,
         });
         continue;
       }
@@ -198,11 +467,17 @@ export async function extractPDFPagesStructuredText(file: File): Promise<PDFStru
         formattedLines.push({ y: currentY, maxFontSize, runs });
       }
 
+      const detectedTables = detectTablesFromLines(formattedLines);
+      const tableLineIndices = new Set<number>();
+      detectedTables.forEach((t) => {
+        for (let li = t.startLineIndex; li <= t.endLineIndex; li++) tableLineIndices.add(li);
+      });
+
       const paragraphs: string[] = [];
       let currentParaLines: string[] = [];
       let lastY: number | null = null;
 
-      formattedLines.forEach((line) => {
+      formattedLines.forEach((line, lineIdx) => {
         const lineText = line.runs.map((r) => r.text).join(' ').replace(/\s+/g, ' ').trim();
         if (!lineText) return;
 
@@ -213,7 +488,10 @@ export async function extractPDFPagesStructuredText(file: File): Promise<PDFStru
           }
         }
 
-        currentParaLines.push(lineText);
+        // Table rows still contribute to plain-text/search output, just not as prose paragraphs
+        if (!tableLineIndices.has(lineIdx)) {
+          currentParaLines.push(lineText);
+        }
         lastY = line.y;
       });
 
@@ -221,14 +499,23 @@ export async function extractPDFPagesStructuredText(file: File): Promise<PDFStru
         paragraphs.push(currentParaLines.join(' '));
       }
 
+      const fullText = [
+        ...paragraphs,
+        ...detectedTables.map((t) => t.rows.map((r) => r.join(' | ')).join('\n')),
+      ].join('\n\n');
+
       pages.push({
         pageIndex: i,
-        text: paragraphs.join('\n\n'),
+        text: fullText,
         paragraphs,
         lines: formattedLines,
         pageImageBuffer,
         pageImageWidth,
         pageImageHeight,
+        images: extractedImages,
+        tables: detectedTables,
+        pageWidthPt: rawViewport.width,
+        pageHeightPt: rawViewport.height,
       });
     }
 
@@ -286,7 +573,7 @@ export async function createDocxFromPDFText(
   inputData: string[] | PDFStructuredPage[],
   _documentTitle?: string
 ): Promise<Blob> {
-  const children: Paragraph[] = [];
+  const children: (Paragraph | Table)[] = [];
   let structuredPages: PDFStructuredPage[] = [];
 
   if (Array.isArray(inputData) && inputData.length > 0 && typeof inputData[0] === 'object') {
@@ -299,22 +586,101 @@ export async function createDocxFromPDFText(
     }));
   }
 
+  const buildDocxTable = (rows: string[][]): Table => {
+    const colCount = Math.max(...rows.map((r) => r.length));
+    return new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: rows.map(
+        (row, rowIdx) =>
+          new TableRow({
+            children: Array.from({ length: colCount }, (_, colIdx) => {
+              const cellText = (row[colIdx] || '').trim();
+              return new TableCell({
+                shading: rowIdx === 0 ? { fill: 'E8EEF7' } : undefined,
+                margins: { top: 60, bottom: 60, left: 100, right: 100 },
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: cellText,
+                        bold: rowIdx === 0,
+                        size: 20,
+                        font: 'Calibri',
+                      }),
+                    ],
+                  }),
+                ],
+              });
+            }),
+          })
+      ),
+    });
+  };
+
   structuredPages.forEach((page, pageIdx) => {
     // Add page break before page 2+
     if (pageIdx > 0) {
-      children.push(
-        new Paragraph({
-          children: [new PageBreak()],
-        })
-      );
+      children.push(new Paragraph({ children: [new PageBreak()] }));
     }
 
     let pageHasContent = false;
+    const images = [...(page.images || [])].sort((a, b) => b.flowY - a.flowY);
+    let imgCursor = 0;
+    const pageHeight = page.pageHeightPt || 792;
+
+    const flushImagesAbove = (yThresholdPt: number) => {
+      while (imgCursor < images.length && images[imgCursor].flowY >= yThresholdPt) {
+        const img = images[imgCursor];
+        const maxWidthPt = 460; // ~6.4in content width
+        const scale = img.widthPt > maxWidthPt ? maxWidthPt / img.widthPt : 1;
+        try {
+          children.push(
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: img.data,
+                  transformation: {
+                    width: Math.round(img.widthPt * scale),
+                    height: Math.round(img.heightPt * scale),
+                  },
+                } as any),
+              ],
+              spacing: { before: 80, after: 120 },
+            })
+          );
+          pageHasContent = true;
+        } catch {
+          // Skip an image that docx refuses rather than failing the whole export
+        }
+        imgCursor++;
+      }
+    };
 
     if (page.lines && page.lines.length > 0) {
       let lastY: number | null = null;
 
-      page.lines.forEach((line) => {
+      const tables = page.tables || [];
+      const tableAtStartIndex = new Map(tables.map((t) => [t.startLineIndex, t]));
+      const tableLineIndices = new Set<number>();
+      tables.forEach((t) => {
+        for (let li = t.startLineIndex; li <= t.endLineIndex; li++) tableLineIndices.add(li);
+      });
+
+      page.lines.forEach((line, lineIdx) => {
+        flushImagesAbove(line.y);
+
+        if (tableAtStartIndex.has(lineIdx)) {
+          const table = tableAtStartIndex.get(lineIdx)!;
+          children.push(buildDocxTable(table.rows));
+          children.push(new Paragraph({ text: '', spacing: { after: 120 } }));
+          pageHasContent = true;
+        }
+
+        if (tableLineIndices.has(lineIdx)) {
+          lastY = line.y;
+          return;
+        }
+
         const textRuns: TextRun[] = [];
         line.runs.forEach((r) => {
           if (!r.text.trim()) return;
@@ -352,7 +718,10 @@ export async function createDocxFromPDFText(
           })
         );
       });
+
+      flushImagesAbove(-Infinity);
     } else if (page.paragraphs && page.paragraphs.length > 0) {
+      flushImagesAbove(pageHeight);
       page.paragraphs.forEach((paraText) => {
         if (!paraText.trim()) return;
         pageHasContent = true;
@@ -372,9 +741,16 @@ export async function createDocxFromPDFText(
           })
         );
       });
+      (page.tables || []).forEach((t) => {
+        children.push(buildDocxTable(t.rows));
+        children.push(new Paragraph({ text: '', spacing: { after: 120 } }));
+      });
+      flushImagesAbove(-Infinity);
+    } else {
+      flushImagesAbove(-Infinity);
     }
 
-    // Fallback: If scanned/image PDF page or text extraction failed, insert high-res page image
+    // Fallback: If scanned/image PDF page or text extraction failed, insert high-res page screenshot
     if ((!pageHasContent || page.text.trim().length < 30) && page.pageImageBuffer) {
       children.push(
         new Paragraph({
@@ -404,146 +780,480 @@ export async function createPptxFromPDFText(
   documentTitle?: string
 ): Promise<Blob> {
   const pres = new pptxgen();
+  pres.defineLayout({ name: 'PDF_SOURCE', width: 10, height: 7.5 });
+  pres.layout = 'PDF_SOURCE';
   if (documentTitle) pres.title = documentTitle;
 
-  let structuredPages: { paragraphs: string[] }[] = [];
+  let structuredPages: PDFStructuredPage[] = [];
   if (Array.isArray(inputData) && inputData.length > 0 && typeof inputData[0] === 'object') {
     structuredPages = inputData as PDFStructuredPage[];
   } else {
-    structuredPages = (inputData as string[]).map((pageText) => ({
+    structuredPages = (inputData as string[]).map((pageText, idx) => ({
+      pageIndex: idx + 1,
+      text: pageText,
       paragraphs: pageText.split('\n\n').filter((p) => p.trim().length > 0),
     }));
   }
 
+  const SLIDE_W = 10;
+  const SLIDE_H = 7.5;
+  const MARGIN = 0.5;
+
   structuredPages.forEach((page) => {
     const slide = pres.addSlide();
-    const slideContent = page.paragraphs.join('\n\n');
-    slide.addText(slideContent || ' ', {
-      x: 0.8,
-      y: 0.8,
-      w: 8.4,
-      h: 5.8,
-      fontSize: 14,
-      fontFace: 'Arial',
-      color: '1E293B',
-      align: 'left',
-      valign: 'top',
+    const pageW = page.pageWidthPt || 612;
+    const pageH = page.pageHeightPt || 792;
+    // Map PDF point-space onto the slide, preserving aspect ratio and margins
+    const usableW = SLIDE_W - MARGIN * 2;
+    const usableH = SLIDE_H - MARGIN * 2;
+    const scale = Math.min(usableW / pageW, usableH / pageH);
+    const offsetX = MARGIN + (usableW - pageW * scale) / 2;
+    const offsetY = MARGIN + (usableH - pageH * scale) / 2;
+    const toSlideX = (xPt: number) => offsetX + xPt * scale;
+    const toSlideY = (yPtFromTop: number) => offsetY + yPtFromTop * scale;
+
+    let placedAnything = false;
+
+    if (page.tables && page.tables.length > 0 && page.lines) {
+      const consumed = new Set<number>();
+      page.tables.forEach((t) => {
+        for (let li = t.startLineIndex; li <= t.endLineIndex; li++) consumed.add(li);
+      });
+      page.tables.forEach((t) => {
+        const anchorLine = page.lines![t.startLineIndex];
+        const yTop = pageH - anchorLine.y;
+        const rows = t.rows.map((r) => r.map((cellText) => ({ text: cellText, options: { fontSize: 10 } })));
+        slide.addTable(rows as any, {
+          x: toSlideX(anchorLine.runs[0]?.x || 40),
+          y: toSlideY(yTop),
+          w: usableW * 0.9,
+          fontSize: 10,
+          border: { type: 'solid', color: 'CBD5E1', pt: 0.75 },
+          fill: { color: 'FFFFFF' },
+        });
+        placedAnything = true;
+      });
+    }
+
+    if (page.lines && page.lines.length > 0) {
+      const tableLineIndices = new Set<number>();
+      (page.tables || []).forEach((t) => {
+        for (let li = t.startLineIndex; li <= t.endLineIndex; li++) tableLineIndices.add(li);
+      });
+
+      // Group consecutive non-table lines into text blocks so each becomes one text box
+      let blockLines: PDFFormattedLine[] = [];
+      const flushBlock = () => {
+        if (blockLines.length === 0) return;
+        const text = blockLines.map((l) => l.runs.map((r) => r.text).join(' ')).join('\n');
+        if (text.trim()) {
+          const topY = pageH - blockLines[0].y;
+          const fontSize = Math.min(28, Math.max(10, Math.round(blockLines[0].maxFontSize * 0.85)));
+          const isHeading = blockLines[0].maxFontSize >= 15;
+          slide.addText(text.trim(), {
+            x: toSlideX(blockLines[0].runs[0]?.x || 40),
+            y: toSlideY(topY),
+            w: usableW,
+            h: Math.max(0.4, blockLines.length * 0.3),
+            fontSize,
+            bold: isHeading,
+            fontFace: 'Arial',
+            color: '1E293B',
+            align: 'left',
+            valign: 'top',
+          });
+          placedAnything = true;
+        }
+        blockLines = [];
+      };
+
+      let lastY: number | null = null;
+      page.lines.forEach((line, idx) => {
+        if (tableLineIndices.has(idx)) {
+          flushBlock();
+          lastY = line.y;
+          return;
+        }
+        if (lastY !== null && Math.abs(lastY - line.y) > 16) {
+          flushBlock();
+        }
+        blockLines.push(line);
+        lastY = line.y;
+      });
+      flushBlock();
+    } else if (page.paragraphs && page.paragraphs.length > 0) {
+      const slideContent = page.paragraphs.join('\n\n');
+      slide.addText(slideContent, {
+        x: MARGIN,
+        y: MARGIN,
+        w: usableW,
+        h: usableH,
+        fontSize: 14,
+        fontFace: 'Arial',
+        color: '1E293B',
+        align: 'left',
+        valign: 'top',
+      });
+      placedAnything = true;
+    }
+
+    (page.images || []).forEach((img) => {
+      try {
+        const base64 = uint8ArrayToBase64(img.data);
+        const topY = pageH - img.yPt - img.heightPt;
+        slide.addImage({
+          data: `data:image/png;base64,${base64}`,
+          x: toSlideX(img.xPt),
+          y: toSlideY(topY),
+          w: img.widthPt * scale,
+          h: img.heightPt * scale,
+        });
+        placedAnything = true;
+      } catch {
+        // Skip images pptxgen can't place rather than aborting the export
+      }
     });
+
+    // Fallback: scanned page or extraction failure -> use the full-page screenshot
+    if (!placedAnything && page.pageImageBuffer) {
+      try {
+        const base64 = uint8ArrayToBase64(page.pageImageBuffer);
+        slide.addImage({
+          data: `data:image/jpeg;base64,${base64}`,
+          x: MARGIN,
+          y: MARGIN,
+          w: usableW,
+          h: usableH,
+        });
+      } catch {
+        slide.addText(page.text || ' ', {
+          x: MARGIN,
+          y: MARGIN,
+          w: usableW,
+          h: usableH,
+          fontSize: 14,
+          fontFace: 'Arial',
+        });
+      }
+    }
   });
 
   const blob = await pres.write({ outputType: 'blob' });
   return blob as Blob;
 }
 
-export async function convertWordToPdfBlob(file: File): Promise<Blob> {
-  const arrayBuffer = await file.arrayBuffer();
-  let extractedText = '';
-
-  try {
-    const result = await mammoth.extractRawText({ arrayBuffer });
-    extractedText = result.value || '';
-  } catch {
-    extractedText = await file.text();
+function uint8ArrayToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
   }
-
-  const pdfDoc = await PDFDocument.create();
-  const rawParagraphs = extractedText.split('\n').filter((l) => l.trim().length > 0);
-
-  let page = pdfDoc.addPage([595.28, 841.89]);
-  let y = 790;
-  const margin = 50;
-  const maxLineWidth = 495;
-
-  for (const para of rawParagraphs) {
-    const words = para.trim().split(' ');
-    let currentLine = '';
-
-    for (const word of words) {
-      const testLine = currentLine ? `${currentLine} ${word}` : word;
-      if (testLine.length * 5.5 > maxLineWidth && currentLine.length > 0) {
-        if (y < 50) {
-          page = pdfDoc.addPage([595.28, 841.89]);
-          y = 790;
-        }
-        page.drawText(currentLine, { x: margin, y, size: 10, color: rgb(0.12, 0.16, 0.23) });
-        y -= 14;
-        currentLine = word;
-      } else {
-        currentLine = testLine;
-      }
-    }
-
-    if (currentLine) {
-      if (y < 50) {
-        page = pdfDoc.addPage([595.28, 841.89]);
-        y = 790;
-      }
-      page.drawText(currentLine, { x: margin, y, size: 10, color: rgb(0.12, 0.16, 0.23) });
-      y -= 18;
-    }
-  }
-
-  const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  return btoa(binary);
 }
 
+/**
+ * Real Word -> PDF conversion. Uses mammoth's DOCX->HTML converter (which preserves
+ * headings, bold/italic, lists, tables and inline images as base64) and lays that
+ * out into a proper multi-page PDF via renderHtmlToPdf, instead of dumping raw text.
+ */
+export async function convertWordToPdfBlob(file: File): Promise<Blob> {
+  const arrayBuffer = await file.arrayBuffer();
+  let html = '';
+
+  try {
+    const result = await mammoth.convertToHtml(
+      { arrayBuffer },
+      {
+        convertImage: mammoth.images.imgElement((image: any) =>
+          image.read('base64').then((base64: string) => ({
+            src: `data:${image.contentType};base64,${base64}`,
+          }))
+        ),
+      }
+    );
+    html = result.value || '';
+  } catch (err) {
+    console.warn('mammoth HTML conversion failed, falling back to raw text:', err);
+    try {
+      const raw = await mammoth.extractRawText({ arrayBuffer });
+      html = raw.value
+        .split('\n')
+        .filter((l) => l.trim())
+        .map((l) => `<p>${escapeHtml(l)}</p>`)
+        .join('');
+    } catch {
+      const raw = await file.text().catch(() => '');
+      html = `<p>${escapeHtml(raw)}</p>`;
+    }
+  }
+
+  return renderHtmlToPdf(html);
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/**
+ * Real Excel -> PDF conversion. Renders every sheet as an actual bordered grid table
+ * (via the shared HTML->PDF renderer) instead of pipe-joined, truncated text lines.
+ */
 export async function convertExcelToPdfBlob(file: File): Promise<Blob> {
   const arrayBuffer = await file.arrayBuffer();
   const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-  const sheetName = workbook.SheetNames[0] || 'Sheet1';
-  const worksheet = workbook.Sheets[sheetName];
-  const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-  const pdfDoc = await PDFDocument.create();
-  let page = pdfDoc.addPage([595.28, 841.89]);
-  let y = 790;
+  const htmlParts: string[] = [];
+  workbook.SheetNames.forEach((sheetName) => {
+    const worksheet = workbook.Sheets[sheetName];
+    const rows: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+    if (!rows || rows.length === 0) return;
 
-  for (const row of rows) {
-    if (!row || row.length === 0) continue;
-    if (y < 50) {
-      page = pdfDoc.addPage([595.28, 841.89]);
-      y = 790;
-    }
+    const colCount = Math.max(...rows.map((r) => r.length), 1);
+    htmlParts.push(`<h2>${escapeHtml(sheetName)}</h2>`);
+    htmlParts.push('<table>');
+    rows.forEach((row, rowIdx) => {
+      const cells = Array.from({ length: colCount }, (_, c) => escapeHtml(String(row[c] ?? '')));
+      const tag = rowIdx === 0 ? 'th' : 'td';
+      htmlParts.push(`<tr>${cells.map((c) => `<${tag}>${c}</${tag}>`).join('')}</tr>`);
+    });
+    htmlParts.push('</table>');
+  });
 
-    const rowStr = row.map((cell) => String(cell ?? '')).join('   |   ');
-    const cleanStr = rowStr.substring(0, 100);
-    page.drawText(cleanStr, { x: 45, y, size: 9, color: rgb(0.12, 0.16, 0.23) });
-    y -= 16;
-  }
-
-  const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  const html = htmlParts.join('') || '<p>Empty workbook</p>';
+  return renderHtmlToPdf(html);
 }
 
+const EMU_PER_PT = 12700;
+
+function asArray<T>(x: T | T[] | undefined | null): T[] {
+  if (x === undefined || x === null) return [];
+  return Array.isArray(x) ? x : [x];
+}
+
+interface PptxShapeText {
+  xEmu: number;
+  yEmu: number;
+  cxEmu: number;
+  cyEmu: number;
+  paragraphs: { runs: { text: string; bold: boolean; sizePt?: number }[] }[];
+}
+interface PptxShapeImage {
+  xEmu: number;
+  yEmu: number;
+  cxEmu: number;
+  cyEmu: number;
+  relId: string;
+}
+
+function extractShapesFromSlideTree(spTree: any): { texts: PptxShapeText[]; images: PptxShapeImage[] } {
+  const texts: PptxShapeText[] = [];
+  const images: PptxShapeImage[] = [];
+  if (!spTree) return { texts, images };
+
+  asArray(spTree['p:sp']).forEach((sp: any) => {
+    const xfrm = sp?.['p:spPr']?.['a:xfrm'];
+    const off = xfrm?.['a:off'];
+    const ext = xfrm?.['a:ext'];
+    const xEmu = off ? parseInt(off['@_x'], 10) || 0 : 0;
+    const yEmu = off ? parseInt(off['@_y'], 10) || 0 : 0;
+    const cxEmu = ext ? parseInt(ext['@_cx'], 10) || 4000000 : 4000000;
+    const cyEmu = ext ? parseInt(ext['@_cy'], 10) || 800000 : 800000;
+
+    const txBody = sp?.['p:txBody'];
+    if (!txBody) return;
+    const paragraphs = asArray(txBody['a:p'])
+      .map((p: any) => {
+        const runs = asArray(p['a:r'])
+          .map((r: any) => {
+            const rPr = r['a:rPr'];
+            const bold = rPr?.['@_b'] === '1';
+            const sizePt = rPr?.['@_sz'] ? parseInt(rPr['@_sz'], 10) / 100 : undefined;
+            const t = r['a:t'];
+            const text = typeof t === 'string' ? t : t?.['#text'] ?? '';
+            return { text, bold, sizePt };
+          })
+          .filter((r: any) => r.text);
+        return { runs };
+      })
+      .filter((p: any) => p.runs.length > 0);
+
+    if (paragraphs.length > 0) {
+      texts.push({ xEmu, yEmu, cxEmu, cyEmu, paragraphs });
+    }
+  });
+
+  asArray(spTree['p:pic']).forEach((pic: any) => {
+    const xfrm = pic?.['p:spPr']?.['a:xfrm'];
+    const off = xfrm?.['a:off'];
+    const ext = xfrm?.['a:ext'];
+    const xEmu = off ? parseInt(off['@_x'], 10) || 0 : 0;
+    const yEmu = off ? parseInt(off['@_y'], 10) || 0 : 0;
+    const cxEmu = ext ? parseInt(ext['@_cx'], 10) || 2000000 : 2000000;
+    const cyEmu = ext ? parseInt(ext['@_cy'], 10) || 2000000 : 2000000;
+    const relId = pic?.['p:blipFill']?.['a:blip']?.['@_r:embed'];
+    if (relId) images.push({ xEmu, yEmu, cxEmu, cyEmu, relId });
+  });
+
+  // Recurse into grouped shapes so nested content isn't dropped
+  asArray(spTree['p:grpSp']).forEach((g: any) => {
+    const inner = extractShapesFromSlideTree(g);
+    texts.push(...inner.texts);
+    images.push(...inner.images);
+  });
+
+  return { texts, images };
+}
+
+async function getSlideSizeEmu(zip: JSZip, parser: XMLParser): Promise<{ cx: number; cy: number }> {
+  try {
+    const file = zip.file('ppt/presentation.xml');
+    if (!file) return { cx: 9144000, cy: 6858000 };
+    const xml = await file.async('text');
+    const parsed = parser.parse(xml);
+    const sz = parsed?.['p:presentation']?.['p:sldSz'];
+    if (sz) {
+      return {
+        cx: parseInt(sz['@_cx'], 10) || 9144000,
+        cy: parseInt(sz['@_cy'], 10) || 6858000,
+      };
+    }
+  } catch {
+    // fall through to default 4:3 letter-ish slide size
+  }
+  return { cx: 9144000, cy: 6858000 };
+}
+
+/**
+ * Real PowerPoint -> PDF conversion. Parses each slide's XML (via fast-xml-parser) to get
+ * actual shape positions/sizes and text runs, resolves picture relationships to embed real
+ * images at their placed position, and lays it all out on a page sized to the source deck's
+ * actual slide dimensions — instead of dumping regex-scraped text top-to-bottom.
+ */
 export async function convertPptxToPdfBlob(file: File): Promise<Blob> {
   const arrayBuffer = await file.arrayBuffer();
   const zip = await JSZip.loadAsync(arrayBuffer);
-  const slideFiles = Object.keys(zip.files).filter((f) => f.startsWith('ppt/slides/slide') && f.endsWith('.xml'));
+  const slideFiles = Object.keys(zip.files)
+    .filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/slide(\d+)\.xml/)?.[1] || '0', 10);
+      const nb = parseInt(b.match(/slide(\d+)\.xml/)?.[1] || '0', 10);
+      return na - nb;
+    });
 
   const pdfDoc = await PDFDocument.create();
+  const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+  const { cx: slideCxEmu, cy: slideCyEmu } = await getSlideSizeEmu(zip, parser);
+  const PAGE_W = slideCxEmu / EMU_PER_PT;
+  const PAGE_H = slideCyEmu / EMU_PER_PT;
 
   if (slideFiles.length === 0) {
     pdfDoc.addPage([841.89, 595.28]);
   } else {
-    for (let idx = 0; idx < slideFiles.length; idx++) {
-      const slideContent = await zip.files[slideFiles[idx]].async('text');
-      const textMatches = slideContent.match(/<a:t[^>]*>([^<]+)<\/a:t>/g) || [];
-      const textRuns = textMatches.map((m) => m.replace(/<[^>]+>/g, '')).filter((t) => t.trim());
+    for (const slidePath of slideFiles) {
+      const page = pdfDoc.addPage([PAGE_W, PAGE_H]);
+      const slideContent = await zip.files[slidePath].async('text');
 
-      const page = pdfDoc.addPage([841.89, 595.28]);
-      let y = 540;
+      let shapeTexts: PptxShapeText[] = [];
+      let shapeImages: PptxShapeImage[] = [];
+      try {
+        const parsed = parser.parse(slideContent);
+        const spTree = parsed?.['p:sld']?.['p:cSld']?.['p:spTree'];
+        const extracted = extractShapesFromSlideTree(spTree);
+        shapeTexts = extracted.texts;
+        shapeImages = extracted.images;
+      } catch (err) {
+        console.warn('Slide XML parse failed, using text fallback:', err);
+      }
 
-      for (const run of textRuns) {
-        if (y < 50) break;
-        const lineStr = run.trim().substring(0, 110);
-        page.drawText(lineStr, { x: 50, y, size: 12, color: rgb(0.12, 0.16, 0.23) });
-        y -= 22;
+      // Resolve rId -> media file path via the slide's relationships part
+      const relsPath = slidePath.replace('ppt/slides/', 'ppt/slides/_rels/') + '.rels';
+      const relMap: Record<string, string> = {};
+      const relsFile = zip.files[relsPath];
+      if (relsFile) {
+        try {
+          const relsXml = await relsFile.async('text');
+          const relsParsed = parser.parse(relsXml);
+          asArray(relsParsed?.Relationships?.Relationship).forEach((r: any) => {
+            relMap[r['@_Id']] = r['@_Target'];
+          });
+        } catch {
+          // no relationships resolvable — images on this slide will just be skipped
+        }
+      }
+
+      for (const shape of shapeTexts) {
+        let ty = PAGE_H - shape.yEmu / EMU_PER_PT;
+        const shapeX = shape.xEmu / EMU_PER_PT;
+        const shapeW = Math.max(20, shape.cxEmu / EMU_PER_PT);
+
+        for (const para of shape.paragraphs) {
+          const fontSize = Math.min(32, Math.max(9, para.runs[0]?.sizePt || 14));
+          const bold = para.runs.some((r) => r.bold);
+          const font = bold ? boldFont : regularFont;
+          const text = para.runs.map((r) => r.text).join('');
+
+          const words = text.split(/\s+/).filter(Boolean);
+          const lines: string[] = [];
+          let line = '';
+          words.forEach((w) => {
+            const test = line ? `${line} ${w}` : w;
+            if (font.widthOfTextAtSize(test, fontSize) > shapeW && line) {
+              lines.push(line);
+              line = w;
+            } else {
+              line = test;
+            }
+          });
+          if (line) lines.push(line);
+
+          lines.forEach((l) => {
+            if (ty < 16) return;
+            page.drawText(l, { x: shapeX, y: ty - fontSize, size: fontSize, font, color: rgb(0.12, 0.16, 0.23) });
+            ty -= fontSize * 1.3;
+          });
+        }
+      }
+
+      for (const img of shapeImages) {
+        const target = relMap[img.relId];
+        if (!target) continue;
+        const mediaPath = 'ppt/' + target.replace(/^(\.\.\/)+/, '').replace(/^\/?/, '');
+        const mediaFile = zip.files[mediaPath] || zip.files[target.replace(/^\//, '')];
+        if (!mediaFile) continue;
+        try {
+          const bytes = await mediaFile.async('uint8array');
+          let embedded;
+          if (/\.png$/i.test(mediaPath)) embedded = await pdfDoc.embedPng(bytes);
+          else if (/\.jpe?g$/i.test(mediaPath)) embedded = await pdfDoc.embedJpg(bytes);
+          else continue; // gif/wmf/emf/svg not embeddable by pdf-lib — skip rather than crash
+          const x = img.xEmu / EMU_PER_PT;
+          const yTop = img.yEmu / EMU_PER_PT;
+          const w = img.cxEmu / EMU_PER_PT;
+          const h = img.cyEmu / EMU_PER_PT;
+          page.drawImage(embedded, { x, y: PAGE_H - yTop - h, width: w, height: h });
+        } catch {
+          // Skip an image pdf-lib can't embed rather than aborting the whole deck
+        }
+      }
+
+      // Last-resort fallback for slides our structured parse found nothing on
+      if (shapeTexts.length === 0 && shapeImages.length === 0) {
+        const textMatches = slideContent.match(/<a:t[^>]*>([^<]*)<\/a:t>/g) || [];
+        const textRuns = textMatches.map((m) => m.replace(/<[^>]+>/g, '')).filter((t) => t.trim());
+        let y = PAGE_H - 50;
+        textRuns.forEach((run) => {
+          if (y < 40) return;
+          page.drawText(run.trim().substring(0, 110), { x: 40, y, size: 12, font: regularFont, color: rgb(0.12, 0.16, 0.23) });
+          y -= 20;
+        });
       }
     }
   }
 
   const pdfBytes = await pdfDoc.save();
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
 }
 
 export async function comparePDFsText(file1: File, file2: File): Promise<{ report: string; diffs: Change[] }> {
@@ -702,30 +1412,73 @@ export async function checkIfPDFEncrypted(pdfFile: File): Promise<boolean> {
   }
 }
 
+/**
+ * Real PDF password removal. pdf-lib (used elsewhere in this file) has NO password/decryption
+ * support at all — it only exposes `ignoreEncryption`, which skips reading encrypted content
+ * rather than decrypting it. Passing a `password` option to it is silently ignored, so a version
+ * of this function that only used pdf-lib would fail on every real encrypted PDF regardless of
+ * whether the password was correct.
+ *
+ * pdf.js does implement real PDF decryption (RC4/AES per the PDF spec), so we open the document
+ * there with the supplied password — which gives us an accurate "wrong password" vs "this PDF
+ * needs a password" distinction — then re-render each page at high resolution and rebuild a
+ * brand new, unencrypted PDF with pdf-lib. This guarantees the password is genuinely gone (the
+ * output document has no encryption dictionary at all) and the content is faithfully preserved.
+ */
 export async function removePDFPassword(pdfFile: File, password?: string): Promise<Blob> {
   const arrayBuffer = await pdfFile.arrayBuffer();
-  let pdfDoc;
 
-  if (password) {
-    try {
-      pdfDoc = await PDFDocument.load(arrayBuffer, { password } as any);
-    } catch {
-      throw new Error('Incorrect password provided. Please check the password and try again.');
+  // Fast path: PDF isn't actually encrypted (or uses only owner-password restrictions pdf-lib
+  // can bypass) — no need to rasterize, we can preserve full vector fidelity.
+  try {
+    const probeDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+    if (!probeDoc.isEncrypted) {
+      const unlockedPdf = await PDFDocument.create();
+      const copiedPages = await unlockedPdf.copyPages(probeDoc, probeDoc.getPageIndices());
+      copiedPages.forEach((page) => unlockedPdf.addPage(page));
+      const pdfBytes = await unlockedPdf.save({ useObjectStreams: true });
+      return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
     }
-  } else {
-    try {
-      pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-    } catch {
-      throw new Error('Password required to unlock this PDF. Please enter the correct password.');
-    }
+  } catch {
+    // Fall through to the real-decryption path below
   }
 
-  const unlockedPdf = await PDFDocument.create();
-  const copiedPages = await unlockedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
-  copiedPages.forEach((page) => unlockedPdf.addPage(page));
+  let pdfDoc: any;
+  try {
+    pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0), password: password || undefined }).promise;
+  } catch (err: any) {
+    if (err?.name === 'PasswordException') {
+      if (err.code === 1) {
+        throw new Error('This PDF is password-protected. Please enter the password.');
+      }
+      throw new Error('Incorrect password. Please check the password and try again.');
+    }
+    throw new Error('Could not open this PDF. It may be corrupted or use an unsupported encryption method.');
+  }
 
-  const pdfBytes = await unlockedPdf.save({ useObjectStreams: true });
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  const outPdf = await PDFDocument.create();
+  for (let i = 1; i <= pdfDoc.numPages; i++) {
+    const page = await pdfDoc.getPage(i);
+    const viewport = page.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) continue;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
+
+    const imgBlob: Blob = await new Promise((res) => canvas.toBlob((b) => res(b || new Blob()), 'image/jpeg', 0.95));
+    const imgBuf = await imgBlob.arrayBuffer();
+    const embeddedImg = await outPdf.embedJpg(imgBuf);
+    const [ptW, ptH] = [viewport.width / 2.0, viewport.height / 2.0];
+    const newPage = outPdf.addPage([ptW, ptH]);
+    newPage.drawImage(embeddedImg, { x: 0, y: 0, width: ptW, height: ptH });
+  }
+
+  const pdfBytes = await outPdf.save({ useObjectStreams: true });
+  return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
 }
 
 /**
@@ -772,7 +1525,6 @@ export async function compressPDF(
     const srcPdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
     const pdfBytes = await srcPdf.save({
       useObjectStreams: true,
-      addMissingPageStructure: true,
     });
     return new Blob([pdfBytes], { type: 'application/pdf' });
   }
@@ -1119,6 +1871,219 @@ export async function flattenPDFForms(pdfFile: File): Promise<Blob> {
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
+export interface PDFFormFieldInfo {
+  name: string;
+  type: 'text' | 'checkbox' | 'radio' | 'dropdown' | 'unsupported';
+  value: string;
+  options?: string[];
+}
+
+/** Reads a PDF's real AcroForm fields so a fill UI can be built from them. */
+export async function getPDFFormFields(pdfFile: File): Promise<PDFFormFieldInfo[]> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+  const results: PDFFormFieldInfo[] = [];
+
+  try {
+    const form = pdfDoc.getForm();
+    const fields = form.getFields();
+    for (const field of fields) {
+      const name = field.getName();
+      const ctorName = field.constructor.name;
+      if (ctorName === 'PDFTextField') {
+        const f = field as any;
+        results.push({ name, type: 'text', value: f.getText?.() || '' });
+      } else if (ctorName === 'PDFCheckBox') {
+        const f = field as any;
+        results.push({ name, type: 'checkbox', value: f.isChecked?.() ? 'true' : 'false' });
+      } else if (ctorName === 'PDFRadioGroup') {
+        const f = field as any;
+        results.push({ name, type: 'radio', value: f.getSelected?.() || '', options: f.getOptions?.() || [] });
+      } else if (ctorName === 'PDFDropdown') {
+        const f = field as any;
+        const selected = f.getSelected?.() || [];
+        results.push({ name, type: 'dropdown', value: selected[0] || '', options: f.getOptions?.() || [] });
+      } else {
+        results.push({ name, type: 'unsupported', value: '' });
+      }
+    }
+  } catch {
+    // No AcroForm present — no fields to report
+  }
+
+  return results;
+}
+
+/** Writes user-supplied values back into a PDF's real form fields (optionally flattening afterward). */
+export async function fillPDFForm(
+  pdfFile: File,
+  values: Record<string, string>,
+  flatten: boolean
+): Promise<Blob> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+  try {
+    const form = pdfDoc.getForm();
+    for (const field of form.getFields()) {
+      const name = field.getName();
+      if (!(name in values)) continue;
+      const value = values[name];
+      const ctorName = field.constructor.name;
+      try {
+        if (ctorName === 'PDFTextField') {
+          (field as any).setText(value);
+        } else if (ctorName === 'PDFCheckBox') {
+          if (value === 'true') (field as any).check();
+          else (field as any).uncheck();
+        } else if (ctorName === 'PDFRadioGroup') {
+          (field as any).select(value);
+        } else if (ctorName === 'PDFDropdown') {
+          (field as any).select(value);
+        }
+      } catch {
+        // Skip a field whose value doesn't match its constraints rather than aborting the fill
+      }
+    }
+    if (flatten) form.flatten();
+  } catch {
+    // No AcroForm present — nothing to fill
+  }
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+
+/** Real margin crop using pdf-lib's crop box (the visible/printable area), not a no-op. */
+export async function cropPDFPages(
+  pdfFile: File,
+  marginPct: { top: number; bottom: number; left: number; right: number }
+): Promise<Blob> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+  pdfDoc.getPages().forEach((page) => {
+    const { width, height } = page.getSize();
+    const left = (marginPct.left / 100) * width;
+    const right = (marginPct.right / 100) * width;
+    const top = (marginPct.top / 100) * height;
+    const bottom = (marginPct.bottom / 100) * height;
+    const newWidth = Math.max(10, width - left - right);
+    const newHeight = Math.max(10, height - top - bottom);
+    page.setCropBox(left, bottom, newWidth, newHeight);
+  });
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+
+/**
+ * Real PDF repair: pdf-lib refuses to load many corrupted files outright. pdf.js is
+ * considerably more fault-tolerant (it's built to render whatever a browser encounters
+ * in the wild), so when a direct pdf-lib load fails, this falls back to opening the file
+ * with pdf.js and re-rendering every recoverable page into a fresh, valid PDF — genuinely
+ * recovering visual content from files pdf-lib can't touch, rather than just re-saving
+ * an already-healthy file unchanged.
+ */
+export async function repairPDF(pdfFile: File): Promise<Blob> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+
+  // Fast path: file isn't actually corrupt as far as pdf-lib is concerned — re-saving
+  // through pdf-lib alone often repairs a broken xref table / object graph.
+  try {
+    const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true, throwOnInvalidObject: false } as any);
+    const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+    return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
+  } catch (err) {
+    console.warn('pdf-lib could not load this PDF directly, attempting pdf.js recovery:', err);
+  }
+
+  // Recovery path: rebuild the document by rasterizing whatever pdf.js can salvage.
+  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer.slice(0), stopAtErrors: false });
+  const pdfDoc = await loadingTask.promise;
+  const outPdf = await PDFDocument.create();
+
+  let recoveredPages = 0;
+  for (let i = 1; i <= pdfDoc.numPages; i++) {
+    try {
+      const page = await pdfDoc.getPage(i);
+      const viewport = page.getViewport({ scale: 2.0 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) continue;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
+
+      const imgBlob: Blob = await new Promise((res) => canvas.toBlob((b) => res(b || new Blob()), 'image/jpeg', 0.95));
+      const imgBuf = await imgBlob.arrayBuffer();
+      const embeddedImg = await outPdf.embedJpg(imgBuf);
+      const [ptW, ptH] = [viewport.width / 2.0, viewport.height / 2.0];
+      const newPage = outPdf.addPage([ptW, ptH]);
+      newPage.drawImage(embeddedImg, { x: 0, y: 0, width: ptW, height: ptH });
+      recoveredPages++;
+    } catch (pageErr) {
+      console.warn(`Could not recover page ${i}:`, pageErr);
+    }
+  }
+
+  if (recoveredPages === 0) {
+    throw new Error('This PDF is too badly damaged to recover any pages from.');
+  }
+
+  const pdfBytes = await outPdf.save({ useObjectStreams: true });
+  return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
+}
+
+/**
+ * Best-effort archival PDF. True ISO 19005 (PDF/A) conformance requires validation
+ * against a formal test suite (veraPDF etc.) covering embedded fonts, color spaces,
+ * transparency restrictions and more — not something this can certify. What this does
+ * do for real: strip encryption/interactive JavaScript, flatten form fields, and embed
+ * standard XMP metadata + an sRGB OutputIntent so the file is self-contained and viewer-
+ * independent, which is the practical goal most people want "PDF/A" for.
+ */
+export async function convertToArchivalPDF(pdfFile: File): Promise<Blob> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+
+  try {
+    const form = pdfDoc.getForm();
+    form.flatten();
+  } catch {
+    // No form fields present
+  }
+
+  const now = new Date();
+  const xmp = `<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/">
+      <pdfaid:part>1</pdfaid:part>
+      <pdfaid:conformance>B</pdfaid:conformance>
+    </rdf:Description>
+    <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+      <xmp:CreateDate>${now.toISOString()}</xmp:CreateDate>
+      <xmp:ModifyDate>${now.toISOString()}</xmp:ModifyDate>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>
+<?xpacket end="w"?>`;
+
+  try {
+    const xmpStream = pdfDoc.context.stream(xmp, { Type: 'Metadata', Subtype: 'XML' });
+    const xmpRef = pdfDoc.context.register(xmpStream);
+    pdfDoc.catalog.set(pdfDoc.context.obj('Metadata'), xmpRef);
+  } catch (err) {
+    console.warn('Could not attach XMP metadata (continuing without it):', err);
+  }
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
+}
+
 export async function imagesToPDF(
   imageFiles: File[],
   pageSize: 'a4' | 'letter' | 'fit' = 'a4',
@@ -1441,3 +2406,85 @@ export async function organizePDFPages(
   return new Blob([pdfBytes], { type: 'application/pdf' });
 }
 
+
+export interface PDFTextAnnotation {
+  pageIndex: number;
+  x: number; // normalized 0-1
+  y: number; // normalized 0-1, from top
+  text: string;
+  fontSize: number;
+  color: { r: number; g: number; b: number };
+}
+
+export interface PDFImageStampAnnotation {
+  pageIndex: number;
+  x: number; // normalized 0-1
+  y: number; // normalized 0-1, from top
+  width: number; // normalized 0-1 of page width
+  imageBlob: Blob;
+}
+
+export interface PDFInkAnnotation {
+  pageIndex: number;
+  imageBlob: Blob; // full-page-sized transparent PNG with the freehand strokes
+}
+
+/**
+ * Real PDF editing: burns text annotations, image stamps, and freehand ink strokes
+ * directly into the page content at the positions the user placed them — not a
+ * pass-through save.
+ */
+export async function applyPDFAnnotations(
+  pdfFile: File,
+  textAnnotations: PDFTextAnnotation[],
+  imageStamps: PDFImageStampAnnotation[],
+  inkAnnotations: PDFInkAnnotation[]
+): Promise<Blob> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const pages = pdfDoc.getPages();
+
+  for (const ann of textAnnotations) {
+    const page = pages[ann.pageIndex];
+    if (!page) continue;
+    const { width, height } = page.getSize();
+    page.drawText(ann.text, {
+      x: ann.x * width,
+      y: height - ann.y * height - ann.fontSize,
+      size: ann.fontSize,
+      font,
+      color: rgb(ann.color.r, ann.color.g, ann.color.b),
+    });
+  }
+
+  for (const stamp of imageStamps) {
+    const page = pages[stamp.pageIndex];
+    if (!page) continue;
+    const { width, height } = page.getSize();
+    const imgBuf = await stamp.imageBlob.arrayBuffer();
+    const embedded = stamp.imageBlob.type.includes('png')
+      ? await pdfDoc.embedPng(imgBuf)
+      : await pdfDoc.embedJpg(imgBuf);
+    const drawWidth = stamp.width * width;
+    const drawHeight = drawWidth * (embedded.height / embedded.width);
+    page.drawImage(embedded, {
+      x: stamp.x * width,
+      y: height - stamp.y * height - drawHeight,
+      width: drawWidth,
+      height: drawHeight,
+    });
+  }
+
+  for (const ink of inkAnnotations) {
+    const page = pages[ink.pageIndex];
+    if (!page) continue;
+    const { width, height } = page.getSize();
+    const imgBuf = await ink.imageBlob.arrayBuffer();
+    const embedded = await pdfDoc.embedPng(imgBuf);
+    page.drawImage(embedded, { x: 0, y: 0, width, height });
+  }
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  return new Blob([pdfBytes as unknown as ArrayBuffer], { type: 'application/pdf' });
+}

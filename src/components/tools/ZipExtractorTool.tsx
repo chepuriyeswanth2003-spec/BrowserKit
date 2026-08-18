@@ -79,7 +79,7 @@ export const ZipExtractorTool: React.FC = () => {
       categoryBadgeColor="amber"
       title="ZIP File Extractor & Viewer"
       description="Unpack .zip archives, view contained files, and extract individual items locally."
-      icon={<FolderArchive className="w-6 h-6 text-amber-600" />}
+      icon={<FolderArchive className="w-6 h-6 text-[#b8860b]" />}
     >
       <div className="space-y-6">
         {!zipFile ? (
@@ -91,17 +91,17 @@ export const ZipExtractorTool: React.FC = () => {
             multiple={false}
           />
         ) : (
-          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
+          <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+            <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                <div className="p-2.5 wobbly-sm bg-[#b8860b] dark:bg-[#b8860b]/60 text-[#b8860b] dark:text-[#b8860b] border border-[2px] border-[#b8860b] dark:border-[#b8860b]">
                   <FolderArchive className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
+                  <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white truncate max-w-xs sm:max-w-md">
                     {zipFile.name}
                   </h3>
-                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                  <p className="text-xs font-mono text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
                     Contained Files: {entries.length} | Size: {(zipFile.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
@@ -110,14 +110,14 @@ export const ZipExtractorTool: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleExtractAll}
-                  className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-md cursor-pointer transition-all"
+                  className="px-4 py-2 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-hand cursor-pointer transition-all"
                 >
                   <Download className="w-3.5 h-3.5" /> Extract All
                 </button>
 
                 <button
                   onClick={clearZip}
-                  className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                  className="p-2 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 transition-colors cursor-pointer"
                   title="Remove archive"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -127,19 +127,19 @@ export const ZipExtractorTool: React.FC = () => {
 
             {isLoading ? (
               <div className="py-12 text-center space-y-2">
-                <Loader2 className="w-8 h-8 text-amber-600 dark:text-amber-400 animate-spin mx-auto" />
-                <p className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">Reading ZIP Central Directory...</p>
+                <Loader2 className="w-8 h-8 text-[#b8860b] dark:text-[#b8860b] animate-spin mx-auto" />
+                <p className="text-xs font-mono font-bold text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">Reading ZIP Central Directory...</p>
               </div>
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3"
+                    className="p-3 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
-                      <FileText className="w-4 h-4 text-slate-400 shrink-0" />
-                      <span className="text-xs font-mono font-bold text-slate-900 dark:text-white truncate">
+                      <FileText className="w-4 h-4 text-[#2d2d2d]/[0.7] shrink-0" />
+                      <span className="text-xs font-mono font-bold text-[#2d2d2d] dark:text-white truncate">
                         {entry.name}
                       </span>
                     </div>
@@ -147,7 +147,7 @@ export const ZipExtractorTool: React.FC = () => {
                     {!entry.isDirectory && (
                       <button
                         onClick={() => handleExtractSingle(entry.name)}
-                        className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] hover:bg-[#2f7a4f] hover:text-white dark:hover:bg-[#2f7a4f] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] text-xs font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer"
                       >
                         <Download className="w-3.5 h-3.5" /> Extract
                       </button>

@@ -1,27 +1,33 @@
 import { MemeTemplate, TextLayer } from '../types';
 
+// Note: these are generic royalty-free stock photos, not the actual copyrighted meme template
+// images (Drake Hotline Bling, Distracted Boyfriend, etc.) — this app can't legally embed those.
+// Labeling them with those meme names while serving unrelated stock photos would be misleading,
+// so these are named for what they actually are: neutral starter layouts for the text/caption
+// tool. For real meme templates, use the "Upload your own image" option with a screenshot of
+// the template you want.
 export const POPULAR_MEME_TEMPLATES: MemeTemplate[] = [
   {
-    id: 'drake',
-    name: 'Drake Hotline Bling',
+    id: 'two-panel-top-bottom',
+    name: 'Two-Panel (Top/Bottom Caption)',
     url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
     defaultTexts: [
-      { text: 'NO WAY / NOT COOL', x: 50, y: 25 },
-      { text: 'YES EXACTLY THIS', x: 50, y: 75 },
+      { text: 'TOP CAPTION', x: 50, y: 25 },
+      { text: 'BOTTOM CAPTION', x: 50, y: 75 },
     ],
   },
   {
-    id: 'distracted-bf',
-    name: 'Distracted Boyfriend',
+    id: 'labeled-scene',
+    name: 'Labeled Scene (3 Callouts)',
     url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80',
     defaultTexts: [
-      { text: 'ME', x: 50, y: 80 },
-      { text: 'NEW SHINY TOOL', x: 80, y: 60 },
+      { text: 'LABEL ONE', x: 50, y: 80 },
+      { text: 'LABEL TWO', x: 80, y: 60 },
     ],
   },
   {
-    id: 'two-buttons',
-    name: 'Two Buttons Choice',
+    id: 'side-by-side-choice',
+    name: 'Side-by-Side Choice',
     url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
     defaultTexts: [
       { text: 'OPTION A', x: 30, y: 30 },
@@ -29,8 +35,8 @@ export const POPULAR_MEME_TEMPLATES: MemeTemplate[] = [
     ],
   },
   {
-    id: 'doge-vibe',
-    name: 'Retro Meme Classic',
+    id: 'classic-top-bottom',
+    name: 'Classic Top/Bottom Text',
     url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80',
     defaultTexts: [
       { text: 'TOP TEXT GOES HERE', x: 50, y: 15 },

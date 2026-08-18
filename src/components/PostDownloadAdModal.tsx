@@ -112,37 +112,37 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
   const getFileIcon = (fileItemName: string) => {
     const ext = fileItemName.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '')) {
-      return <ImageIcon className="w-3.5 h-3.5 text-emerald-500 shrink-0" />;
+      return <ImageIcon className="w-3.5 h-3.5 text-[#2f7a4f] shrink-0" />;
     }
     if (['mp4', 'webm', 'mov', 'avi'].includes(ext || '')) {
-      return <Film className="w-3.5 h-3.5 text-blue-500 shrink-0" />;
+      return <Film className="w-3.5 h-3.5 text-[#2d5da1] shrink-0" />;
     }
     if (ext === 'pdf') {
-      return <FileText className="w-3.5 h-3.5 text-rose-500 shrink-0" />;
+      return <FileText className="w-3.5 h-3.5 text-[#ff4d4d] shrink-0" />;
     }
-    return <FileCode className="w-3.5 h-3.5 text-neutral-400 shrink-0" />;
+    return <FileCode className="w-3.5 h-3.5 text-[#2d2d2d]/[0.7] shrink-0" />;
   };
 
   const totalFilesCount = processedFiles.length > 0 ? processedFiles.length : itemCount;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-fade-in">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-2xl p-6 text-neutral-900 dark:text-neutral-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2d2d2d]/70 backdrop-blur-xs animate-fade-in">
+      <div className="relative w-full max-w-lg overflow-hidden wobbly-md bg-[#fdfbf7] dark:bg-[#2d2822] border-[3px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand-lg p-6 text-[#2d2d2d] dark:text-[#f3ede2]">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-lg text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="absolute top-4 right-4 p-2 wobbly-sm text-[#2d2d2d]/60 dark:text-[#f3ede2]/60 hover:text-[#2d2d2d] dark:hover:text-[#f3ede2] hover:bg-[#e5e0d8] dark:hover:bg-[#3a352f] transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0 border border-emerald-500/20">
+          <div className="p-3 wobbly-sm bg-[#fff9c4] dark:bg-[#3a352f] text-[#2f7a4f] dark:text-[#7dd3a0] shrink-0 border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] -rotate-2">
             <CheckCircle2 className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-black uppercase tracking-tight">Download Complete</h3>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 font-mono">
+            <h3 className="text-xl font-bold">Batch Complete!</h3>
+            <p className="text-xs text-[#2d2d2d]/60 dark:text-[#f3ede2]/60 font-mono">
               {totalFilesCount > 1
                 ? `Successfully processed ${totalFilesCount} files.`
                 : `Successfully saved ${fileName || 'your file'}.`}
@@ -152,15 +152,15 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
 
         {/* Batch Archive ZIP Card */}
         {(processedFiles.length > 0 || onDownloadZip || itemCount > 1) && (
-          <div className="mb-5 p-4 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/80 space-y-3">
+          <div className="mb-5 p-4 wobbly-sm bg-white dark:bg-[#332e29] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Archive className="w-4 h-4 text-emerald-500" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
+                <Archive className="w-4 h-4 text-[#2d5da1]" />
+                <h4 className="text-xs font-bold uppercase tracking-wider">
                   Batch ZIP Archive
                 </h4>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+              <span className="text-[10px] font-mono px-2 py-0.5 wobbly-pill bg-[#fff9c4] dark:bg-[#3a352f] font-bold border-[2px] border-[#2d2d2d] dark:border-[#f3ede2]">
                 {totalFilesCount} {totalFilesCount === 1 ? 'file' : 'files'}
               </span>
             </div>
@@ -171,11 +171,11 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
                 {processedFiles.map((file, idx) => (
                   <div
                     key={`batch-file-${idx}-${file.name}`}
-                    className="p-2 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center justify-between gap-2"
+                    className="p-2 wobbly-sm bg-[#fdfbf7] dark:bg-[#2d2822] border-[2px] border-[#2d2d2d]/40 dark:border-[#f3ede2]/40 flex items-center justify-between gap-2"
                   >
                     <div className="flex items-center gap-2 overflow-hidden min-w-0">
                       {getFileIcon(file.name)}
-                      <span className="text-xs font-mono font-medium text-neutral-800 dark:text-neutral-200 truncate">
+                      <span className="text-xs font-mono font-medium truncate">
                         {file.name}
                       </span>
                     </div>
@@ -183,7 +183,7 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
                       <a
                         href={file.url}
                         download={file.name}
-                        className="p-1 rounded text-neutral-400 hover:text-black dark:hover:text-white transition-colors"
+                        className="p-1 wobbly-sm text-[#2d2d2d]/50 dark:text-[#f3ede2]/50 hover:text-[#2d2d2d] dark:hover:text-[#f3ede2] transition-colors cursor-pointer"
                         title={`Download ${file.name}`}
                       >
                         <Download className="w-3.5 h-3.5" />
@@ -198,11 +198,7 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
             <button
               onClick={handleZipDownload}
               disabled={isZipping}
-              className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
-                zipSuccess
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-black text-white dark:bg-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200'
-              } shadow-xs disabled:opacity-50 active:scale-98`}
+              className={`w-full ${zipSuccess ? 'bg-[#2f7a4f] text-white border-[#2d2d2d]' : 'btn-primary'} disabled:opacity-50`}
             >
               {isZipping ? (
                 <>
@@ -214,7 +210,7 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
                 </>
               ) : (
                 <>
-                  <Package className="w-4 h-4 text-emerald-400" /> Download All ({totalFilesCount}) as ZIP Archive (.zip)
+                  <Package className="w-4 h-4" /> Download All ({totalFilesCount}) as ZIP
                 </>
               )}
             </button>
@@ -224,16 +220,16 @@ export const PostDownloadAdModal: React.FC<PostDownloadAdModalProps> = ({
         {/* Ad Unit inside post-download modal */}
         <AdSlot type="modal" />
 
-        <div className="mt-4 pt-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 text-xs font-mono text-neutral-500 dark:text-neutral-400">
-            <ShieldCheck className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
+        <div className="mt-4 pt-4 border-t-2 border-dashed border-[#2d2d2d]/20 dark:border-[#f3ede2]/20 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 text-xs font-mono text-[#2d2d2d]/60 dark:text-[#f3ede2]/60">
+            <ShieldCheck className="w-4 h-4" />
             <span>Zero server data retained</span>
           </div>
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
+            className="btn-secondary !px-5 !py-2.5"
           >
-            Done / Convert More
+            Done
           </button>
         </div>
       </div>

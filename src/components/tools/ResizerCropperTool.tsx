@@ -120,7 +120,7 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
       categoryBadgeColor="emerald"
       title={meta.title}
       description={meta.subtitle}
-      icon={<Crop className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />}
+      icon={<Crop className="w-6 h-6 text-[#2f7a4f] dark:text-[#2f7a4f]" />}
     >
       <div className="space-y-6">
         {!imageSrc ? (
@@ -133,20 +133,20 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
         ) : (
           <div className="space-y-8">
             {/* Main Controls Panel */}
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
+            <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Sliders className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Dimension Controls
+                  <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white flex items-center gap-2">
+                    <Sliders className="w-4 h-4 text-[#2f7a4f] dark:text-[#2f7a4f]" /> Dimension Controls
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
                     Original Resolution: {origW} x {origH} px
                   </p>
                 </div>
 
                 <button
                   onClick={handleClear}
-                  className="text-xs text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1 font-medium cursor-pointer"
+                  className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] flex items-center gap-1 font-medium cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Clear Image
                 </button>
@@ -154,7 +154,7 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
 
               {/* Preset Buttons Grid */}
               <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                <span className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                   Popular Social & Passport Presets
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
@@ -162,10 +162,10 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
                     <button
                       key={preset.id}
                       onClick={() => handlePresetSelect(preset.id)}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      className={`p-2.5 wobbly-sm border text-left transition-all cursor-pointer ${
                         selectedPresetId === preset.id
-                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:border-emerald-500'
+                          ? 'bg-[#2f7a4f] text-white border-[#2f7a4f] shadow-hand-sm'
+                          : 'bg-white dark:bg-[#332e29] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-[#2d2d2d]/[0.92] dark:text-[#f3ede2]/[0.55] hover:border-[#2f7a4f]'
                       }`}
                     >
                       <div className="text-xs font-bold truncate">{preset.label}</div>
@@ -180,25 +180,25 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
               {/* Exact Custom Dimensions Inputs */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                  <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                     Width (Pixels)
                   </label>
                   <input
                     type="number"
                     value={targetWidth}
                     onChange={(e) => handleWidthChange(parseInt(e.target.value, 10) || 0)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white"
+                    className="w-full px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                    <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                       Height (Pixels)
                     </label>
                     <button
                       onClick={() => setLockAspect(!lockAspect)}
-                      className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1 cursor-pointer"
+                      className="text-[11px] font-mono text-[#2f7a4f] dark:text-[#2f7a4f] flex items-center gap-1 cursor-pointer"
                     >
                       {lockAspect ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                       {lockAspect ? 'Aspect Locked' : 'Unlocked'}
@@ -208,12 +208,12 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
                     type="number"
                     value={targetHeight}
                     onChange={(e) => handleHeightChange(parseInt(e.target.value, 10) || 0)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white"
+                    className="w-full px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                  <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                     Percentage Scaling: {scalePct}%
                   </label>
                   <input
@@ -231,27 +231,27 @@ export const ResizerCropperTool: React.FC<ResizerCropperToolProps> = ({
 
             {/* Live Canvas Preview */}
             {processedUrl && (
-              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4 text-center">
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+              <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4 text-center">
+                <div className="flex items-center justify-between text-xs font-mono font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55]">
                   <span>Resized Preview</span>
                   <span>
                     Output: {targetWidth} x {targetHeight} px
                   </span>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-center max-h-96 overflow-hidden">
+                <div className="p-4 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-center max-h-96 overflow-hidden">
                   <img
                     src={processedUrl}
                     alt="Resized output"
-                    className="max-h-80 w-auto object-contain rounded-lg shadow-xs"
+                    className="max-h-80 w-auto object-contain wobbly-sm shadow-hand-sm"
                   />
                 </div>
 
                 <button
                   onClick={handleDownload}
-                  className="w-full sm:w-auto px-8 py-3 rounded-xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer mx-auto"
+                  className="w-full sm:w-auto px-8 py-3 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-hand transition-all cursor-pointer mx-auto"
                 >
-                  <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Download Resized Image
+                  <Download className="w-4 h-4 text-[#2f7a4f] dark:text-white" /> Download Resized Image
                 </button>
               </div>
             )}

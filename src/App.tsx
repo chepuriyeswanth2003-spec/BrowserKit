@@ -17,7 +17,7 @@ import { TermsView } from './components/views/TermsView';
 import { ProgrammaticLandingPage } from './components/views/ProgrammaticLandingPage';
 import { CategorySuiteView } from './components/views/CategorySuiteView';
 import { NotFoundView } from './components/views/NotFoundView';
-import { isPublicTool } from './lib/publicTools';
+import { isPublicTool, isReachableTool } from './lib/publicTools';
 
 // Dynamic React.lazy imports for heavy tools to eliminate unused JavaScript on home load
 const CompressorTool = lazy(() => import('./components/tools/CompressorTool').then((m) => ({ default: m.CompressorTool })));
@@ -111,6 +111,7 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'html-to-pdf',
     'pdf-editor',
     'pdf-signer',
+    'pdf-metadata',
     'pdf-watermark',
     'pdf-rotator',
     'pdf-organizer',
@@ -134,7 +135,7 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'terms',
   ];
 
-  if (validPages.includes(path as ActivePage) && (!TOOL_METADATA[path as ToolType] || isPublicTool(path as ToolType))) {
+  if (validPages.includes(path as ActivePage) && (!TOOL_METADATA[path as ToolType] || isReachableTool(path as ToolType))) {
     return { page: path as ActivePage, slug: '' };
   }
 
@@ -149,7 +150,7 @@ function parsePathToState(rawPath: string): { page: ActivePage; slug: string } {
     'unlock-zip': 'zip-password-remover',
   };
 
-  if (aliases[path] && isPublicTool(aliases[path] as ToolType)) {
+  if (aliases[path] && isReachableTool(aliases[path] as ToolType)) {
     return { page: aliases[path], slug: '' };
   }
 
@@ -217,7 +218,7 @@ export default function App() {
   }, [activePage, currentSlug]);
 
   const navigateToPage = (page: ActivePage) => {
-    if (TOOL_METADATA[page as ToolType] && !isPublicTool(page as ToolType)) {
+    if (TOOL_METADATA[page as ToolType] && !isReachableTool(page as ToolType)) {
       setActivePage('not-found');
       setCurrentSlug('');
       window.history.pushState(null, '', '/not-found');
@@ -251,6 +252,13 @@ export default function App() {
     count: number = 1,
     files?: ProcessedFileItem[]
   ) => {
+    // Only interrupt the flow with the batch-archive modal when it adds real value —
+    // multiple files worth zipping together. A single-file download just downloads;
+    // popping a full-screen modal (with an ad slot) after every single action was
+    // pure friction with no benefit to the user.
+    const isBatch = count > 1 || (files && files.length > 1);
+    if (!isBatch) return;
+
     setDownloadFilename(filename);
     setDownloadFileCount(count);
     if (files) setDownloadFilesList(files);
@@ -366,6 +374,7 @@ export default function App() {
             case 'html-to-pdf':
             case 'pdf-editor':
             case 'pdf-signer':
+            case 'pdf-metadata':
             case 'pdf-watermark':
             case 'pdf-rotator':
             case 'pdf-organizer':

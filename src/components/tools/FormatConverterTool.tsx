@@ -211,7 +211,7 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
       categoryBadgeColor="emerald"
       title={meta.title}
       description={meta.subtitle}
-      icon={<RefreshCw className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />}
+      icon={<RefreshCw className="w-6 h-6 text-[#2f7a4f] dark:text-[#2f7a4f]" />}
     >
       <div className="space-y-6">
         <Dropzone
@@ -224,15 +224,15 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
         {items.length > 0 && (
           <div className="space-y-6">
             {/* Controls Bar */}
-            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+            <div className="p-5 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <RefreshCw className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <RefreshCw className="w-5 h-5 text-[#2f7a4f] dark:text-[#2f7a4f] shrink-0" />
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white flex items-center gap-2">
                       Target Output Format
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
                       Select a global mode or customize per file
                     </p>
                   </div>
@@ -241,40 +241,40 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
                 <div className="flex flex-wrap gap-1.5 w-full sm:w-auto">
                   <button
                     onClick={() => handleGlobalModeChange('auto')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 wobbly-sm text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                       globalMode === 'auto'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                        ? 'bg-[#2f7a4f] text-white shadow-hand-sm'
+                        : 'bg-white dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] border border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
                     }`}
                   >
                     <Wand2 className="w-3.5 h-3.5" /> Smart Auto-Detect
                   </button>
                   <button
                     onClick={() => handleGlobalModeChange('image/webp')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 wobbly-sm text-xs font-mono font-bold transition-all cursor-pointer ${
                       globalMode === 'image/webp'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                        ? 'bg-[#2f7a4f] text-white shadow-hand-sm'
+                        : 'bg-white dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] border border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
                     }`}
                   >
                     WEBP
                   </button>
                   <button
                     onClick={() => handleGlobalModeChange('image/jpeg')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 wobbly-sm text-xs font-mono font-bold transition-all cursor-pointer ${
                       globalMode === 'image/jpeg'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                        ? 'bg-[#2f7a4f] text-white shadow-hand-sm'
+                        : 'bg-white dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] border border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
                     }`}
                   >
                     JPG
                   </button>
                   <button
                     onClick={() => handleGlobalModeChange('image/png')}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 wobbly-sm text-xs font-mono font-bold transition-all cursor-pointer ${
                       globalMode === 'image/png'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                        ? 'bg-[#2f7a4f] text-white shadow-hand-sm'
+                        : 'bg-white dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] border border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
                     }`}
                   >
                     PNG
@@ -284,9 +284,9 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
             </div>
 
             {/* Global Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-900 dark:text-emerald-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 wobbly-md bg-[#2f7a4f] dark:bg-[#2f7a4f]/40 border border-[2px] border-[#2f7a4f] dark:border-[#2f7a4f]/60">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#2f7a4f] dark:text-[#2f7a4f]">
+                <CheckCircle2 className="w-4 h-4 text-[#2f7a4f] dark:text-[#2f7a4f] shrink-0" />
                 <span>
                   {items.filter((i) => i.status === 'done').length} of {items.length} files converted locally
                 </span>
@@ -294,7 +294,7 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
               <button
                 onClick={handleDownloadAllZip}
                 disabled={items.filter((i) => i.status === 'done').length === 0}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50 transition-all cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-hand hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] disabled:opacity-50 transition-all cursor-pointer"
               >
                 <Archive className="w-4 h-4" /> Download All as ZIP
               </button>
@@ -305,11 +305,11 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs"
+                  className="p-4 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-hand-sm"
                 >
                   <div className="flex items-center gap-3 overflow-hidden w-full md:w-auto">
                     {item.convertedUrl ? (
-                      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                      <div className="w-12 h-12 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] overflow-hidden shrink-0 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
                         <img
                           src={item.convertedUrl}
                           alt={item.name}
@@ -317,29 +317,29 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
                         />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0 flex items-center justify-center font-mono text-xs text-slate-500 font-bold border border-slate-200 dark:border-slate-700">
+                      <div className="w-12 h-12 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] shrink-0 flex items-center justify-center font-mono text-xs text-[#2d2d2d]/[0.7] font-bold border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
                         FILE
                       </div>
                     )}
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-xs">
+                        <h4 className="text-xs font-bold text-[#2d2d2d] dark:text-white truncate max-w-xs">
                           {item.name}
                         </h4>
                         {item.autoDetection && globalMode === 'auto' && (
-                          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-mono font-bold">
+                          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 wobbly-sm bg-[#2f7a4f] dark:bg-[#2f7a4f] text-[#2f7a4f] dark:text-[#2f7a4f] text-[10px] font-mono font-bold">
                             <Sparkles className="w-3 h-3" /> {item.autoDetection.reason}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                      <div className="flex items-center gap-2 text-[11px] font-mono text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] mt-0.5">
                         <span>{formatBytes(item.size)}</span>
                         {item.outSize && (
                           <>
                             <span>→</span>
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                            <span className="font-bold text-[#2f7a4f] dark:text-[#2f7a4f]">
                               {formatBytes(item.outSize)}
                             </span>
                           </>
@@ -358,7 +358,7 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
                           e.target.value as 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
                         )
                       }
-                      className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white cursor-pointer"
+                      className="px-2.5 py-1.5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-white cursor-pointer"
                     >
                       <option value="image/webp">Convert to WEBP</option>
                       <option value="image/jpeg">Convert to JPG</option>
@@ -368,14 +368,14 @@ export const FormatConverterTool: React.FC<FormatConverterToolProps> = ({ onDown
                     <button
                       onClick={() => handleDownloadSingle(item)}
                       disabled={item.status !== 'done'}
-                      className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50 hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
+                      className="px-4 py-2 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50 hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] shadow-hand-sm transition-all cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" /> Download
                     </button>
 
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                      className="p-2 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

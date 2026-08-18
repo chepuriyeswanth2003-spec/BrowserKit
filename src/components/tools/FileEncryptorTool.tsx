@@ -61,17 +61,17 @@ export const FileEncryptorTool: React.FC = () => {
   };
 
   const getPasswordStrength = (pwd: string) => {
-    if (!pwd) return { label: 'Empty', color: 'bg-neutral-300 dark:bg-neutral-700', percent: 0 };
+    if (!pwd) return { label: 'Empty', color: 'bg-[#d8d2c4] dark:bg-[#332e29]', percent: 0 };
     let score = 0;
     if (pwd.length >= 8) score += 25;
     if (pwd.length >= 12) score += 25;
     if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score += 25;
     if (/[0-9]/.test(pwd) && /[^A-Za-z0-9]/.test(pwd)) score += 25;
 
-    if (score <= 25) return { label: 'Weak', color: 'bg-rose-500', percent: 25 };
-    if (score <= 50) return { label: 'Fair', color: 'bg-amber-500', percent: 50 };
-    if (score <= 75) return { label: 'Good', color: 'bg-emerald-500', percent: 75 };
-    return { label: 'Strong', color: 'bg-emerald-600', percent: 100 };
+    if (score <= 25) return { label: 'Weak', color: 'bg-[#ff4d4d]', percent: 25 };
+    if (score <= 50) return { label: 'Fair', color: 'bg-[#b8860b]', percent: 50 };
+    if (score <= 75) return { label: 'Good', color: 'bg-[#2f7a4f]', percent: 75 };
+    return { label: 'Strong', color: 'bg-[#2f7a4f]', percent: 100 };
   };
 
   const handleFilesSelectedToEncrypt = (selectedFiles: File[]) => {
@@ -174,18 +174,18 @@ export const FileEncryptorTool: React.FC = () => {
   const getFileIcon = (fileName: string, mimeType?: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(ext || '') || mimeType?.includes('image')) {
-      return <ImageIcon className="w-4 h-4 text-emerald-500" />;
+      return <ImageIcon className="w-4 h-4 text-[#2f7a4f]" />;
     }
     if (['mp4', 'webm', 'mov', 'avi'].includes(ext || '') || mimeType?.includes('video')) {
-      return <Film className="w-4 h-4 text-blue-500" />;
+      return <Film className="w-4 h-4 text-[#2d5da1]" />;
     }
     if (ext === 'pdf' || mimeType?.includes('pdf')) {
-      return <FileText className="w-4 h-4 text-rose-500" />;
+      return <FileText className="w-4 h-4 text-[#ff4d4d]" />;
     }
     if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext || '') || mimeType?.includes('zip')) {
-      return <Archive className="w-4 h-4 text-amber-500" />;
+      return <Archive className="w-4 h-4 text-[#b8860b]" />;
     }
-    return <FileCode className="w-4 h-4 text-neutral-500" />;
+    return <FileCode className="w-4 h-4 text-[#2d2d2d]/[0.7]" />;
   };
 
   const strength = getPasswordStrength(password);
@@ -196,19 +196,19 @@ export const FileEncryptorTool: React.FC = () => {
       categoryBadgeColor="indigo"
       title="AES-256 Client-Side File Encryptor & Decryptor"
       description="Encrypt photos, documents, and videos with password protection 100% locally in your browser RAM."
-      icon={<Lock className="w-6 h-6 text-indigo-600" />}
+      icon={<Lock className="w-6 h-6 text-[#2d5da1]" />}
     >
       {/* Mode Switcher */}
-      <div className="flex items-center justify-center p-1 rounded-xl bg-neutral-200 dark:bg-neutral-900 w-full max-w-md mx-auto border border-neutral-300 dark:border-neutral-800">
+      <div className="flex items-center justify-center p-1 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] w-full max-w-md mx-auto border border-[2px] border-[#2d2d2d]/[0.4] dark:border-[#f3ede2]">
         <button
           onClick={() => {
             setMode('encrypt');
             setErrorMsg(null);
           }}
-          className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${
+          className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider wobbly-sm flex items-center justify-center gap-2 transition-all ${
             mode === 'encrypt'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
-              : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-hand-sm'
+              : 'text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] hover:text-black dark:hover:text-white'
           }`}
         >
           <Lock className="w-3.5 h-3.5" /> Encrypt Files (.ENC)
@@ -219,10 +219,10 @@ export const FileEncryptorTool: React.FC = () => {
             setMode('decrypt');
             setErrorMsg(null);
           }}
-          className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${
+          className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider wobbly-sm flex items-center justify-center gap-2 transition-all ${
             mode === 'decrypt'
-              ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
-              : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
+              ? 'bg-black text-white dark:bg-white dark:text-black shadow-hand-sm'
+              : 'text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] hover:text-black dark:hover:text-white'
           }`}
         >
           <Unlock className="w-3.5 h-3.5" /> Decrypt Files (.ENC)
@@ -230,28 +230,28 @@ export const FileEncryptorTool: React.FC = () => {
       </div>
 
       {/* Security Banner */}
-      <div className="p-4 rounded-xl bg-neutral-900 text-white border border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+      <div className="p-4 wobbly-sm bg-[#2d2d2d] text-white border border-[2px] border-[#2d2d2d] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-hand-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+          <div className="p-2 wobbly-sm bg-[#2f7a4f]/10 text-[#2f7a4f] border border-[2px] border-[#2f7a4f]/20 shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
               AES-256-GCM On-Device Encryption
             </h4>
-            <p className="text-[11px] text-neutral-400 font-mono mt-0.5">
+            <p className="text-[11px] text-[#2d2d2d]/[0.7] font-mono mt-0.5">
               PBKDF2 key derivation (100,000 rounds) + 256-bit AES authenticated vault.
             </p>
           </div>
         </div>
 
-        <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded bg-neutral-800 border border-neutral-700 text-neutral-300">
+        <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-1 wobbly-sm bg-[#2d2d2d] border border-[2px] border-[#2d2d2d] text-[#2d2d2d]/[0.7]">
           Zero-Server Upload
         </span>
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-mono flex items-center gap-2">
+        <div className="p-3.5 wobbly-sm bg-[#ff4d4d]/10 border border-[2px] border-[#ff4d4d]/20 text-[#ff4d4d] dark:text-[#ff4d4d] text-xs font-mono flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
@@ -268,14 +268,14 @@ export const FileEncryptorTool: React.FC = () => {
           />
 
           {filesToEncrypt.length > 0 && (
-            <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
-              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
+            <div className="p-6 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">
                   Selected Files ({filesToEncrypt.length})
                 </h3>
                 <button
                   onClick={() => setFilesToEncrypt([])}
-                  className="text-xs text-neutral-500 hover:text-black dark:hover:text-white flex items-center gap-1 font-medium"
+                  className="text-xs text-[#2d2d2d]/[0.7] hover:text-black dark:hover:text-white flex items-center gap-1 font-medium"
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Clear All
                 </button>
@@ -286,15 +286,15 @@ export const FileEncryptorTool: React.FC = () => {
                 {filesToEncrypt.map((f, idx) => (
                   <div
                     key={`enc-${idx}-${f.name}`}
-                    className="p-2.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 flex items-center justify-between gap-3"
+                    className="p-2.5 wobbly-sm bg-[#fdfbf7] dark:bg-[#332e29]/60 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-2.5 overflow-hidden">
                       {getFileIcon(f.name, f.type)}
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-neutral-900 dark:text-neutral-100 truncate">
+                        <p className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] truncate">
                           {f.name}
                         </p>
-                        <p className="text-[11px] font-mono text-neutral-500">
+                        <p className="text-[11px] font-mono text-[#2d2d2d]/[0.7]">
                           {(f.size / (1024 * 1024)).toFixed(2)} MB
                         </p>
                       </div>
@@ -303,7 +303,7 @@ export const FileEncryptorTool: React.FC = () => {
                       onClick={() =>
                         setFilesToEncrypt((prev) => prev.filter((_, i) => i !== idx))
                       }
-                      className="p-1 rounded text-neutral-400 hover:text-rose-500 hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                      className="p-1 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] hover:bg-[#e5e0d8] dark:hover:bg-[#332e29]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -312,14 +312,14 @@ export const FileEncryptorTool: React.FC = () => {
               </div>
 
               {/* Password Controls */}
-              <div className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+              <div className="space-y-4 pt-4 border-t border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
-                    <Key className="w-3.5 h-3.5 text-neutral-500" /> Set Encryption Passphrase
+                  <label className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5 text-[#2d2d2d]/[0.7]" /> Set Encryption Passphrase
                   </label>
                   <button
                     onClick={generateStrongPassword}
-                    className="text-[11px] font-mono font-bold text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white flex items-center gap-1"
+                    className="text-[11px] font-mono font-bold text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] hover:text-black dark:hover:text-white flex items-center gap-1"
                   >
                     <Sparkles className="w-3 h-3" /> Generate Password
                   </button>
@@ -333,12 +333,12 @@ export const FileEncryptorTool: React.FC = () => {
                         placeholder="Enter password..."
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-3.5 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-mono text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white pr-10"
+                        className="w-full px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-[#fdfbf7] dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white pr-10"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-2.5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
+                        className="absolute right-3 top-2.5 text-[#2d2d2d]/[0.7] hover:text-[#2d2d2d]/[0.75] dark:hover:text-[#f3ede2]/[0.55]"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -347,11 +347,11 @@ export const FileEncryptorTool: React.FC = () => {
                     {/* Password Strength Indicator */}
                     {password && (
                       <div className="space-y-1 pt-1">
-                        <div className="flex items-center justify-between text-[10px] font-mono text-neutral-500">
+                        <div className="flex items-center justify-between text-[10px] font-mono text-[#2d2d2d]/[0.7]">
                           <span>Strength:</span>
                           <span className="font-bold">{strength.label}</span>
                         </div>
-                        <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+                        <div className="w-full h-1 bg-[#e5e0d8] dark:bg-[#332e29] wobbly-pill overflow-hidden">
                           <div
                             className={`h-full transition-all duration-300 ${strength.color}`}
                             style={{ width: `${strength.percent}%` }}
@@ -367,7 +367,7 @@ export const FileEncryptorTool: React.FC = () => {
                       placeholder="Confirm password..."
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-mono text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                      className="w-full px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-[#fdfbf7] dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                     />
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export const FileEncryptorTool: React.FC = () => {
                 <button
                   onClick={handleEncryptBatch}
                   disabled={isProcessing || filesToEncrypt.length === 0 || !password}
-                  className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-xs flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95"
+                  className="px-6 py-2.5 wobbly-sm text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-[#2d2d2d] dark:hover:bg-[#3a352f] shadow-hand-sm flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95"
                 >
                   {isProcessing ? (
                     <>
@@ -407,9 +407,9 @@ export const FileEncryptorTool: React.FC = () => {
           />
 
           {encryptedFiles.length > 0 && (
-            <div className="p-6 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-xs space-y-6">
-              <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-neutral-100">
+            <div className="p-6 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+              <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">
                   Encrypted Files ({encryptedFiles.length})
                 </h3>
                 <button
@@ -417,7 +417,7 @@ export const FileEncryptorTool: React.FC = () => {
                     setEncryptedFiles([]);
                     setDecryptedResult([]);
                   }}
-                  className="text-xs text-neutral-500 hover:text-black dark:hover:text-white flex items-center gap-1 font-medium"
+                  className="text-xs text-[#2d2d2d]/[0.7] hover:text-black dark:hover:text-white flex items-center gap-1 font-medium"
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Clear
                 </button>
@@ -427,15 +427,15 @@ export const FileEncryptorTool: React.FC = () => {
                 {encryptedFiles.map((item, idx) => (
                   <div
                     key={`dec-f-${idx}-${item.file.name}`}
-                    className="p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 flex items-center justify-between gap-3"
+                    className="p-3 wobbly-sm bg-[#fdfbf7] dark:bg-[#332e29]/60 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
-                      <Lock className="w-4 h-4 text-neutral-500 shrink-0" />
+                      <Lock className="w-4 h-4 text-[#2d2d2d]/[0.7] shrink-0" />
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-neutral-900 dark:text-neutral-100 truncate">
+                        <p className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] truncate">
                           {item.meta ? item.meta.originalName : item.file.name}
                         </p>
-                        <p className="text-[11px] font-mono text-neutral-500">
+                        <p className="text-[11px] font-mono text-[#2d2d2d]/[0.7]">
                           Encrypted Package | {(item.file.size / 1024).toFixed(1)} KB
                         </p>
                       </div>
@@ -444,7 +444,7 @@ export const FileEncryptorTool: React.FC = () => {
                       onClick={() =>
                         setEncryptedFiles((prev) => prev.filter((_, i) => i !== idx))
                       }
-                      className="p-1 rounded text-neutral-400 hover:text-rose-500 hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                      className="p-1 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] hover:bg-[#e5e0d8] dark:hover:bg-[#332e29]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -452,8 +452,8 @@ export const FileEncryptorTool: React.FC = () => {
                 ))}
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-neutral-200 dark:border-neutral-800">
-                <label className="text-xs font-bold text-neutral-900 dark:text-neutral-100 block">
+              <div className="space-y-2 pt-2 border-t border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
+                <label className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] block">
                   Enter Password to Unlock:
                 </label>
                 <div className="relative">
@@ -462,12 +462,12 @@ export const FileEncryptorTool: React.FC = () => {
                     placeholder="Passphrase..."
                     value={decryptPassword}
                     onChange={(e) => setDecryptPassword(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-mono text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white pr-10"
+                    className="w-full px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-[#fdfbf7] dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200"
+                    className="absolute right-3 top-2.5 text-[#2d2d2d]/[0.7] hover:text-[#2d2d2d]/[0.75] dark:hover:text-[#f3ede2]/[0.55]"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -478,7 +478,7 @@ export const FileEncryptorTool: React.FC = () => {
                 <button
                   onClick={handleDecryptBatch}
                   disabled={isProcessing || !decryptPassword}
-                  className="px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-xs flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95"
+                  className="px-6 py-2.5 wobbly-sm text-xs font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black hover:bg-[#2d2d2d] dark:hover:bg-[#3a352f] shadow-hand-sm flex items-center gap-2 disabled:opacity-50 transition-all active:scale-95"
                 >
                   {isProcessing ? (
                     <>
@@ -494,8 +494,8 @@ export const FileEncryptorTool: React.FC = () => {
 
               {/* Decrypted Previews */}
               {decryptedResult.length > 0 && (
-                <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 space-y-3">
-                  <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <div className="pt-4 border-t border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] space-y-3">
+                  <h4 className="text-xs font-bold text-[#2f7a4f] dark:text-[#2f7a4f] uppercase tracking-wider flex items-center gap-1.5">
                     <Check className="w-4 h-4" /> Successfully Decrypted ({decryptedResult.length})
                   </h4>
 
@@ -503,18 +503,18 @@ export const FileEncryptorTool: React.FC = () => {
                     {decryptedResult.map((res, idx) => (
                       <div
                         key={`dec-res-${idx}`}
-                        className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between gap-2"
+                        className="p-3 wobbly-sm bg-[#2f7a4f]/10 border border-[2px] border-[#2f7a4f]/20 flex items-center justify-between gap-2"
                       >
                         <div className="flex items-center gap-2 overflow-hidden">
                           {getFileIcon(res.originalName, res.mimeType)}
-                          <span className="text-xs font-bold text-neutral-900 dark:text-neutral-100 truncate">
+                          <span className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] truncate">
                             {res.originalName}
                           </span>
                         </div>
                         <a
                           href={res.url}
                           download={res.originalName}
-                          className="px-3 py-1 rounded bg-black text-white dark:bg-white dark:text-black text-[11px] font-mono font-bold shrink-0 flex items-center gap-1"
+                          className="px-3 py-1 wobbly-sm bg-black text-white dark:bg-white dark:text-black text-[11px] font-mono font-bold shrink-0 flex items-center gap-1"
                         >
                           <Download className="w-3 h-3" /> Save
                         </a>

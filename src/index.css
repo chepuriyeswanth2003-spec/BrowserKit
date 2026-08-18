@@ -2,33 +2,61 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/*
+  ============================================================
+  HAND-DRAWN DESIGN SYSTEM
+  Warm paper backgrounds, wobbly borders, hard offset shadows,
+  handwritten typography. No straight lines, no soft blur shadows.
+  Dark mode uses an analogous "warm dark paper" palette so the
+  existing theme toggle keeps working with the same aesthetic.
+  ============================================================
+*/
+
 @theme {
-  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Kalam', cursive, system-ui, sans-serif;
+  --font-sans: 'Patrick Hand', cursive, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --color-brand-bg: #ffffff;
+  --color-paper: #fdfbf7;
+  --color-pencil: #2d2d2d;
+  --color-paper-muted: #e5e0d8;
+  --color-marker-red: #ff4d4d;
+  --color-ballpoint-blue: #2d5da1;
+  --color-postit-yellow: #fff9c4;
+
+  --color-brand-bg: #fdfbf7;
   --color-brand-surface: #ffffff;
-  --color-brand-border: #e2e8f0;
-  --color-brand-cyan: #06b6d4;
-  --color-brand-emerald: #10b981;
+  --color-brand-border: #2d2d2d;
+  --color-brand-cyan: #2d5da1;
+  --color-brand-emerald: #2f7a4f;
 }
 
 @layer base {
   html {
-    @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white;
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply text-[#2d2d2d] dark:text-[#f3ede2] selection:bg-[#ff4d4d] selection:text-white;
+    background-color: #fdfbf7;
+    font-family: 'Patrick Hand', cursive, system-ui, sans-serif;
     scroll-behavior: smooth;
+    background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  html.dark {
+    background-color: #262220;
+    background-image: radial-gradient(#3a352f 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 
   body {
-    @apply bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen antialiased tracking-normal;
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply min-h-screen antialiased tracking-normal;
+    background: transparent;
+    font-family: 'Patrick Hand', cursive, system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    letter-spacing: -0.025em;
+    font-family: 'Kalam', cursive, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   code, pre, .font-mono {
@@ -77,26 +105,98 @@
   }
 }
 
-/* Modern Minimalist Button Animations & Micro-Interactions */
+/* ============================================================
+   Wobbly Borders — irregular hand-drawn edges (no perfect rounding)
+   ============================================================ */
+@utility wobbly {
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+@utility wobbly-md {
+  border-radius: 20px 12px 24px 10px / 12px 24px 10px 20px;
+}
+@utility wobbly-sm {
+  border-radius: 12px 8px 14px 6px / 8px 14px 6px 12px;
+}
+@utility wobbly-pill {
+  border-radius: 999px 12px 999px 12px / 12px 999px 12px 999px;
+}
+
+/* Hard offset shadows — no blur, cut-paper collage look */
+@utility shadow-hand {
+  box-shadow: 4px 4px 0px 0px #2d2d2d;
+}
+@utility shadow-hand-lg {
+  box-shadow: 8px 8px 0px 0px #2d2d2d;
+}
+@utility shadow-hand-sm {
+  box-shadow: 2px 2px 0px 0px #2d2d2d;
+}
+
+@layer utilities {
+  .dark .shadow-hand {
+    box-shadow: 4px 4px 0px 0px #f3ede2;
+  }
+  .dark .shadow-hand-lg {
+    box-shadow: 8px 8px 0px 0px #f3ede2;
+  }
+  .dark .shadow-hand-sm {
+    box-shadow: 2px 2px 0px 0px #f3ede2;
+  }
+
+  .jiggle-hover {
+    transition: transform 100ms ease-out, box-shadow 100ms ease-out;
+  }
+  .jiggle-hover:hover {
+    transform: rotate(-1deg);
+  }
+
+  /* Tape strip decoration for cards */
+  .tape-strip {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 90px;
+    height: 26px;
+    background: rgba(210, 205, 190, 0.55);
+    border: 1px solid rgba(150, 145, 130, 0.3);
+  }
+
+  /* Thumbtack decoration */
+  .tack-dot {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ff4d4d;
+    border: 1px solid #b32d2d;
+    box-shadow: 1px 1px 0px 0px rgba(45, 45, 45, 0.4);
+  }
+}
+
+/* Hand-Drawn Button & Card Component Styling */
 @layer components {
   .btn-interactive {
-    @apply transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer select-none;
+    @apply transition-all duration-100 ease-out cursor-pointer select-none;
   }
 
   .btn-primary {
-    @apply px-6 py-3 rounded-2xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-xs hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer;
+    @apply px-6 py-3 wobbly-pill bg-white dark:bg-[#332e29] text-[#2d2d2d] dark:text-[#f3ede2] font-bold text-sm border-[3px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand hover:bg-[#ff4d4d] hover:text-white hover:shadow-hand-sm hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all duration-100 ease-out flex items-center justify-center gap-2 cursor-pointer;
   }
 
   .btn-secondary {
-    @apply px-5 py-3 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-200 font-bold text-xs uppercase tracking-wider border border-slate-200 dark:border-slate-800 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer;
+    @apply px-5 py-3 wobbly-pill bg-[#e5e0d8] dark:bg-[#3a352f] text-[#2d2d2d] dark:text-[#f3ede2] font-bold text-sm border-[3px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand hover:bg-[#2d5da1] hover:text-white hover:shadow-hand-sm hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all duration-100 ease-out flex items-center justify-center gap-2 cursor-pointer;
   }
 
   .btn-ghost {
-    @apply px-4 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-150 ease-out active:scale-95 flex items-center justify-center gap-2 cursor-pointer;
+    @apply px-4 py-2.5 wobbly-sm text-[#2d2d2d] dark:text-[#f3ede2] hover:bg-[#e5e0d8] dark:hover:bg-[#3a352f] border-[2px] border-transparent hover:border-[#2d2d2d] dark:hover:border-[#f3ede2] transition-all duration-100 ease-out active:scale-95 flex items-center justify-center gap-2 cursor-pointer;
   }
 
   .card-minimalist {
-    @apply bg-white dark:bg-slate-950 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-shadow duration-300;
+    @apply bg-white dark:bg-[#2d2822] wobbly-md border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] shadow-hand transition-transform duration-100 hover:-rotate-1;
   }
 }
 
@@ -108,4 +208,13 @@
 
 .animate-subtle-pulse {
   animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+.animate-gentle-bounce {
+  animation: gentle-bounce 3s ease-in-out infinite;
 }

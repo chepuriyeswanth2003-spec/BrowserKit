@@ -44,7 +44,7 @@ export const ZipArchiverTool: React.FC = () => {
       categoryBadgeColor="amber"
       title="ZIP Archiver & File Compressor"
       description="Bundle multiple files into a single compressed .zip file 100% locally in your browser."
-      icon={<Archive className="w-6 h-6 text-amber-600" />}
+      icon={<Archive className="w-6 h-6 text-[#b8860b]" />}
     >
       <div className="space-y-6">
         <Dropzone
@@ -55,10 +55,10 @@ export const ZipArchiverTool: React.FC = () => {
         />
 
         {files.length > 0 && (
-          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-4">
+          <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-4">
               <div className="space-y-1 w-full sm:w-auto">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                   Archive Output Filename
                 </label>
                 <input
@@ -66,13 +66,13 @@ export const ZipArchiverTool: React.FC = () => {
                   value={zipFileName}
                   onChange={(e) => setZipFileName(e.target.value)}
                   placeholder="archive.zip"
-                  className="w-full sm:w-64 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white"
+                  className="w-full sm:w-64 px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs font-mono text-[#2d2d2d] dark:text-white"
                 />
               </div>
 
               <button
                 onClick={() => setFiles([])}
-                className="text-xs text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1 font-medium cursor-pointer"
+                className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] flex items-center gap-1 font-medium cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Clear All Files
               </button>
@@ -82,22 +82,22 @@ export const ZipArchiverTool: React.FC = () => {
               {files.map((file, index) => (
                 <div
                   key={`${file.name}-${index}`}
-                  className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3"
+                  className="p-3 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between gap-3"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <Archive className="w-4 h-4 text-amber-500 shrink-0" />
-                    <span className="text-xs font-mono font-bold text-slate-900 dark:text-white truncate">
+                    <Archive className="w-4 h-4 text-[#b8860b] shrink-0" />
+                    <span className="text-xs font-mono font-bold text-[#2d2d2d] dark:text-white truncate">
                       {file.name}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-[11px] font-mono text-slate-400">
+                    <span className="text-[11px] font-mono text-[#2d2d2d]/[0.7]">
                       {(file.size / 1024).toFixed(1)} KB
                     </span>
                     <button
                       onClick={() => removeFile(index)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
+                      className="p-1 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -110,7 +110,7 @@ export const ZipArchiverTool: React.FC = () => {
               <button
                 onClick={handleCreateZip}
                 disabled={files.length === 0 || isZipping}
-                className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-md flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
+                className="px-6 py-3 wobbly-sm text-xs font-bold uppercase tracking-wider bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] shadow-hand flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
               >
                 {isZipping ? (
                   <>
@@ -118,7 +118,7 @@ export const ZipArchiverTool: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Archive className="w-4 h-4 text-emerald-400 dark:text-white" /> Download ZIP ({files.length} files)
+                    <Archive className="w-4 h-4 text-[#2f7a4f] dark:text-white" /> Download ZIP ({files.length} files)
                   </>
                 )}
               </button>

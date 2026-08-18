@@ -14,7 +14,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
   const articles = [
     {
       id: 'compress-guide',
-      icon: <Minimize2 className="w-5 h-5 text-emerald-600" />,
+      icon: <Minimize2 className="w-5 h-5 text-[#2f7a4f]" />,
       title: 'How Client-Side Image Compression Shrinks PNG & JPG Files Under 100KB',
       category: 'Image Optimization',
       readTime: '5 min read',
@@ -22,19 +22,19 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
       toolLabel: 'Open Image Compressor',
       summary: 'Learn how WebP quantization and lossy HTML5 Canvas encoding reduce image payload sizes by up to 90% while keeping visual quality intact for portal uploads.',
       fullContent: (
-        <div className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        <div className="space-y-4 text-xs sm:text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] leading-relaxed font-normal">
           <p>
             When uploading photos to government portals, college admission forms, or email attachments, you often encounter strict file size limits—such as requiring photos to be <strong>under 50KB, 100KB, or 200KB</strong>.
           </p>
 
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+          <h3 className="text-sm sm:text-base font-bold text-[#2d2d2d] dark:text-white pt-2">
             Why Legacy Cloud Converters Pose Privacy Risks
           </h3>
           <p>
             Traditional online image compression sites require you to upload your personal photos, ID headshots, and confidential documents to remote cloud servers. Once uploaded, your images may linger in cloud server temp directories or be processed by third-party analytics trackers.
           </p>
 
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+          <h3 className="text-sm sm:text-base font-bold text-[#2d2d2d] dark:text-white pt-2">
             How BrowserKit's Client-Side Engine Works
           </h3>
           <p>
@@ -48,7 +48,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
             <li><strong>Instant Local Export:</strong> The compressed PNG, JPG, or WebP blob is generated locally and saved straight to your downloads folder.</li>
           </ul>
 
-          <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs font-mono">
+          <div className="p-4 wobbly-sm bg-[#2f7a4f] dark:bg-[#2f7a4f]/40 border border-[2px] border-[#2f7a4f] dark:border-[#2f7a4f] text-[#2f7a4f] dark:text-[#2f7a4f] text-xs font-mono">
             💡 <strong>Pro Tip:</strong> Converting heavy PNG graphics to WebP or JPEG can save an extra 30% to 50% file weight with zero noticeable difference in human visual perception.
           </div>
         </div>
@@ -56,7 +56,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
     },
     {
       id: 'pdf-unlock-guide',
-      icon: <Lock className="w-5 h-5 text-rose-600" />,
+      icon: <Lock className="w-5 h-5 text-[#ff4d4d]" />,
       title: 'Why Unlocking PDFs & Removing Passwords Locally is 100% Safer Than Cloud Sites',
       category: 'PDF Security',
       readTime: '6 min read',
@@ -64,19 +64,19 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
       toolLabel: 'Open PDF Unlocker',
       summary: 'Discover how WebAssembly unlocks password-protected PDFs and strips printing, editing, and copying locks directly inside your browser memory without cloud transfers.',
       fullContent: (
-        <div className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        <div className="space-y-4 text-xs sm:text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] leading-relaxed font-normal">
           <p>
             Password-protected PDF files—such as bank statements, tax returns, paystubs, legal contracts, and medical records—are locked with encryption to protect sensitive personal data. However, when you need to print, edit, or split these documents, entering passwords every time becomes frustrating.
           </p>
 
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+          <h3 className="text-sm sm:text-base font-bold text-[#2d2d2d] dark:text-white pt-2">
             The Danger of Uploading Protected Documents to Cloud Sites
           </h3>
           <p>
             Many online "PDF unlocker" websites require uploading your password-protected PDF alongside your decryption password to their remote cloud servers. This exposes your most sensitive financial and identity records to server-side logging and potential data breaches.
           </p>
 
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+          <h3 className="text-sm sm:text-base font-bold text-[#2d2d2d] dark:text-white pt-2">
             Client-Side Decryption via pdf-lib WebAssembly
           </h3>
           <p>
@@ -90,7 +90,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
             <li><strong>Clean PDF Generation:</strong> A clean, unencrypted PDF document is exported directly to disk without a single byte ever being transmitted over the internet.</li>
           </ul>
 
-          <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-xs font-mono">
+          <div className="p-4 wobbly-sm bg-[#ff4d4d] dark:bg-[#ff4d4d]/40 border border-[2px] border-[#ff4d4d] dark:border-[#ff4d4d] text-[#ff4d4d] dark:text-[#ff4d4d] text-xs font-mono">
             🔒 <strong>Security Guarantee:</strong> Open your browser DevTools Network tab while unlocking a PDF—you will observe zero network uploads or external API requests.
           </div>
         </div>
@@ -98,7 +98,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
     },
     {
       id: 'heic-to-jpg-guide',
-      icon: <RefreshCw className="w-5 h-5 text-blue-600" />,
+      icon: <RefreshCw className="w-5 h-5 text-[#2d5da1]" />,
       title: 'How to Convert iPhone HEIC Photos to JPG on Windows & Mac Without Software',
       category: 'Image Conversion',
       readTime: '4 min read',
@@ -106,12 +106,12 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
       toolLabel: 'Open Format Converter',
       summary: 'Learn how iPhone High-Efficiency Image Coding (HEIC) format works and how to batch convert HEIC photos to universal high-res JPG images.',
       fullContent: (
-        <div className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        <div className="space-y-4 text-xs sm:text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] leading-relaxed font-normal">
           <p>
             Apple iPhones use **HEIC (High Efficiency Image Format)** by default to save camera storage space. While HEIC images offer excellent quality at smaller file sizes, many Windows PCs, Android devices, website upload portals, and photo printing kiosks fail to open `.heic` files.
           </p>
 
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+          <h3 className="text-sm sm:text-base font-bold text-[#2d2d2d] dark:text-white pt-2">
             Converting HEIC to JPG 100% Client-Side
           </h3>
           <p>
@@ -129,7 +129,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
     },
     {
       id: 'aes256-encrypt-guide',
-      icon: <ShieldCheck className="w-5 h-5 text-purple-600" />,
+      icon: <ShieldCheck className="w-5 h-5 text-[#6b4fa0]" />,
       title: 'Understanding Client-Side AES-256 Password Encryption Vaults in Web Browsers',
       category: 'Security Vault',
       readTime: '5 min read',
@@ -137,12 +137,12 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
       toolLabel: 'Open File Encryptor',
       summary: 'Explore how Web Crypto APIs use PBKDF2 key derivation and AES-256-GCM authenticated encryption to protect confidential files before sending over email.',
       fullContent: (
-        <div className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+        <div className="space-y-4 text-xs sm:text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] leading-relaxed font-normal">
           <p>
             Sending unencrypted PDFs, images, or documents over email or cloud storage links exposes your personal files to interception. Encrypting files with a master password ensures that only recipient possessing the password can open them.
           </p>
 
-          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white pt-2">
+          <h3 className="text-sm sm:text-base font-bold text-[#2d2d2d] dark:text-white pt-2">
             The Web Crypto API & AES-256-GCM Architecture
           </h3>
           <p>
@@ -163,13 +163,13 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
     <div className="w-full space-y-10 animate-fade-in max-w-4xl mx-auto">
       {/* Header Banner */}
       <div className="space-y-3 text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800">
-          <BookOpen className="w-3.5 h-3.5 text-emerald-500" /> Web Utilities & Security Guides
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 wobbly-pill text-xs font-mono font-bold uppercase tracking-wider bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.92] dark:text-[#f3ede2]/[0.55] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
+          <BookOpen className="w-3.5 h-3.5 text-[#2f7a4f]" /> Web Utilities & Security Guides
         </div>
-        <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl md:text-5xl font-black text-[#2d2d2d] dark:text-white tracking-tight">
           BrowserKit SEO Tutorials
         </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400 font-medium max-w-2xl mx-auto">
+        <p className="text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] font-medium max-w-2xl mx-auto">
           In-depth technical articles explaining client-side WebAssembly image processing, browser-native PDF unlocking, HEIC photo conversion, and AES-256 security.
         </p>
         <div className="pt-1 flex justify-center">
@@ -184,43 +184,43 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
           return (
             <article
               key={article.id}
-              className="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-all space-y-4"
+              className="p-6 md:p-8 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm transition-all space-y-4"
             >
-              <div className="flex items-center justify-between gap-2 text-xs font-mono text-slate-500 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center justify-between gap-2 text-xs font-mono text-[#2d2d2d]/[0.7] border-b border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] pb-3">
                 <div className="flex items-center gap-2">
                   {article.icon}
-                  <span className="font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                  <span className="font-bold text-[#2d2d2d] dark:text-white uppercase tracking-wider">
                     {article.category}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span>{article.readTime}</span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold">
+                  <span className="px-2 py-0.5 wobbly-pill bg-[#2f7a4f] dark:bg-[#2f7a4f] text-[#2f7a4f] dark:text-[#2f7a4f] font-bold">
                     100% Client-Side
                   </span>
                 </div>
               </div>
 
-              <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">
+              <h2 className="text-xl md:text-2xl font-extrabold text-[#2d2d2d] dark:text-white leading-snug">
                 {article.title}
               </h2>
 
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] font-medium leading-relaxed">
                 {article.summary}
               </p>
 
               {/* Expandable Article Content */}
               {isExpanded ? (
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4 animate-fade-in">
+                <div className="pt-4 border-t border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] space-y-4 animate-fade-in">
                   {article.fullContent}
                 </div>
               ) : null}
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+              <div className="pt-4 border-t border-[#2d2d2d]/[0.15] dark:border-[#f3ede2] flex items-center justify-between gap-4">
                 <button
                   onClick={() => setExpandedGuide(isExpanded ? null : article.id)}
-                  className="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] hover:text-[#2d2d2d] flex items-center gap-1 cursor-pointer"
                 >
                   {isExpanded ? (
                     <>
@@ -235,7 +235,7 @@ export const GuidesView: React.FC<GuidesViewProps> = ({ setActivePage }) => {
 
                 <button
                   onClick={() => setActivePage(article.toolTarget)}
-                  className="px-5 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 shadow-sm flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+                  className="px-5 py-2.5 wobbly-md text-xs font-bold uppercase tracking-wider bg-[#2d2d2d] dark:bg-white text-white dark:text-[#f3ede2] hover:bg-[#2d2d2d] dark:hover:bg-[#3a352f] shadow-hand-sm flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
                 >
                   <span>{article.toolLabel}</span> <ArrowRight className="w-3.5 h-3.5" />
                 </button>

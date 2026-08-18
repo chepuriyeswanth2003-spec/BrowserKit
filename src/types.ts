@@ -45,6 +45,7 @@ export type ToolType =
   | 'html-to-pdf'
   | 'pdf-editor'
   | 'pdf-signer'
+  | 'pdf-metadata'
   | 'pdf-watermark'
   | 'pdf-rotator'
   | 'pdf-organizer'

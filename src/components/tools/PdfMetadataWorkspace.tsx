@@ -67,74 +67,74 @@ export const PdfMetadataWorkspace: React.FC<PdfMetadataWorkspaceProps> = ({ file
   if (loading) {
     return (
       <div className="p-12 text-center space-y-3">
-        <RefreshCw className="size-8 animate-spin text-rose-600 mx-auto" />
-        <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Reading PDF document properties...</p>
+        <RefreshCw className="size-8 animate-spin text-[#ff4d4d] mx-auto" />
+        <p className="text-sm font-medium text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">Reading PDF document properties...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 space-y-4">
-        <h4 className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Edit3 className="size-5 text-indigo-600" />
+      <div className="p-5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#262220] space-y-4">
+        <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] flex items-center gap-2">
+          <Edit3 className="size-5 text-[#2d5da1]" />
           Edit PDF Document Properties & Metadata
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Document Title:</label>
+            <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Document Title:</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Annual Financial Report"
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3 py-2 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] wobbly-sm bg-white dark:bg-[#332e29] text-sm text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Author / Creator:</label>
+            <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Author / Creator:</label>
             <input
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               placeholder="e.g. John Doe"
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3 py-2 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] wobbly-sm bg-white dark:bg-[#332e29] text-sm text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Subject:</label>
+            <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Subject:</label>
             <input
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="e.g. Q4 Performance Analysis"
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3 py-2 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] wobbly-sm bg-white dark:bg-[#332e29] text-sm text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Application / Producer:</label>
+            <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Application / Producer:</label>
             <input
               type="text"
               value={creator}
               onChange={(e) => setCreator(e.target.value)}
               placeholder="e.g. BrowserKit Studio PRO"
-              className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3 py-2 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] wobbly-sm bg-white dark:bg-[#332e29] text-sm text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Keywords (Comma Separated):</label>
+          <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Keywords (Comma Separated):</label>
           <input
             type="text"
             value={keywords}
             onChange={(e) => setKeywords(e.target.value)}
             placeholder="e.g. finance, report, 2026, quarterly"
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-slate-100"
+            className="w-full px-3 py-2 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] wobbly-sm bg-white dark:bg-[#332e29] text-sm text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]"
           />
         </div>
       </div>
@@ -143,7 +143,7 @@ export const PdfMetadataWorkspace: React.FC<PdfMetadataWorkspaceProps> = ({ file
         <button
           onClick={handleSaveMetadata}
           disabled={processing}
-          className="w-full py-3.5 px-4 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-50 transition-all btn-interactive flex items-center justify-center gap-2 shadow-sm"
+          className="w-full py-3.5 px-4 wobbly-sm bg-[#2d2d2d] dark:bg-[#3a352f] text-white dark:text-[#f3ede2] font-semibold hover:bg-[#2d2d2d] dark:hover:bg-[#3a352f] disabled:opacity-50 transition-all btn-interactive flex items-center justify-center gap-2 shadow-hand-sm"
         >
           {processing ? (
             <>
@@ -160,19 +160,19 @@ export const PdfMetadataWorkspace: React.FC<PdfMetadataWorkspaceProps> = ({ file
       )}
 
       {processedUrl && (
-        <div className="p-6 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-4">
+        <div className="p-6 wobbly-sm border border-[2px] border-[#2f7a4f] dark:border-[#2f7a4f]/80 bg-[#2f7a4f]/50 dark:bg-[#2f7a4f]/20 space-y-4">
           <div className="flex items-center gap-3">
-            <CheckCircle className="size-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <CheckCircle className="size-6 text-[#2f7a4f] dark:text-[#2f7a4f] shrink-0" />
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100">Document Metadata Updated!</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400">PDF document properties saved successfully on-device.</p>
+              <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">Document Metadata Updated!</h4>
+              <p className="text-xs text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">PDF document properties saved successfully on-device.</p>
             </div>
           </div>
 
           <a
             href={processedUrl}
             download={`metadata_${file.name}`}
-            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all btn-interactive flex items-center justify-center gap-2 shadow-md text-center block"
+            className="w-full py-3 px-4 wobbly-sm bg-[#2f7a4f] hover:bg-[#2f7a4f] text-white font-semibold transition-all btn-interactive flex items-center justify-center gap-2 shadow-hand text-center block"
           >
             <Download className="size-5 inline" />
             Download Updated PDF

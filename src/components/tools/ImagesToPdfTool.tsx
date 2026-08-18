@@ -64,7 +64,7 @@ export const ImagesToPdfTool: React.FC = () => {
       categoryBadgeColor="rose"
       title="Convert Images to PDF Online"
       description="Convert JPG, PNG, WebP, and SVG images into a professional PDF document."
-      icon={<FilePlus className="w-6 h-6 text-rose-600" />}
+      icon={<FilePlus className="w-6 h-6 text-[#ff4d4d]" />}
     >
       <div className="space-y-6">
         <Dropzone
@@ -76,17 +76,17 @@ export const ImagesToPdfTool: React.FC = () => {
         />
 
         {images.length > 0 && (
-          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
+          <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
             {/* Settings */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pb-4 border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                   Page Format
                 </label>
                 <select
                   value={pageSize}
                   onChange={(e: any) => setPageSize(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs text-[#2d2d2d] dark:text-white"
                 >
                   <option value="a4">Standard A4 (210 x 297 mm)</option>
                   <option value="letter">US Letter (8.5 x 11 in)</option>
@@ -95,13 +95,13 @@ export const ImagesToPdfTool: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                   Page Orientation
                 </label>
                 <select
                   value={orientation}
                   onChange={(e: any) => setOrientation(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs text-[#2d2d2d] dark:text-white"
                 >
                   <option value="portrait">Vertical (Portrait)</option>
                   <option value="landscape">Horizontal (Landscape)</option>
@@ -109,7 +109,7 @@ export const ImagesToPdfTool: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                   Border Margin: {margin}px
                 </label>
                 <input
@@ -128,13 +128,13 @@ export const ImagesToPdfTool: React.FC = () => {
               {images.map((file, idx) => (
                 <div
                   key={`${file.name}-${idx}`}
-                  className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3"
+                  className="p-3 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between gap-3"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 wobbly-pill bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] text-xs font-mono font-bold flex items-center justify-center shrink-0">
                       {idx + 1}
                     </span>
-                    <span className="text-xs font-mono font-bold text-slate-900 dark:text-white truncate">
+                    <span className="text-xs font-mono font-bold text-[#2d2d2d] dark:text-white truncate">
                       {file.name}
                     </span>
                   </div>
@@ -143,20 +143,20 @@ export const ImagesToPdfTool: React.FC = () => {
                     <button
                       onClick={() => moveUp(idx)}
                       disabled={idx === 0}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                      className="p-1.5 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] disabled:opacity-30 hover:bg-[#e5e0d8] dark:hover:bg-[#332e29] cursor-pointer"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => moveDown(idx)}
                       disabled={idx === images.length - 1}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                      className="p-1.5 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] disabled:opacity-30 hover:bg-[#e5e0d8] dark:hover:bg-[#332e29] cursor-pointer"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => removeImage(idx)}
-                      className="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 hover:bg-rose-200 ml-1 cursor-pointer"
+                      className="p-1.5 wobbly-sm bg-[#ff4d4d] dark:bg-[#ff4d4d]/60 text-[#ff4d4d] dark:text-[#ff4d4d] hover:bg-[#ff4d4d] ml-1 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -169,7 +169,7 @@ export const ImagesToPdfTool: React.FC = () => {
               <button
                 onClick={handleGeneratePdf}
                 disabled={images.length === 0 || isGenerating}
-                className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-md flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
+                className="px-6 py-3 wobbly-sm text-xs font-bold uppercase tracking-wider bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] shadow-hand flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
               >
                 {isGenerating ? (
                   <>
@@ -177,7 +177,7 @@ export const ImagesToPdfTool: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Convert {images.length} Images to PDF
+                    <Download className="w-4 h-4 text-[#2f7a4f] dark:text-white" /> Convert {images.length} Images to PDF
                   </>
                 )}
               </button>

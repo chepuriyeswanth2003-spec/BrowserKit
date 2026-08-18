@@ -86,9 +86,9 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
     return (
       <Suspense
         fallback={
-          <div className="bg-white dark:bg-slate-900 p-12 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-3 my-8 shadow-xs">
-            <div className="w-10 h-10 border-4 border-slate-900 dark:border-slate-100 border-t-emerald-500 rounded-full animate-spin mx-auto" />
-            <p className="text-sm font-bold text-slate-800 dark:text-white">Loading Tool Workspace...</p>
+          <div className="bg-white dark:bg-[#332e29] p-12 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-center space-y-3 my-8 shadow-hand-sm">
+            <div className="w-10 h-10 border-4 border-[#2d2d2d] dark:border-[#f3ede2]/[0.15] border-t-emerald-500 wobbly-pill animate-spin mx-auto" />
+            <p className="text-sm font-bold text-[#2d2d2d]/[0.92] dark:text-white">Loading Tool Workspace...</p>
           </div>
         }
       >
@@ -187,18 +187,18 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
     <div className="space-y-10 animate-fade-in pb-12">
       {/* Dynamic SEO Header */}
       <header className="space-y-4 text-center max-w-3xl mx-auto pt-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm">
-          <ShieldCheck className="w-4 h-4 text-emerald-400 dark:text-emerald-600" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 wobbly-pill text-xs font-mono font-bold bg-[#2d2d2d] text-white dark:bg-[#3a352f] dark:text-[#f3ede2] shadow-hand-sm">
+          <ShieldCheck className="w-4 h-4 text-[#2f7a4f] dark:text-[#2f7a4f]" />
           100% PRIVATE • ZERO CLOUD UPLOADS
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+        <h1 className="text-3xl sm:text-4xl font-black text-[#2d2d2d] dark:text-white tracking-tight leading-tight">
           {route.h1}
         </h1>
 
-        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
-          Convert and process your <span className="font-bold text-slate-900 dark:text-white">{route.sourceFormat}</span> files to{' '}
-          <span className="font-bold text-slate-900 dark:text-white">{route.targetFormat}</span> instantly inside your web browser. Enjoy complete data privacy with guaranteed zero remote server transfers.
+        <p className="text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+          Convert and process your <span className="font-bold text-[#2d2d2d] dark:text-white">{route.sourceFormat}</span> files to{' '}
+          <span className="font-bold text-[#2d2d2d] dark:text-white">{route.targetFormat}</span> instantly inside your web browser. Enjoy complete data privacy with guaranteed zero remote server transfers.
         </p>
       </header>
 
@@ -212,12 +212,12 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
         {route.primaryBenefits.map((benefit, idx) => (
           <div
             key={idx}
-            className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3"
+            className="p-6 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-3"
           >
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-sm">
+            <div className="w-10 h-10 wobbly-md bg-[#2f7a4f]/10 text-[#2f7a4f] dark:text-[#2f7a4f] flex items-center justify-center font-mono font-bold text-sm">
               0{idx + 1}
             </div>
-            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] font-medium leading-relaxed">
               {benefit}
             </p>
           </div>
@@ -225,24 +225,24 @@ export const ProgrammaticLandingPage: React.FC<ProgrammaticLandingPageProps> = (
       </section>
 
       {/* Step-by-Step Instructions */}
-      <section className="p-8 rounded-3xl bg-slate-900 dark:bg-slate-900 border border-slate-800 text-white space-y-6 shadow-md">
+      <section className="p-8 wobbly-md bg-[#2d2d2d] dark:bg-[#332e29] border border-[2px] border-[#2d2d2d] text-white space-y-6 shadow-hand">
         <div className="space-y-1">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-emerald-400" />
+            <Sparkles className="w-5 h-5 text-[#2f7a4f]" />
             How to use this tool
           </h2>
-          <p className="text-xs text-slate-400 font-mono">
+          <p className="text-xs text-[#2d2d2d]/[0.7] font-mono">
             3 simple steps to process your files 100% locally
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
           {route.steps.map((step, idx) => (
-            <div key={idx} className="space-y-2 border-l-2 border-emerald-500/40 pl-4">
-              <span className="text-xs font-mono font-bold text-emerald-400 uppercase">
+            <div key={idx} className="space-y-2 border-l-2 border-[#2f7a4f]/40 pl-4">
+              <span className="text-xs font-mono font-bold text-[#2f7a4f] uppercase">
                 Step {idx + 1}
               </span>
-              <p className="text-xs text-slate-300 leading-relaxed font-medium">
+              <p className="text-xs text-[#2d2d2d]/[0.7] leading-relaxed font-medium">
                 {step}
               </p>
             </div>

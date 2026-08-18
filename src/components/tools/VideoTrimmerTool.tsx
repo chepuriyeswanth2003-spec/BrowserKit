@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Dropzone } from '../Dropzone';
 import { Video, Play, Pause, VolumeX, Volume2, Download, Trash2, Loader2 } from 'lucide-react';
 import { ToolPageShell } from './ToolPageShell';
+import { ffmpegTrimVideo } from '../../lib/ffmpegEngine';
 
 export const VideoTrimmerTool: React.FC = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -67,58 +68,32 @@ export const VideoTrimmerTool: React.FC = () => {
     return `${m}:${s < 10 ? '0' : ''}${s}.${ms}`;
   };
 
+  const [progress, setProgress] = useState<number>(0);
+
   const handleDownload = async () => {
-    if (!videoUrl || !videoFile || !videoRef.current) return;
+    if (!videoFile) return;
     setIsTrimming(true);
+    setProgress(0);
 
     try {
-      const videoEl = videoRef.current;
-      videoEl.pause();
-      videoEl.currentTime = startTime;
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      const stream = (videoEl as any).captureStream ? (videoEl as any).captureStream() : null;
-
-      if (stream && typeof MediaRecorder !== 'undefined') {
-        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-        const chunks: Blob[] = [];
-
-        recorder.ondataavailable = (e) => {
-          if (e.data.size > 0) chunks.push(e.data);
-        };
-
-        recorder.onstop = () => {
-          const blob = new Blob(chunks, { type: 'video/webm' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `trimmed_${isMuted ? 'muted_' : ''}${videoFile.name.replace(/\.[^/.]+$/, '')}.webm`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setIsTrimming(false);
-        };
-
-        recorder.start();
-        videoEl.muted = isMuted;
-        videoEl.play();
-
-        const durationMs = Math.max(500, (endTime - startTime) * 1000);
-        setTimeout(() => {
-          videoEl.pause();
-          recorder.stop();
-        }, durationMs);
-      } else {
-        const a = document.createElement('a');
-        a.href = videoUrl;
-        a.download = `trimmed_${videoFile.name}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setIsTrimming(false);
-      }
-    } catch {
+      const blob = await ffmpegTrimVideo(
+        videoFile,
+        startTime,
+        endTime,
+        (ratio) => setProgress(Math.round(ratio * 100)),
+        isMuted
+      );
+      const url = URL.createObjectURL(blob);
+      const ext = blob.type.includes('mp4') ? 'mp4' : videoFile.name.split('.').pop() || 'mp4';
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `trimmed_${isMuted ? 'muted_' : ''}${videoFile.name.replace(/\.[^/.]+$/, '')}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setIsTrimming(false);
+    } catch (err) {
+      console.error('Trim failed:', err);
       setIsTrimming(false);
     }
   };
@@ -137,7 +112,7 @@ export const VideoTrimmerTool: React.FC = () => {
       categoryBadgeColor="blue"
       title="Video Trimmer & Audio Cutter"
       description="Trim start/end timestamps, mute audio, or slice video clips 100% locally."
-      icon={<Video className="w-6 h-6 text-blue-600" />}
+      icon={<Video className="w-6 h-6 text-[#2d5da1]" />}
     >
       {!videoFile ? (
         <Dropzone
@@ -148,24 +123,24 @@ export const VideoTrimmerTool: React.FC = () => {
           multiple={false}
         />
       ) : (
-        <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4">
+        <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-6">
+          <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+              <div className="p-2.5 wobbly-sm bg-[#2d5da1] dark:bg-[#2d5da1]/60 text-[#2d5da1] dark:text-[#2d5da1] border border-[2px] border-[#2d5da1] dark:border-[#2d5da1]">
                 <Video className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
+                <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white truncate max-w-xs sm:max-w-md">
                   {videoFile.name}
                 </h3>
-                <p className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                <p className="text-xs font-mono text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
                   Duration: {formatTime(duration)} | Size: {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
                 </p>
               </div>
             </div>
             <button
               onClick={clearFile}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+              className="p-2 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 transition-colors cursor-pointer"
               title="Remove File"
             >
               <Trash2 className="w-4 h-4" />
@@ -173,7 +148,7 @@ export const VideoTrimmerTool: React.FC = () => {
           </div>
 
           {/* Video Player */}
-          <div className="relative rounded-2xl overflow-hidden bg-black flex items-center justify-center max-h-96 shadow-md">
+          <div className="relative wobbly-md overflow-hidden bg-black flex items-center justify-center max-h-96 shadow-hand">
             <video
               ref={videoRef}
               src={videoUrl || undefined}
@@ -184,7 +159,7 @@ export const VideoTrimmerTool: React.FC = () => {
             />
             <button
               onClick={togglePlay}
-              className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-sm transition-all cursor-pointer"
+              className="absolute inset-0 m-auto w-14 h-14 wobbly-pill bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-sm transition-all cursor-pointer"
             >
               {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
             </button>
@@ -192,16 +167,16 @@ export const VideoTrimmerTool: React.FC = () => {
 
           {/* Timeline Trimmer Controls */}
           <div className="space-y-4 pt-2">
-            <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+            <div className="flex items-center justify-between text-xs font-mono font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55]">
               <span>Current: {formatTime(currentTime)}</span>
               <span>Selection: {formatTime(startTime)} — {formatTime(endTime)} ({formatTime(endTime - startTime)})</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] flex items-center justify-between">
                   <span>Start Timestamp</span>
-                  <span className="font-mono text-slate-500">{formatTime(startTime)}</span>
+                  <span className="font-mono text-[#2d2d2d]/[0.7]">{formatTime(startTime)}</span>
                 </label>
                 <input
                   type="range"
@@ -219,9 +194,9 @@ export const VideoTrimmerTool: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] flex items-center justify-between">
                   <span>End Timestamp</span>
-                  <span className="font-mono text-slate-500">{formatTime(endTime)}</span>
+                  <span className="font-mono text-[#2d2d2d]/[0.7]">{formatTime(endTime)}</span>
                 </label>
                 <input
                   type="range"
@@ -242,10 +217,10 @@ export const VideoTrimmerTool: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
               <button
                 onClick={() => setIsMuted(!isMuted)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 border transition-all cursor-pointer ${
+                className={`px-4 py-2.5 wobbly-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2 border transition-all cursor-pointer ${
                   isMuted
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
-                    : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#2d2d2d] text-white dark:bg-white dark:text-[#f3ede2] border-transparent'
+                    : 'bg-white dark:bg-[#332e29] text-[#2d2d2d]/[0.92] dark:text-[#f3ede2]/[0.55] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
                 }`}
               >
                 {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -255,10 +230,10 @@ export const VideoTrimmerTool: React.FC = () => {
               <button
                 onClick={handleDownload}
                 disabled={isTrimming}
-                className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white shadow-md flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                className="px-6 py-3 wobbly-sm text-xs font-bold uppercase tracking-wider bg-[#2d2d2d] hover:bg-[#2d2d2d] dark:bg-[#2f7a4f] dark:hover:bg-[#2f7a4f] text-white shadow-hand flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
               >
-                {isTrimming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 text-emerald-400 dark:text-white" />}
-                {isTrimming ? 'Processing Trim...' : 'Download Trimmed Clip'}
+                {isTrimming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 text-[#2f7a4f] dark:text-white" />}
+                {isTrimming ? `Processing Trim${progress > 0 ? ` (${progress}%)` : '...'}` : 'Download Trimmed Clip'}
               </button>
             </div>
           </div>

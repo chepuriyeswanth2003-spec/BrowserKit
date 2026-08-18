@@ -137,12 +137,12 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
       categoryBadgeColor="amber"
       title={meta.title}
       description={meta.subtitle}
-      icon={<Smile className="w-6 h-6 text-amber-600 dark:text-amber-400" />}
+      icon={<Smile className="w-6 h-6 text-[#b8860b] dark:text-[#b8860b]" />}
     >
       <div className="space-y-6">
         {/* Template Gallery Picker */}
         <div className="space-y-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
             Select Template or Upload Custom Photo
           </span>
 
@@ -151,18 +151,18 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
               <div
                 key={tpl.id}
                 onClick={() => handleSelectTemplate(tpl)}
-                className={`p-2 rounded-2xl border cursor-pointer transition-all flex flex-col items-center space-y-1.5 ${
+                className={`p-2 wobbly-md border cursor-pointer transition-all flex flex-col items-center space-y-1.5 ${
                   !customImageSrc && selectedTemplate.id === tpl.id
-                    ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-500 shadow-xs'
-                    : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-amber-400'
+                    ? 'bg-[#b8860b] dark:bg-[#b8860b]/60 border-[#b8860b] shadow-hand-sm'
+                    : 'bg-[#fdfbf7] dark:bg-[#332e29]/80 border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] hover:border-[#b8860b]'
                 }`}
               >
                 <img
                   src={tpl.url}
                   alt={tpl.name}
-                  className="w-full h-20 object-cover rounded-xl border border-slate-200 dark:border-slate-700"
+                  className="w-full h-20 object-cover wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]"
                 />
-                <span className="text-[11px] font-bold text-slate-900 dark:text-white truncate max-w-full">
+                <span className="text-[11px] font-bold text-[#2d2d2d] dark:text-white truncate max-w-full">
                   {tpl.name}
                 </span>
               </div>
@@ -180,39 +180,39 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
         </div>
 
         {/* Studio Workspace: Live Preview + Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
           {/* Live Preview Canvas */}
           <div className="space-y-3 text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
               Live Rendered Preview
             </span>
             {previewUrl && (
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+              <div className="p-4 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-center overflow-hidden">
                 <img
                   src={previewUrl}
                   alt="Meme Preview"
-                  className="max-h-96 w-auto object-contain rounded-xl shadow-md"
+                  className="max-h-96 w-auto object-contain wobbly-sm shadow-hand"
                 />
               </div>
             )}
 
             <button
               onClick={handleDownloadMeme}
-              className="w-full py-3 rounded-xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+              className="w-full py-3 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-hand transition-all cursor-pointer"
             >
-              <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Download High-Res Meme PNG
+              <Download className="w-4 h-4 text-[#2f7a4f] dark:text-white" /> Download High-Res Meme PNG
             </button>
           </div>
 
           {/* Text Layers Editor */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                <Type className="w-4 h-4 text-amber-600 dark:text-amber-400" /> Text Layers ({textLayers.length})
+              <span className="text-xs font-bold uppercase tracking-wider text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] flex items-center gap-1.5">
+                <Type className="w-4 h-4 text-[#b8860b] dark:text-[#b8860b]" /> Text Layers ({textLayers.length})
               </span>
               <button
                 onClick={addTextLayer}
-                className="px-3 py-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-xs font-bold flex items-center gap-1 hover:bg-amber-200 transition-colors cursor-pointer"
+                className="px-3 py-1.5 wobbly-sm bg-[#b8860b] dark:bg-[#b8860b]/80 text-[#b8860b] dark:text-[#b8860b] text-xs font-bold flex items-center gap-1 hover:bg-[#b8860b] transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Text Layer
               </button>
@@ -222,15 +222,15 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
               {textLayers.map((layer, idx) => (
                 <div
                   key={layer.id}
-                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3"
+                  className="p-4 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] space-y-3"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-mono font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55]">
                       Layer #{idx + 1}
                     </span>
                     <button
                       onClick={() => removeTextLayer(layer.id)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
+                      className="p-1 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -240,12 +240,12 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
                     type="text"
                     value={layer.text}
                     onChange={(e) => updateTextLayer(layer.id, { text: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white uppercase"
+                    className="w-full px-3.5 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs font-bold text-[#2d2d2d] dark:text-white uppercase"
                   />
 
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block">
+                      <label className="text-[11px] font-bold text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] block">
                         Font Size: {layer.fontSize}px
                       </label>
                       <input
@@ -261,7 +261,7 @@ export const MemeGeneratorTool: React.FC<MemeGeneratorToolProps> = ({
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block">
+                      <label className="text-[11px] font-bold text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] block">
                         Vertical Position: {layer.y}%
                       </label>
                       <input

@@ -159,7 +159,7 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
       categoryBadgeColor="emerald"
       title={meta.title}
       description={meta.subtitle}
-      icon={<Minimize2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />}
+      icon={<Minimize2 className="w-6 h-6 text-[#2f7a4f] dark:text-[#2f7a4f]" />}
     >
       <div className="space-y-6">
         <Dropzone onFilesSelected={handleFilesSelected} />
@@ -167,14 +167,14 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
         {items.length > 0 && (
           <div className="space-y-6">
             {/* Controls Bar */}
-            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Compression Settings
+            <div className="p-5 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-3">
+                <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-[#2f7a4f] dark:text-[#2f7a4f]" /> Compression Settings
                 </h3>
                 <button
                   onClick={clearAll}
-                  className="text-xs text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1 font-medium cursor-pointer"
+                  className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] flex items-center gap-1 font-medium cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Clear All ({items.length})
                 </button>
@@ -183,9 +183,9 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Quality Slider */}
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <div className="flex justify-between text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55]">
                     <span>Target Quality: {Math.round(quality * 100)}%</span>
-                    <span className="text-slate-500 font-normal">
+                    <span className="text-[#2d2d2d]/[0.7] font-normal">
                       {quality > 0.85 ? 'Best Visuals' : quality > 0.6 ? 'Balanced' : 'Max Compression'}
                     </span>
                   </div>
@@ -202,7 +202,7 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
 
                 {/* Target KB Threshold */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                  <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                     Target KB Cap (Optional)
                   </label>
                   <div className="flex gap-2">
@@ -211,17 +211,17 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
                       placeholder="e.g. 100"
                       value={targetSizeKB}
                       onChange={(e) => handleTargetKBChange(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white"
+                      className="w-full px-3 py-1.5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs text-[#2d2d2d] dark:text-white"
                     />
                     <div className="flex gap-1">
                       {['50', '100', '200'].map((preset) => (
                         <button
                           key={preset}
                           onClick={() => handleTargetKBChange(preset)}
-                          className={`px-2 py-1 rounded-lg text-[11px] font-mono font-bold cursor-pointer ${
+                          className={`px-2 py-1 wobbly-sm text-[11px] font-mono font-bold cursor-pointer ${
                             targetSizeKB === preset
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                              ? 'bg-[#2f7a4f] text-white'
+                              : 'bg-white dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] border border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
                           }`}
                         >
                           {preset}K
@@ -233,13 +233,13 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
 
                 {/* Output Format Select */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
+                  <label className="text-xs font-bold text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] block">
                     Output Format
                   </label>
                   <select
                     value={outputFormat}
                     onChange={(e) => handleFormatChange(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#332e29] text-xs text-[#2d2d2d] dark:text-white"
                   >
                     <option value="original">Original Format</option>
                     <option value="image/webp">WebP (Smallest File Size)</option>
@@ -251,9 +251,9 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
             </div>
 
             {/* Global Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-900 dark:text-emerald-300">
-                <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 wobbly-md bg-[#2f7a4f] dark:bg-[#2f7a4f]/40 border border-[2px] border-[#2f7a4f] dark:border-[#2f7a4f]/60">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#2f7a4f] dark:text-[#2f7a4f]">
+                <CheckCircle className="w-4 h-4 text-[#2f7a4f] dark:text-[#2f7a4f] shrink-0" />
                 <span>
                   {items.filter((i) => i.status === 'done').length} of {items.length} images compressed locally
                 </span>
@@ -261,7 +261,7 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
               <button
                 onClick={handleDownloadAllZip}
                 disabled={items.filter((i) => i.status === 'done').length === 0}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:bg-slate-800 dark:hover:bg-emerald-500 disabled:opacity-50 transition-all cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-hand hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] disabled:opacity-50 transition-all cursor-pointer"
               >
                 <Archive className="w-4 h-4" /> Download All as ZIP
               </button>
@@ -278,10 +278,10 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
                 return (
                   <div
                     key={item.id}
-                    className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+                    className="p-4 wobbly-md bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-hand-sm"
                   >
                     <div className="flex items-center gap-3 overflow-hidden w-full sm:w-auto">
-                      <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700">
+                      <div className="w-12 h-12 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] overflow-hidden shrink-0 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]">
                         <img
                           src={item.processedUrl || item.originalUrl}
                           alt={item.name}
@@ -289,15 +289,15 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
                         />
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-xs">
+                        <h4 className="text-xs font-bold text-[#2d2d2d] dark:text-white truncate max-w-xs">
                           {item.name}
                         </h4>
-                        <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                        <div className="flex items-center gap-2 text-[11px] font-mono text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] mt-0.5">
                           <span>{formatBytes(item.originalSize)}</span>
                           {item.processedSize && (
                             <>
                               <span>→</span>
-                              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                              <span className="font-bold text-[#2f7a4f] dark:text-[#2f7a4f]">
                                 {formatBytes(item.processedSize)}
                               </span>
                             </>
@@ -308,7 +308,7 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
 
                     <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                       {savings > 0 && (
-                        <span className="px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-mono font-bold text-[11px]">
+                        <span className="px-2.5 py-1 wobbly-pill bg-[#2f7a4f] dark:bg-[#2f7a4f]/80 text-[#2f7a4f] dark:text-[#2f7a4f] font-mono font-bold text-[11px]">
                           -{savings}%
                         </span>
                       )}
@@ -316,14 +316,14 @@ export const CompressorTool: React.FC<CompressorToolProps> = ({ onDownloadTrigge
                       <button
                         onClick={() => handleDownloadSingle(item)}
                         disabled={item.status !== 'done'}
-                        className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50 hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-xs transition-all cursor-pointer"
+                        className="px-4 py-2 wobbly-sm bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50 hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] shadow-hand-sm transition-all cursor-pointer"
                       >
                         <Download className="w-3.5 h-3.5" /> Download
                       </button>
 
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                        className="p-2 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

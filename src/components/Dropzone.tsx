@@ -197,10 +197,10 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative block cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 ${
+        className={`relative block cursor-pointer wobbly-sm border-2 border-dashed p-4 text-center transition-all duration-200 outline-none flex items-center justify-center gap-3 ${
           isDragOver
-            ? 'border-slate-900 bg-slate-100 dark:border-white dark:bg-slate-800 scale-[1.01]'
-            : 'border-slate-300 dark:border-slate-800 hover:border-slate-900 dark:hover:border-slate-100 bg-white dark:bg-slate-900 shadow-xs'
+            ? 'border-[#2d2d2d] bg-[#e5e0d8] dark:border-white dark:bg-[#332e29] scale-[1.01]'
+            : 'border-[#2d2d2d]/[0.4] dark:border-[#f3ede2] hover:border-[#2d2d2d] dark:hover:border-[#f3ede2]/[0.15] bg-white dark:bg-[#332e29] shadow-hand-sm'
         }`}
       >
         <input
@@ -211,17 +211,17 @@ export const Dropzone: React.FC<DropzoneProps> = ({
           onChange={handleInputChange}
           className="sr-only"
         />
-        <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+        <div className="p-2 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.92] dark:text-[#f3ede2]/[0.55]">
           <Upload className="size-4" />
         </div>
         <div className="text-left">
-          <p className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+          <p className="text-xs font-bold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] flex items-center gap-1.5">
             <span>Add or drop more files / folders</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-mono">
+            <span className="text-[10px] px-1.5 py-0.5 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] font-mono">
               Batch
             </span>
           </p>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+          <p className="text-[11px] text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55]">
             Click or tap to browse or drop items anywhere on page
           </p>
         </div>
@@ -233,12 +233,12 @@ export const Dropzone: React.FC<DropzoneProps> = ({
     <div className="w-full relative">
       {/* Global Drag-and-Drop Overlay */}
       {isGlobalDragOver && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md text-white flex flex-col items-center justify-center p-6 animate-fade-in pointer-events-none">
-          <div className="p-6 rounded-3xl bg-slate-900 border-2 border-slate-700 flex flex-col items-center justify-center text-center gap-4 max-w-lg shadow-2xl animate-bounce">
+        <div className="fixed inset-0 z-50 bg-[#1a1a1a]/85 backdrop-blur-md text-white flex flex-col items-center justify-center p-6 animate-fade-in pointer-events-none">
+          <div className="p-6 wobbly-md bg-[#2d2d2d] border-2 border-[#2d2d2d] flex flex-col items-center justify-center text-center gap-4 max-w-lg shadow-hand-lg animate-bounce">
             <Upload className="size-16 text-white" />
             <div>
               <h2 className="text-2xl font-extrabold tracking-tight">Drop Files or Folders Anywhere!</h2>
-              <p className="text-sm text-slate-300 mt-1 font-mono">
+              <p className="text-sm text-[#2d2d2d]/[0.7] mt-1 font-mono">
                 BrowserKit will automatically load and process files locally in your browser.
               </p>
             </div>
@@ -251,10 +251,10 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative rounded-3xl border-2 border-dashed p-8 sm:p-12 text-center transition-all duration-200 flex flex-col items-center justify-center gap-6 shadow-xs ${
+        className={`relative wobbly-md border-[3px] border-dashed p-8 sm:p-12 text-center transition-all duration-150 flex flex-col items-center justify-center gap-6 ${
           isDragOver
-            ? 'border-slate-900 bg-white dark:border-emerald-400 dark:bg-slate-900 scale-[1.01]'
-            : 'border-slate-200 dark:border-slate-800/80 hover:border-slate-900 dark:hover:border-slate-700 bg-white dark:bg-slate-950'
+            ? 'border-[#ff4d4d] bg-[#fff9c4]/40 dark:bg-[#3a352f] scale-[1.01] shadow-hand'
+            : 'border-[#2d2d2d] dark:border-[#f3ede2] hover:border-[#2d5da1] dark:hover:border-[#2d5da1] bg-white dark:bg-[#2d2822] shadow-hand-sm'
         }`}
       >
         <input
@@ -280,16 +280,16 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         />
 
         {/* Central Icon */}
-        <div className="size-16 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-white shadow-xs">
-          {isDragOver ? <FileCheck className="size-8 text-emerald-600 dark:text-emerald-400" /> : <ImagePlus className="size-8 text-slate-700 dark:text-slate-300" />}
+        <div className="size-16 wobbly-sm bg-[#fff9c4] dark:bg-[#3a352f] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] flex items-center justify-center text-[#2d2d2d] dark:text-[#f3ede2] shadow-hand-sm rotate-2">
+          {isDragOver ? <FileCheck className="size-8 text-[#2f7a4f] dark:text-[#7dd3a0]" /> : <ImagePlus className="size-8 text-[#2d2d2d] dark:text-[#f3ede2]" />}
         </div>
 
         {/* Title & Subtitle */}
         <div className="space-y-1.5 max-w-xl">
-          <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#2d2d2d] dark:text-[#f3ede2]">
             {title}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+          <p className="text-sm sm:text-base text-[#2d2d2d]/70 dark:text-[#f3ede2]/70 leading-relaxed">
             {subtitle}
           </p>
         </div>
@@ -298,26 +298,26 @@ export const Dropzone: React.FC<DropzoneProps> = ({
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <label
             htmlFor="main-dropzone-input"
-            className="px-6 py-3 rounded-2xl bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all cursor-pointer"
+            className="btn-primary"
           >
-            <Upload className="size-4 text-emerald-400 dark:text-white" /> Select Files
+            <Upload className="size-4" /> Select Files
           </label>
 
           <label
             htmlFor="folder-dropzone-input"
-            className="px-5 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
+            className="btn-secondary"
           >
-            <FolderPlus className="size-4 text-slate-600 dark:text-slate-400" /> Select Folder
+            <FolderPlus className="size-4" /> Select Folder
           </label>
         </div>
 
         {/* Footer Hint Badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
-          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <Clipboard className="size-3 text-slate-700 dark:text-slate-300" /> Paste Image (Ctrl+V / Cmd+V)
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs font-mono text-[#2d2d2d]/70 dark:text-[#f3ede2]/70">
+          <span className="flex items-center gap-1 px-2.5 py-1 wobbly-pill bg-white dark:bg-[#2d2822] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2]">
+            <Clipboard className="size-3" /> Paste Image (Ctrl+V / Cmd+V)
           </span>
-          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <Sparkles className="size-3 text-emerald-500" /> 100% Private On-Device Processing
+          <span className="flex items-center gap-1 px-2.5 py-1 wobbly-pill bg-white dark:bg-[#2d2822] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2]">
+            <Sparkles className="size-3 text-[#ff4d4d]" /> 100% Private On-Device Processing
           </span>
         </div>
       </div>

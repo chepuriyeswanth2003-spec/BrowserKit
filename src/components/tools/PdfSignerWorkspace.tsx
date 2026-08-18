@@ -162,29 +162,29 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
   return (
     <div className="space-y-6">
       {/* Signature Input Controls */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 space-y-4">
+      <div className="p-4 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#262220] space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <PenTool className="size-5 text-emerald-600" />
+          <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55] flex items-center gap-2">
+            <PenTool className="size-5 text-[#2f7a4f]" />
             Create Your Signature / Stamp
           </h4>
           <div className="flex gap-2">
             <button
               onClick={() => setSignatureMode('draw')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+              className={`px-3 py-1.5 wobbly-sm text-xs font-medium border ${
                 signatureMode === 'draw'
-                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-                  : 'border-slate-200 dark:border-slate-800'
+                  ? 'border-[#2f7a4f] bg-[#2f7a4f] text-[#2f7a4f] dark:bg-[#2f7a4f]/40 dark:text-[#2f7a4f]'
+                  : 'border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
               }`}
             >
               Draw Signature
             </button>
             <button
               onClick={() => setSignatureMode('upload')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${
+              className={`px-3 py-1.5 wobbly-sm text-xs font-medium border ${
                 signatureMode === 'upload'
-                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-                  : 'border-slate-200 dark:border-slate-800'
+                  ? 'border-[#2f7a4f] bg-[#2f7a4f] text-[#2f7a4f] dark:bg-[#2f7a4f]/40 dark:text-[#2f7a4f]'
+                  : 'border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]'
               }`}
             >
               Upload Image
@@ -194,7 +194,7 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
 
         {signatureMode === 'draw' ? (
           <div className="space-y-2">
-            <div className="border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-900 inline-block">
+            <div className="border border-[2px] border-[#2d2d2d]/[0.4] dark:border-[#f3ede2] wobbly-sm overflow-hidden bg-[#fdfbf7] dark:bg-[#332e29] inline-block">
               <canvas
                 ref={sigCanvasRef}
                 width={360}
@@ -208,7 +208,7 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
             <div className="flex gap-2">
               <button
                 onClick={clearDrawingPad}
-                className="px-3 py-1 rounded-md border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-600 dark:text-slate-400 flex items-center gap-1"
+                className="px-3 py-1 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-medium text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55] flex items-center gap-1"
               >
                 <Trash2 className="size-3.5" /> Clear Signature Pad
               </button>
@@ -220,29 +220,29 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
               type="file"
               accept="image/png, image/jpeg"
               onChange={handleImageUpload}
-              className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+              className="block w-full text-sm text-[#2d2d2d]/[0.7] file:mr-4 file:py-2 file:px-4 file:wobbly-sm file:border-0 file:text-xs file:font-semibold file:bg-[#2f7a4f] file:text-[#2f7a4f] hover:file:bg-[#2f7a4f]"
             />
           </div>
         )}
       </div>
 
       {/* Target Page Preview & Placement Controls */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 space-y-4">
+      <div className="p-4 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#262220] space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-slate-900 dark:text-slate-100">Position Signature on Page {currentPage} of {numPages}</h4>
+          <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">Position Signature on Page {currentPage} of {numPages}</h4>
           <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-medium disabled:opacity-40"
+              className="px-3 py-1.5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-medium disabled:opacity-40"
             >
               Prev
             </button>
-            <span className="text-xs font-mono text-slate-600 dark:text-slate-400">{currentPage} / {numPages}</span>
+            <span className="text-xs font-mono text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">{currentPage} / {numPages}</span>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage >= numPages}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-medium disabled:opacity-40"
+              className="px-3 py-1.5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-medium disabled:opacity-40"
             >
               Next
             </button>
@@ -251,7 +251,7 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Horizontal Position ({Math.round(sigPosX * 100)}%)</label>
+            <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Horizontal Position ({Math.round(sigPosX * 100)}%)</label>
             <input
               type="range"
               min="0.05"
@@ -263,7 +263,7 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Vertical Position ({Math.round(sigPosY * 100)}%)</label>
+            <label className="block text-xs font-medium text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] mb-1">Vertical Position ({Math.round(sigPosY * 100)}%)</label>
             <input
               type="range"
               min="0.05"
@@ -277,10 +277,10 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
         </div>
 
         {/* Live Canvas Preview with Position Indicator */}
-        <div className="relative inline-block border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm">
+        <div className="relative inline-block border border-[2px] border-[#2d2d2d]/[0.4] dark:border-[#f3ede2] wobbly-sm overflow-hidden shadow-hand-sm">
           <canvas ref={pdfCanvasRef} className="block max-w-full" />
           <div
-            className="absolute border-2 border-emerald-500 bg-emerald-500/20 flex items-center justify-center text-[10px] font-bold text-emerald-900 rounded"
+            className="absolute border-2 border-[#2f7a4f] bg-[#2f7a4f]/20 flex items-center justify-center text-[10px] font-bold text-[#2f7a4f] wobbly-sm"
             style={{
               left: `${sigPosX * 100}%`,
               top: `${sigPosY * 100}%`,
@@ -297,7 +297,7 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
         <button
           onClick={handleApplySignature}
           disabled={processing || !signatureBlob}
-          className="w-full py-3.5 px-4 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-50 transition-all btn-interactive flex items-center justify-center gap-2 shadow-sm"
+          className="w-full py-3.5 px-4 wobbly-sm bg-[#2d2d2d] dark:bg-[#3a352f] text-white dark:text-[#f3ede2] font-semibold hover:bg-[#2d2d2d] dark:hover:bg-[#3a352f] disabled:opacity-50 transition-all btn-interactive flex items-center justify-center gap-2 shadow-hand-sm"
         >
           {processing ? (
             <>
@@ -314,19 +314,19 @@ export const PdfSignerWorkspace: React.FC<PdfSignerWorkspaceProps> = ({ file, on
       )}
 
       {processedUrl && (
-        <div className="p-6 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-4">
+        <div className="p-6 wobbly-sm border border-[2px] border-[#2f7a4f] dark:border-[#2f7a4f]/80 bg-[#2f7a4f]/50 dark:bg-[#2f7a4f]/20 space-y-4">
           <div className="flex items-center gap-3">
-            <CheckCircle className="size-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <CheckCircle className="size-6 text-[#2f7a4f] dark:text-[#2f7a4f] shrink-0" />
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100">Signature Applied Successfully!</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400">Signature embedded into page {currentPage} at target coordinates.</p>
+              <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">Signature Applied Successfully!</h4>
+              <p className="text-xs text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">Signature embedded into page {currentPage} at target coordinates.</p>
             </div>
           </div>
 
           <a
             href={processedUrl}
             download={`signed_${file.name}`}
-            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all btn-interactive flex items-center justify-center gap-2 shadow-md text-center block"
+            className="w-full py-3 px-4 wobbly-sm bg-[#2f7a4f] hover:bg-[#2f7a4f] text-white font-semibold transition-all btn-interactive flex items-center justify-center gap-2 shadow-hand text-center block"
           >
             <Download className="size-5 inline" />
             Download Signed PDF

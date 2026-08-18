@@ -32,6 +32,113 @@ interface ImageSuiteToolsProps {
   ) => void;
 }
 
+/**
+ * Patches real DPI metadata into a JPEG's JFIF APP0 segment. Canvas.toBlob() never writes
+ * DPI info (browsers emit a JFIF header with density units set to "none"), so print/passport
+ * tools that read the DPI tag would see nothing useful even if the pixel dimensions were
+ * sized correctly. This binary-patches the standard JFIF density fields after generation.
+ */
+async function setJpegDpi(blob: Blob, dpi: number): Promise<Blob> {
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  // JPEG must start with SOI (FFD8) followed by an APP0 (FFE0) JFIF marker in browser output.
+  if (buf[0] !== 0xff || buf[1] !== 0xd8 || buf[2] !== 0xff || buf[3] !== 0xe0) {
+    return blob; // Not a standard JFIF-headed JPEG — return unmodified rather than corrupt it
+  }
+  const jfifIdOffset = 4 + 2; // after marker(2)+len(2)
+  const isJfif =
+    buf[jfifIdOffset] === 0x4a &&
+    buf[jfifIdOffset + 1] === 0x46 &&
+    buf[jfifIdOffset + 2] === 0x49 &&
+    buf[jfifIdOffset + 3] === 0x46;
+  if (!isJfif) return blob;
+
+  const unitsOffset = jfifIdOffset + 5 + 2; // after "JFIF\0"(5) + version(2)
+  const out = buf.slice();
+  out[unitsOffset] = 1; // 1 = dots per inch
+  out[unitsOffset + 1] = (dpi >> 8) & 0xff;
+  out[unitsOffset + 2] = dpi & 0xff;
+  out[unitsOffset + 3] = (dpi >> 8) & 0xff;
+  out[unitsOffset + 4] = dpi & 0xff;
+  return new Blob([out], { type: 'image/jpeg' });
+}
+
+/** Real box blur (not a no-op) so the "Blur" effect actually does something. */
+function applyBoxBlur(ctx: CanvasRenderingContext2D, width: number, height: number, radius: number) {
+  const imgData = ctx.getImageData(0, 0, width, height);
+  const src = imgData.data;
+  const out = new Uint8ClampedArray(src.length);
+  let scratch = new Uint8ClampedArray(src.length);
+
+  horizontalBlurPass(src, scratch, width, height, radius);
+  verticalBlurPass(scratch, out, width, height, radius);
+
+  imgData.data.set(out);
+  ctx.putImageData(imgData, 0, 0);
+}
+
+function horizontalBlurPass(src: Uint8ClampedArray, dst: Uint8ClampedArray, w: number, h: number, r: number) {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let rSum = 0, gSum = 0, bSum = 0, aSum = 0, count = 0;
+      for (let dx = -r; dx <= r; dx++) {
+        const xx = Math.min(w - 1, Math.max(0, x + dx));
+        const idx = (y * w + xx) * 4;
+        rSum += src[idx]; gSum += src[idx + 1]; bSum += src[idx + 2]; aSum += src[idx + 3];
+        count++;
+      }
+      const oIdx = (y * w + x) * 4;
+      dst[oIdx] = rSum / count; dst[oIdx + 1] = gSum / count; dst[oIdx + 2] = bSum / count; dst[oIdx + 3] = aSum / count;
+    }
+  }
+}
+
+function verticalBlurPass(src: Uint8ClampedArray, dst: Uint8ClampedArray, w: number, h: number, r: number) {
+  for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) {
+      let rSum = 0, gSum = 0, bSum = 0, aSum = 0, count = 0;
+      for (let dy = -r; dy <= r; dy++) {
+        const yy = Math.min(h - 1, Math.max(0, y + dy));
+        const idx = (yy * w + x) * 4;
+        rSum += src[idx]; gSum += src[idx + 1]; bSum += src[idx + 2]; aSum += src[idx + 3];
+        count++;
+      }
+      const oIdx = (y * w + x) * 4;
+      dst[oIdx] = rSum / count; dst[oIdx + 1] = gSum / count; dst[oIdx + 2] = bSum / count; dst[oIdx + 3] = aSum / count;
+    }
+  }
+}
+
+/** Real pixelation: downscale to a coarse grid, then draw each cell back as a flat block. */
+function applyPixelate(ctx: CanvasRenderingContext2D, width: number, height: number, blockSize: number) {
+  const smallW = Math.max(1, Math.floor(width / blockSize));
+  const smallH = Math.max(1, Math.floor(height / blockSize));
+  const tmp = document.createElement('canvas');
+  tmp.width = smallW;
+  tmp.height = smallH;
+  const tctx = tmp.getContext('2d')!;
+  tctx.drawImage(ctx.canvas, 0, 0, width, height, 0, 0, smallW, smallH);
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(tmp, 0, 0, smallW, smallH, 0, 0, width, height);
+  ctx.imageSmoothingEnabled = true;
+}
+
+const OFFICIAL_SIZE_PRESETS: Record<string, { w: number; h: number; label: string }> = {
+  'us-passport': { w: 600, h: 600, label: 'US Passport / Visa (2x2 in, 600x600px @ 300dpi)' },
+  'india-passport': { w: 413, h: 531, label: 'India Passport (3.5x4.5cm @ 300dpi)' },
+  'india-signature': { w: 708, h: 236, label: 'India Signature (6x2cm @ 300dpi)' },
+  'pan-card': { w: 213, h: 213, label: 'PAN Card Photo (25x25mm @ 300dpi)' },
+};
+
+const SOCIAL_SIZE_PRESETS: Record<string, { w: number; h: number; label: string }> = {
+  'instagram-post': { w: 1080, h: 1080, label: 'Instagram Post (1080x1080)' },
+  'instagram-story': { w: 1080, h: 1920, label: 'Instagram / TikTok Story (1080x1920)' },
+  'facebook-cover': { w: 820, h: 312, label: 'Facebook Cover (820x312)' },
+  'twitter-header': { w: 1500, h: 500, label: 'X / Twitter Header (1500x500)' },
+  'linkedin-banner': { w: 1584, h: 396, label: 'LinkedIn Banner (1584x396)' },
+  'youtube-thumbnail': { w: 1280, h: 720, label: 'YouTube Thumbnail (1280x720)' },
+};
+
 export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
   toolType,
   onDownloadTrigger,
@@ -62,6 +169,8 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
   const [flipHoriz, setFlipHoriz] = useState<boolean>(false);
   const [effectType, setEffectType] = useState<'grayscale' | 'bw' | 'blur' | 'pixelate' | 'border'>('grayscale');
   const [watermarkText, setWatermarkText] = useState<string>('CONFIDENTIAL');
+  const [officialSizeKey, setOfficialSizeKey] = useState<string>('us-passport');
+  const [socialSizeKey, setSocialSizeKey] = useState<string>('instagram-post');
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -278,6 +387,24 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               d[i + 2] = gray;
             }
             ctx.putImageData(imgData, 0, 0);
+          } else if (effectType === 'bw') {
+            // True black & white: threshold luminance rather than a continuous gray ramp
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const d = imgData.data;
+            for (let i = 0; i < d.length; i += 4) {
+              const lum = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+              const v = lum > 128 ? 255 : 0;
+              d[i] = v;
+              d[i + 1] = v;
+              d[i + 2] = v;
+            }
+            ctx.putImageData(imgData, 0, 0);
+          } else if (effectType === 'blur') {
+            const radius = Math.max(2, Math.round(Math.min(canvas.width, canvas.height) * 0.01));
+            applyBoxBlur(ctx, canvas.width, canvas.height, radius);
+          } else if (effectType === 'pixelate') {
+            const blockSize = Math.max(4, Math.round(Math.min(canvas.width, canvas.height) * 0.02));
+            applyPixelate(ctx, canvas.width, canvas.height, blockSize);
           } else if (effectType === 'border') {
             ctx.strokeStyle = '#FFFFFF';
             ctx.lineWidth = Math.round(img.width * 0.04);
@@ -348,32 +475,45 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
         }
 
         case 'official-size-resizer': {
-          canvas.width = 600;
-          canvas.height = 600;
+          const preset = OFFICIAL_SIZE_PRESETS[officialSizeKey] || OFFICIAL_SIZE_PRESETS['us-passport'];
+          canvas.width = preset.w;
+          canvas.height = preset.h;
           ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, 600, 600);
-          ctx.drawImage(img, 0, 0, 600, 600);
+          ctx.fillRect(0, 0, preset.w, preset.h);
+          // Cover-fit (crop to fill) instead of stretching, so faces/subjects aren't distorted
+          const scale = Math.max(preset.w / img.width, preset.h / img.height);
+          const dw = img.width * scale;
+          const dh = img.height * scale;
+          ctx.drawImage(img, (preset.w - dw) / 2, (preset.h - dh) / 2, dw, dh);
+          format = 'image/jpeg';
           break;
         }
 
         case 'social-media-resizer': {
-          canvas.width = 1080;
-          canvas.height = 1080;
+          const preset = SOCIAL_SIZE_PRESETS[socialSizeKey] || SOCIAL_SIZE_PRESETS['instagram-post'];
+          canvas.width = preset.w;
+          canvas.height = preset.h;
           ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, 1080, 1080);
-          const scale = Math.min(1080 / img.width, 1080 / img.height);
-          const x = (1080 - img.width * scale) / 2;
-          const y = (1080 - img.height * scale) / 2;
+          ctx.fillRect(0, 0, preset.w, preset.h);
+          const scale = Math.min(preset.w / img.width, preset.h / img.height);
+          const x = (preset.w - img.width * scale) / 2;
+          const y = (preset.h - img.height * scale) / 2;
           ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
           break;
         }
 
         case 'image-dpi-converter': {
-          canvas.width = img.width * 2;
-          canvas.height = img.height * 2;
+          // Real DPI conversion: resize pixel dimensions so the image prints at the target
+          // DPI for its physical size, then write the actual DPI tag into the JPEG (previously
+          // this just blindly doubled resolution and never touched real DPI metadata at all).
+          const basePhysicalWidthIn = img.width / 96; // treat source as if captured at 96dpi baseline
+          const basePhysicalHeightIn = img.height / 96;
+          canvas.width = Math.round(basePhysicalWidthIn * targetDpi);
+          canvas.height = Math.round(basePhysicalHeightIn * targetDpi);
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          format = 'image/jpeg';
           break;
         }
 
@@ -386,11 +526,12 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
       }
 
       canvas.toBlob(
-        (blob) => {
+        async (blob) => {
           if (blob) {
-            const url = URL.createObjectURL(blob);
+            const finalBlob = toolType === 'image-dpi-converter' ? await setJpegDpi(blob, targetDpi) : blob;
+            const url = URL.createObjectURL(finalBlob);
             setResultUrl(url);
-            setResultSize(blob.size);
+            setResultSize(finalBlob.size);
             setResultFormat(format);
           }
           setProcessing(false);
@@ -422,14 +563,14 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
       categoryBadgeColor="emerald"
       title={meta.title}
       description={meta.subtitle}
-      icon={<ImageIcon className="w-6 h-6 text-emerald-600" />}
+      icon={<ImageIcon className="w-6 h-6 text-[#2f7a4f]" />}
     >
         {/* Upload Dropzone */}
         {!previewUrl ? (
           <label
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-slate-300 hover:border-slate-900 rounded-3xl p-10 text-center transition-all bg-slate-50 hover:bg-slate-100/50 cursor-pointer space-y-4 block relative"
+            className="border-2 border-dashed border-[#2d2d2d]/[0.4] hover:border-[#2d2d2d] wobbly-md p-10 text-center transition-all bg-[#fdfbf7] hover:bg-[#e5e0d8]/50 cursor-pointer space-y-4 block relative"
           >
             <input
               type="file"
@@ -437,29 +578,29 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               onChange={(e) => handleFileChange(e)}
               className="sr-only"
             />
-            <div className="w-16 h-16 rounded-2xl bg-white text-slate-700 shadow-sm flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 wobbly-md bg-white text-[#2d2d2d]/[0.85] shadow-hand-sm flex items-center justify-center mx-auto">
               <Upload className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-[#2d2d2d]">
                 Click or drop image here to browse
               </h3>
-              <p className="text-xs text-slate-500 mt-1 font-mono">
+              <p className="text-xs text-[#2d2d2d]/[0.7] mt-1 font-mono">
                 Supports JPG, PNG, WebP, HEIC (Max 50MB)
               </p>
             </div>
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-md cursor-pointer">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 wobbly-md bg-[#2d2d2d] text-white text-xs font-bold shadow-hand cursor-pointer">
               Select Image File
             </span>
           </label>
         ) : (
           <div className="space-y-6">
             {/* Tool Specific Customizations Controls */}
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="p-5 wobbly-md bg-[#fdfbf7] border border-[2px] border-[#2d2d2d]/[0.3] space-y-4">
+              <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] pb-3">
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-emerald-600" />
-                  <h3 className="text-sm font-bold text-slate-900">Configure Settings</h3>
+                  <SlidersHorizontal className="w-4 h-4 text-[#2f7a4f]" />
+                  <h3 className="text-sm font-bold text-[#2d2d2d]">Configure Settings</h3>
                 </div>
                 <button
                   onClick={() => {
@@ -467,7 +608,7 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
                     setPreviewUrl('');
                     setResultUrl('');
                   }}
-                  className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
+                  className="text-xs text-[#ff4d4d] hover:underline font-semibold cursor-pointer"
                 >
                   Change Image
                 </button>
@@ -477,16 +618,16 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               {toolType === 'passport-photo-maker' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="font-bold text-slate-700 block mb-1.5">Background Color</label>
+                    <label className="font-bold text-[#2d2d2d]/[0.85] block mb-1.5">Background Color</label>
                     <div className="flex items-center gap-2">
                       {(['white', 'blue', 'red'] as const).map((bg) => (
                         <button
                           key={bg}
                           onClick={() => setPassportBg(bg)}
-                          className={`px-3 py-1.5 rounded-xl font-bold capitalize border cursor-pointer ${
+                          className={`px-3 py-1.5 wobbly-sm font-bold capitalize border cursor-pointer ${
                             passportBg === bg
-                              ? 'bg-slate-900 text-white border-slate-900'
-                              : 'bg-white text-slate-700 border-slate-300'
+                              ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
+                              : 'bg-white text-[#2d2d2d]/[0.85] border-[#2d2d2d]/[0.4]'
                           }`}
                         >
                           {bg}
@@ -496,11 +637,11 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
                   </div>
 
                   <div>
-                    <label className="font-bold text-slate-700 block mb-1.5">Passport Dimensions</label>
+                    <label className="font-bold text-[#2d2d2d]/[0.85] block mb-1.5">Passport Dimensions</label>
                     <select
                       value={passportSize}
                       onChange={(e) => setPassportSize(e.target.value as any)}
-                      className="w-full p-2 bg-white border border-slate-300 rounded-xl font-semibold text-xs"
+                      className="w-full p-2 bg-white border border-[2px] border-[#2d2d2d]/[0.4] wobbly-sm font-semibold text-xs"
                     >
                       <option value="3.5x4.5">3.5cm x 4.5cm (Official India/SSC)</option>
                       <option value="2x2">2 x 2 Inch (US Passport/Visa)</option>
@@ -514,23 +655,23 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               {toolType === 'add-name-and-dob' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="font-bold text-slate-700 block mb-1">Full Candidate Name</label>
+                    <label className="font-bold text-[#2d2d2d]/[0.85] block mb-1">Full Candidate Name</label>
                     <input
                       type="text"
                       value={candidateName}
                       onChange={(e) => setCandidateName(e.target.value)}
                       placeholder="e.g. YESWANTH CHEPURI"
-                      className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs"
+                      className="w-full p-2.5 bg-white border border-[2px] border-[#2d2d2d]/[0.4] wobbly-sm text-xs"
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-slate-700 block mb-1 font-mono">Date of Photo / DOB</label>
+                    <label className="font-bold text-[#2d2d2d]/[0.85] block mb-1 font-mono">Date of Photo / DOB</label>
                     <input
                       type="text"
                       value={candidateDob}
                       onChange={(e) => setCandidateDob(e.target.value)}
                       placeholder="e.g. 15/08/2026"
-                      className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs"
+                      className="w-full p-2.5 bg-white border border-[2px] border-[#2d2d2d]/[0.4] wobbly-sm text-xs"
                     />
                   </div>
                 </div>
@@ -539,18 +680,18 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               {/* Merge Photo & Signature */}
               {toolType === 'merge-photo-signature' && (
                 <div className="space-y-3 text-xs">
-                  <label className="font-bold text-slate-700 block">Upload Signature Image (Second File)</label>
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Upload Signature Image (Second File)</label>
                   {!secondPreviewUrl ? (
                     <input
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, true)}
-                      className="text-xs text-slate-600"
+                      className="text-xs text-[#2d2d2d]/[0.75]"
                     />
                   ) : (
                     <div className="flex items-center gap-3">
-                      <img src={secondPreviewUrl} alt="Signature" className="h-12 border rounded-lg" />
-                      <span className="text-emerald-700 font-bold">Signature Loaded ✓</span>
+                      <img src={secondPreviewUrl} alt="Signature" className="h-12 border-2 border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]/[0.3] wobbly-sm" />
+                      <span className="text-[#2f7a4f] font-bold">Signature Loaded ✓</span>
                     </div>
                   )}
                 </div>
@@ -559,16 +700,16 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               {/* Target KB Compressor */}
               {toolType === 'target-kb-compressor' && (
                 <div className="space-y-2 text-xs">
-                  <label className="font-bold text-slate-700 block">Select Target File Size Cap</label>
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Select Target File Size Cap</label>
                   <div className="flex flex-wrap gap-2">
                     {[20, 50, 100, 200, 500].map((kb) => (
                       <button
                         key={kb}
                         onClick={() => setTargetKb(kb)}
-                        className={`px-3 py-1.5 rounded-xl font-bold border cursor-pointer ${
+                        className={`px-3 py-1.5 wobbly-sm font-bold border cursor-pointer ${
                           targetKb === kb
-                            ? 'bg-slate-900 text-white border-slate-900'
-                            : 'bg-white text-slate-700 border-slate-300'
+                            ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
+                            : 'bg-white text-[#2d2d2d]/[0.85] border-[#2d2d2d]/[0.4]'
                         }`}
                       >
                         Under {kb}KB
@@ -581,13 +722,124 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               {/* Watermark Settings */}
               {toolType === 'image-watermark' && (
                 <div className="text-xs space-y-1">
-                  <label className="font-bold text-slate-700 block">Watermark Text Overlay</label>
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Watermark Text Overlay</label>
                   <input
                     type="text"
                     value={watermarkText}
                     onChange={(e) => setWatermarkText(e.target.value)}
-                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs"
+                    className="w-full p-2.5 bg-white border border-[2px] border-[#2d2d2d]/[0.4] wobbly-sm text-xs"
                   />
+                </div>
+              )}
+
+              {/* Rotate & Flip Settings */}
+              {toolType === 'image-rotate-flip' && (
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <label className="font-bold text-[#2d2d2d]/[0.85] block mb-1.5">Rotation</label>
+                    <div className="flex gap-2">
+                      {[0, 90, 180, 270].map((angle) => (
+                        <button
+                          key={angle}
+                          onClick={() => setRotationAngle(angle)}
+                          className={`px-3 py-1.5 wobbly-sm font-bold border cursor-pointer ${
+                            rotationAngle === angle
+                              ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
+                              : 'bg-white text-[#2d2d2d]/[0.85] border-[#2d2d2d]/[0.4]'
+                          }`}
+                        >
+                          {angle}°
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <label className="flex items-center gap-2 font-bold text-[#2d2d2d]/[0.85]">
+                    <input type="checkbox" checked={flipHoriz} onChange={(e) => setFlipHoriz(e.target.checked)} />
+                    Flip Horizontally
+                  </label>
+                </div>
+              )}
+
+              {/* Effects Settings */}
+              {toolType === 'image-effects' && (
+                <div className="space-y-2 text-xs">
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Choose Effect</label>
+                  <div className="flex flex-wrap gap-2">
+                    {(['grayscale', 'bw', 'blur', 'pixelate', 'border'] as const).map((ef) => (
+                      <button
+                        key={ef}
+                        onClick={() => setEffectType(ef)}
+                        className={`px-3 py-1.5 wobbly-sm font-bold border cursor-pointer capitalize ${
+                          effectType === ef
+                            ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
+                            : 'bg-white text-[#2d2d2d]/[0.85] border-[#2d2d2d]/[0.4]'
+                        }`}
+                      >
+                        {ef === 'bw' ? 'Black & White' : ef}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* DPI Converter Settings */}
+              {toolType === 'image-dpi-converter' && (
+                <div className="space-y-2 text-xs">
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Target DPI</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[150, 200, 300, 600].map((dpi) => (
+                      <button
+                        key={dpi}
+                        onClick={() => setTargetDpi(dpi)}
+                        className={`px-3 py-1.5 wobbly-sm font-bold border cursor-pointer ${
+                          targetDpi === dpi
+                            ? 'bg-[#2d2d2d] text-white border-[#2d2d2d]'
+                            : 'bg-white text-[#2d2d2d]/[0.85] border-[#2d2d2d]/[0.4]'
+                        }`}
+                      >
+                        {dpi} DPI
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[#2d2d2d]/[0.7]">
+                    Resizes pixel dimensions for the target print DPI and writes the DPI tag into the output JPEG.
+                  </p>
+                </div>
+              )}
+
+              {/* Official Size Resizer Settings */}
+              {toolType === 'official-size-resizer' && (
+                <div className="space-y-2 text-xs">
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Document Type</label>
+                  <select
+                    value={officialSizeKey}
+                    onChange={(e) => setOfficialSizeKey(e.target.value)}
+                    className="w-full p-2.5 bg-white border border-[2px] border-[#2d2d2d]/[0.4] wobbly-sm text-xs font-semibold"
+                  >
+                    {Object.entries(OFFICIAL_SIZE_PRESETS).map(([key, p]) => (
+                      <option key={key} value={key}>
+                        {p.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Social Media Resizer Settings */}
+              {toolType === 'social-media-resizer' && (
+                <div className="space-y-2 text-xs">
+                  <label className="font-bold text-[#2d2d2d]/[0.85] block">Platform Size</label>
+                  <select
+                    value={socialSizeKey}
+                    onChange={(e) => setSocialSizeKey(e.target.value)}
+                    className="w-full p-2.5 bg-white border border-[2px] border-[#2d2d2d]/[0.4] wobbly-sm text-xs font-semibold"
+                  >
+                    {Object.entries(SOCIAL_SIZE_PRESETS).map(([key, p]) => (
+                      <option key={key} value={key}>
+                        {p.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
 
@@ -595,7 +847,7 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
               <button
                 onClick={processImage}
                 disabled={processing}
-                className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-3 wobbly-md bg-[#2f7a4f] hover:bg-[#2f7a4f] text-white text-xs font-bold shadow-hand transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {processing ? (
                   <>
@@ -612,35 +864,35 @@ export const ImageSuiteTools: React.FC<ImageSuiteToolsProps> = ({
             {/* Side-by-Side Preview & Download */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Original Upload</span>
-                <div className="p-3 bg-slate-50 border rounded-2xl flex items-center justify-center min-h-64">
-                  <img src={previewUrl} alt="Original" className="max-h-64 object-contain rounded-lg" />
+                <span className="text-xs font-bold text-[#2d2d2d]/[0.7] uppercase tracking-wider">Original Upload</span>
+                <div className="p-3 bg-[#fdfbf7] dark:bg-[#262220] border-2 border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]/[0.3] wobbly-md flex items-center justify-center min-h-64">
+                  <img src={previewUrl} alt="Original" className="max-h-64 object-contain wobbly-sm" />
                 </div>
-                <div className="text-[11px] font-mono text-slate-500 text-center">
+                <div className="text-[11px] font-mono text-[#2d2d2d]/[0.7] text-center">
                   Size: {(file.size / 1024).toFixed(1)} KB
                 </div>
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Processed Result</span>
-                <div className="p-3 bg-slate-50 border rounded-2xl flex items-center justify-center min-h-64">
+                <span className="text-xs font-bold text-[#2d2d2d]/[0.7] uppercase tracking-wider">Processed Result</span>
+                <div className="p-3 bg-[#fdfbf7] dark:bg-[#262220] border-2 border-[#2d2d2d]/[0.3] dark:border-[#f3ede2]/[0.3] wobbly-md flex items-center justify-center min-h-64">
                   {resultUrl ? (
-                    <img src={resultUrl} alt="Result" className="max-h-64 object-contain rounded-lg shadow-sm" />
+                    <img src={resultUrl} alt="Result" className="max-h-64 object-contain wobbly-sm shadow-hand-sm" />
                   ) : (
-                    <span className="text-xs text-slate-400 font-medium">Click Apply & Render above to preview</span>
+                    <span className="text-xs text-[#2d2d2d]/[0.7] font-medium">Click Apply & Render above to preview</span>
                   )}
                 </div>
 
                 {resultUrl && (
                   <div className="space-y-3">
-                    <div className="text-[11px] font-mono text-emerald-700 font-bold text-center">
+                    <div className="text-[11px] font-mono text-[#2f7a4f] font-bold text-center">
                       Final Size: {(resultSize / 1024).toFixed(1)} KB
                     </div>
                     <button
                       onClick={handleDownload}
-                      className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3 wobbly-md bg-[#2d2d2d] hover:bg-[#2d2d2d] text-white text-xs font-bold shadow-hand transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <Download className="w-4 h-4 text-emerald-400" /> Download Processed Photo
+                      <Download className="w-4 h-4 text-[#2f7a4f]" /> Download Processed Photo
                     </button>
                   </div>
                 )}

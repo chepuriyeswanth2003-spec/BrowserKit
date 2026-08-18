@@ -142,33 +142,33 @@ export const PdfRedactionWorkspace: React.FC<PdfRedactionWorkspaceProps> = ({ fi
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 space-y-4">
+      <div className="p-4 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] bg-white dark:bg-[#262220] space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <ShieldAlert className="size-5 text-rose-600" />
-            <h4 className="font-semibold text-slate-900 dark:text-slate-100">Draw Redaction Boxes (Page {currentPage} of {numPages})</h4>
+            <ShieldAlert className="size-5 text-[#ff4d4d]" />
+            <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">Draw Redaction Boxes (Page {currentPage} of {numPages})</h4>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-medium disabled:opacity-40"
+              className="px-3 py-1.5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-medium disabled:opacity-40"
             >
               Prev
             </button>
-            <span className="text-xs font-mono text-slate-600 dark:text-slate-400">{currentPage} / {numPages}</span>
+            <span className="text-xs font-mono text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">{currentPage} / {numPages}</span>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage >= numPages}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-medium disabled:opacity-40"
+              className="px-3 py-1.5 wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] text-xs font-medium disabled:opacity-40"
             >
               Next
             </button>
             <button
               onClick={handleClearCurrentPageRedactions}
               disabled={currentRects.length === 0}
-              className="ml-3 px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900 text-rose-600 text-xs font-medium disabled:opacity-40 flex items-center gap-1"
+              className="ml-3 px-3 py-1.5 wobbly-sm border border-[2px] border-[#ff4d4d] dark:border-[#ff4d4d] text-[#ff4d4d] text-xs font-medium disabled:opacity-40 flex items-center gap-1"
             >
               <Trash2 className="size-3.5" />
               Clear Page
@@ -176,12 +176,12 @@ export const PdfRedactionWorkspace: React.FC<PdfRedactionWorkspaceProps> = ({ fi
           </div>
         </div>
 
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-[#2d2d2d]/[0.7]">
           Click and drag on the page preview below to draw privacy redaction boxes over sensitive text or images.
         </p>
 
         {/* Canvas & Overlay Container */}
-        <div className="relative inline-block border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm select-none">
+        <div className="relative inline-block border border-[2px] border-[#2d2d2d]/[0.4] dark:border-[#f3ede2] wobbly-sm overflow-hidden shadow-hand-sm select-none">
           <canvas ref={canvasRef} className="block max-w-full" />
           <div
             ref={overlayRef}
@@ -194,7 +194,7 @@ export const PdfRedactionWorkspace: React.FC<PdfRedactionWorkspaceProps> = ({ fi
             {currentRects.map((rect, idx) => (
               <div
                 key={idx}
-                className="absolute bg-black border border-rose-500 opacity-90"
+                className="absolute bg-black border border-[#ff4d4d] opacity-90"
                 style={{
                   left: `${rect.x * 100}%`,
                   top: `${rect.y * 100}%`,
@@ -207,7 +207,7 @@ export const PdfRedactionWorkspace: React.FC<PdfRedactionWorkspaceProps> = ({ fi
             {/* Currently Drawing Box */}
             {currentRect && (
               <div
-                className="absolute bg-black/70 border-2 border-rose-500 border-dashed"
+                className="absolute bg-black/70 border-2 border-[#ff4d4d] border-dashed"
                 style={{
                   left: `${currentRect.x * 100}%`,
                   top: `${currentRect.y * 100}%`,
@@ -224,7 +224,7 @@ export const PdfRedactionWorkspace: React.FC<PdfRedactionWorkspaceProps> = ({ fi
         <button
           onClick={handleApplyRedactions}
           disabled={processing || redactionsMap.size === 0}
-          className="w-full py-3.5 px-4 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-50 transition-all btn-interactive flex items-center justify-center gap-2 shadow-sm"
+          className="w-full py-3.5 px-4 wobbly-sm bg-[#2d2d2d] dark:bg-[#3a352f] text-white dark:text-[#f3ede2] font-semibold hover:bg-[#2d2d2d] dark:hover:bg-[#3a352f] disabled:opacity-50 transition-all btn-interactive flex items-center justify-center gap-2 shadow-hand-sm"
         >
           {processing ? (
             <>
@@ -241,19 +241,19 @@ export const PdfRedactionWorkspace: React.FC<PdfRedactionWorkspaceProps> = ({ fi
       )}
 
       {processedUrl && (
-        <div className="p-6 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-4">
+        <div className="p-6 wobbly-sm border border-[2px] border-[#2f7a4f] dark:border-[#2f7a4f]/80 bg-[#2f7a4f]/50 dark:bg-[#2f7a4f]/20 space-y-4">
           <div className="flex items-center gap-3">
-            <CheckCircle className="size-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <CheckCircle className="size-6 text-[#2f7a4f] dark:text-[#2f7a4f] shrink-0" />
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100">Redaction Complete & Privacy Verified!</h4>
-              <p className="text-xs text-slate-600 dark:text-slate-400">Zero extractable vector text survives under redacted areas.</p>
+              <h4 className="font-semibold text-[#2d2d2d] dark:text-[#f3ede2]/[0.55]">Redaction Complete & Privacy Verified!</h4>
+              <p className="text-xs text-[#2d2d2d]/[0.75] dark:text-[#f3ede2]/[0.55]">Zero extractable vector text survives under redacted areas.</p>
             </div>
           </div>
 
           <a
             href={processedUrl}
             download={`redacted_${file.name}`}
-            className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all btn-interactive flex items-center justify-center gap-2 shadow-md text-center block"
+            className="w-full py-3 px-4 wobbly-sm bg-[#2f7a4f] hover:bg-[#2f7a4f] text-white font-semibold transition-all btn-interactive flex items-center justify-center gap-2 shadow-hand text-center block"
           >
             <Download className="size-5 inline" />
             Download Redacted PDF

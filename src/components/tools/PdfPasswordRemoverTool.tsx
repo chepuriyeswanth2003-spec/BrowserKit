@@ -63,7 +63,7 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
       categoryBadgeColor="rose"
       title="Remove PDF Password & Security Restrictions"
       description="Unlock password-protected PDFs and strip printing/copying restrictions 100% locally in your browser."
-      icon={<Unlock className="w-6 h-6 text-rose-600" />}
+      icon={<Unlock className="w-6 h-6 text-[#ff4d4d]" />}
     >
       {!pdfFile ? (
         <Dropzone
@@ -74,14 +74,14 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
         />
       ) : (
         <div className="space-y-6">
-          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+          <div className="p-4 bg-[#fdfbf7] dark:bg-[#332e29]/60 wobbly-md border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-rose-100 dark:bg-rose-950/60 rounded-xl text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+              <div className="p-2.5 bg-[#ff4d4d] dark:bg-[#ff4d4d]/60 wobbly-sm text-[#ff4d4d] dark:text-[#ff4d4d] border border-[2px] border-[#ff4d4d] dark:border-[#ff4d4d]">
                 <FileText className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-slate-900 dark:text-white">{pdfFile.name}</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                <div className="text-sm font-bold text-[#2d2d2d] dark:text-white">{pdfFile.name}</div>
+                <div className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] font-mono mt-0.5">
                   {(pdfFile.size / 1024 / 1024).toFixed(2)} MB • {isEncrypted ? 'Locked / Password Required' : 'Standard Restrictions Detected'}
                 </div>
               </div>
@@ -92,16 +92,16 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
                 setPassword('');
                 setErrorMsg('');
               }}
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+              className="p-2 wobbly-sm text-[#2d2d2d]/[0.7] hover:text-[#ff4d4d] hover:bg-[#ff4d4d] dark:hover:bg-[#ff4d4d]/40 transition-colors cursor-pointer"
               title="Remove PDF"
             >
               <Trash2 className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="p-5 bg-rose-50/50 dark:bg-rose-950/30 rounded-2xl border border-rose-100 dark:border-rose-900/50 space-y-3">
-            <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-              <Key className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+          <div className="p-5 bg-[#ff4d4d]/50 dark:bg-[#ff4d4d]/30 wobbly-md border border-[2px] border-[#ff4d4d] dark:border-[#ff4d4d]/50 space-y-3">
+            <label className="block text-xs font-bold text-[#2d2d2d]/[0.92] dark:text-[#f3ede2]/[0.55] uppercase tracking-wider flex items-center gap-1.5">
+              <Key className="w-4 h-4 text-[#ff4d4d] dark:text-[#ff4d4d]" />
               PDF Password (If prompt required):
             </label>
             <input
@@ -109,12 +109,12 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter PDF open password..."
-              className="w-full px-4 py-2.5 text-xs bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono text-slate-900 dark:text-white placeholder:text-slate-400"
+              className="w-full px-4 py-2.5 text-xs bg-white dark:bg-[#332e29] wobbly-sm border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] focus:outline-none focus:ring-2 focus:ring-[#ff4d4d] font-mono text-[#2d2d2d] dark:text-white placeholder:text-[#2d2d2d]/[0.7]"
             />
           </div>
 
           {errorMsg && (
-            <div className="p-3 bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 text-xs rounded-xl font-medium border border-red-200 dark:border-red-800">
+            <div className="p-3 bg-[#ff4d4d] dark:bg-[#ff4d4d]/60 text-[#ff4d4d] dark:text-[#ff4d4d] text-xs wobbly-sm font-medium border border-[2px] border-[#ff4d4d] dark:border-[#ff4d4d]">
               {errorMsg}
             </div>
           )}
@@ -122,7 +122,7 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
           <button
             onClick={handleUnlockPDF}
             disabled={isUnlocking}
-            className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md disabled:opacity-50 transition-all cursor-pointer"
+            className="w-full py-3.5 bg-[#2d2d2d] hover:bg-[#2d2d2d] dark:bg-[#2f7a4f] dark:hover:bg-[#2f7a4f] text-white wobbly-md font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-hand disabled:opacity-50 transition-all cursor-pointer"
           >
             {isUnlocking ? (
               <>
@@ -130,7 +130,7 @@ export const PdfPasswordRemoverTool: React.FC<PdfPasswordRemoverToolProps> = ({ 
               </>
             ) : (
               <>
-                <Unlock className="w-4 h-4 text-emerald-400" /> Unlock & Save Clean PDF
+                <Unlock className="w-4 h-4 text-[#2f7a4f]" /> Unlock & Save Clean PDF
               </>
             )}
           </button>

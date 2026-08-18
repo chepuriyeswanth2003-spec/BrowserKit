@@ -5,21 +5,22 @@ export const PUBLIC_TOOL_TYPES = new Set<ToolType>([
   'compressor', 'converter', 'resizer', 'palette', 'meme',
   'passport-photo-maker', 'add-name-and-dob', 'signature-resizer', 'circle-crop',
   'merge-photo-signature', 'image-watermark', 'image-rotate-flip', 'image-effects',
-  'target-kb-compressor',
+  'target-kb-compressor', 'image-dpi-converter', 'join-images', 'official-size-resizer',
+  'social-media-resizer',
   
   // PDF Suite Tools
   'pdf-merger', 'pdf-splitter', 'pdf-compressor', 'pdf-password-remover', 'pdf-protector',
   'images-to-pdf', 'pdf-to-jpg', 'pdf-to-word', 'pdf-to-ppt', 'pdf-to-excel',
   'word-to-pdf', 'ppt-to-pdf', 'excel-to-pdf', 'html-to-pdf', 'pdf-editor',
-  'pdf-signer', 'pdf-watermark', 'pdf-rotator', 'pdf-organizer', 'pdf-to-pdfa',
+  'pdf-signer', 'pdf-metadata', 'pdf-watermark', 'pdf-rotator', 'pdf-organizer', 'pdf-to-pdfa',
   'pdf-repair', 'pdf-page-numbers', 'pdf-ocr', 'pdf-compare', 'pdf-redact',
   'pdf-cropper', 'pdf-forms', 'pdf-to-markdown',
 
   // Archive & Media Tools
   'zip-archiver', 'zip-extractor', 'zip-password-remover', 'audio-tools',
   'video-to-gif', 'video-trimmer', 'video-to-audio', 'audio-cutter',
-  'aspect-ratio-resizer', 'thumbnail-grabber', 'social-video-downloader',
-  'video-format-swapper', 'gif-maker', 'svg-optimizer', 'file-encryptor',
+  'aspect-ratio-resizer', 'thumbnail-grabber',
+  'video-format-swapper', 'video-codec-transcoder', 'gif-maker', 'svg-optimizer', 'file-encryptor',
 ]);
 
 export const PUBLIC_PROGRAMMATIC_SLUGS = new Set([
@@ -36,3 +37,14 @@ export const PUBLIC_PROGRAMMATIC_SLUGS = new Set([
 ]);
 
 export const isPublicTool = (toolType: ToolType): boolean => PUBLIC_TOOL_TYPES.has(toolType);
+
+// Tools that are intentionally NOT advertised in nav/sitemap/homepage (they can't perform
+// the transformation their name implies — see MediaSuiteTools' honest explanation for these)
+// but should still be directly reachable by URL rather than bouncing to a bare 404, so a user
+// who lands on the link gets the explanation instead of an unexplained dead end.
+export const UNLISTED_BUT_REACHABLE_TOOL_TYPES = new Set<ToolType>([
+  'social-video-downloader', 'social-audio-extractor', 'social-batch-downloader',
+]);
+
+export const isReachableTool = (toolType: ToolType): boolean =>
+  isPublicTool(toolType) || UNLISTED_BUT_REACHABLE_TOOL_TYPES.has(toolType);

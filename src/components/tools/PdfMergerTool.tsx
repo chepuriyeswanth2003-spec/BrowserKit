@@ -61,7 +61,7 @@ export const PdfMergerTool: React.FC = () => {
       categoryBadgeColor="rose"
       title="Merge PDF Documents Online"
       description="Combine multiple PDF files into one clean document in the order you want 100% locally."
-      icon={<FilePlus className="w-6 h-6 text-rose-600" />}
+      icon={<FilePlus className="w-6 h-6 text-[#ff4d4d]" />}
     >
       <div className="space-y-6">
         <Dropzone
@@ -73,15 +73,15 @@ export const PdfMergerTool: React.FC = () => {
         />
 
         {pdfFiles.length > 0 && (
-          <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <FileText className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+          <div className="p-6 wobbly-md bg-[#fdfbf7] dark:bg-[#332e29]/80 border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] shadow-hand-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] pb-3">
+              <h3 className="text-sm font-bold text-[#2d2d2d] dark:text-white flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#ff4d4d] dark:text-[#ff4d4d]" />
                 Selected PDFs ({pdfFiles.length})
               </h3>
               <button
                 onClick={() => setPdfFiles([])}
-                className="text-xs text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center gap-1 font-medium cursor-pointer"
+                className="text-xs text-[#2d2d2d]/[0.7] dark:text-[#f3ede2]/[0.55] hover:text-[#ff4d4d] dark:hover:text-[#ff4d4d] flex items-center gap-1 font-medium cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Clear All
               </button>
@@ -91,13 +91,13 @@ export const PdfMergerTool: React.FC = () => {
               {pdfFiles.map((file, index) => (
                 <div
                   key={`${file.name}-${index}`}
-                  className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3"
+                  className="p-3 wobbly-sm bg-white dark:bg-[#332e29] border border-[2px] border-[#2d2d2d]/[0.3] dark:border-[#f3ede2] flex items-center justify-between gap-3"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 wobbly-pill bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] text-xs font-mono font-bold flex items-center justify-center shrink-0">
                       {index + 1}
                     </span>
-                    <span className="text-xs font-mono font-bold text-slate-900 dark:text-white truncate">
+                    <span className="text-xs font-mono font-bold text-[#2d2d2d] dark:text-white truncate">
                       {file.name}
                     </span>
                   </div>
@@ -106,20 +106,20 @@ export const PdfMergerTool: React.FC = () => {
                     <button
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                      className="p-1.5 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] disabled:opacity-30 hover:bg-[#e5e0d8] dark:hover:bg-[#332e29] cursor-pointer"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => moveDown(index)}
                       disabled={index === pdfFiles.length - 1}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                      className="p-1.5 wobbly-sm bg-[#e5e0d8] dark:bg-[#332e29] text-[#2d2d2d]/[0.85] dark:text-[#f3ede2]/[0.55] disabled:opacity-30 hover:bg-[#e5e0d8] dark:hover:bg-[#332e29] cursor-pointer"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => removeFile(index)}
-                      className="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 hover:bg-rose-200 ml-1 cursor-pointer"
+                      className="p-1.5 wobbly-sm bg-[#ff4d4d] dark:bg-[#ff4d4d]/60 text-[#ff4d4d] dark:text-[#ff4d4d] hover:bg-[#ff4d4d] ml-1 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -132,7 +132,7 @@ export const PdfMergerTool: React.FC = () => {
               <button
                 onClick={handleMerge}
                 disabled={pdfFiles.length < 2 || isMerging}
-                className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-slate-900 dark:bg-emerald-600 text-white hover:bg-slate-800 dark:hover:bg-emerald-500 shadow-md flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
+                className="px-6 py-3 wobbly-sm text-xs font-bold uppercase tracking-wider bg-[#2d2d2d] dark:bg-[#2f7a4f] text-white hover:bg-[#2d2d2d] dark:hover:bg-[#2f7a4f] shadow-hand flex items-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
               >
                 {isMerging ? (
                   <>
@@ -140,7 +140,7 @@ export const PdfMergerTool: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Download className="w-4 h-4 text-emerald-400 dark:text-white" /> Merge {pdfFiles.length} PDFs
+                    <Download className="w-4 h-4 text-[#2f7a4f] dark:text-white" /> Merge {pdfFiles.length} PDFs
                   </>
                 )}
               </button>
