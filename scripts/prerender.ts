@@ -865,3 +865,43 @@ for (const route of ALL_ROUTES) {
 }
 
 console.log(`[Prerender] Successfully generated ${generatedCount} static pre-rendered route HTML pages in dist/!`);
+
+// Dynamically generate sitemap.xml with updated timestamp
+const todayDate = new Date().toISOString().split('T')[0];
+const staticUrls = [
+  { loc: 'https://browserkit.co.in/', priority: '1.0', changefreq: 'weekly' },
+  { loc: 'https://browserkit.co.in/pdf-tools', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://browserkit.co.in/image-tools', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://browserkit.co.in/video-tools', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://browserkit.co.in/zip-tools', priority: '0.9', changefreq: 'weekly' },
+  { loc: 'https://browserkit.co.in/guides', priority: '0.7', changefreq: 'weekly' },
+  { loc: 'https://browserkit.co.in/privacy', priority: '0.3', changefreq: 'yearly' },
+  { loc: 'https://browserkit.co.in/terms', priority: '0.3', changefreq: 'yearly' },
+];
+
+const programmaticUrls = ALL_ROUTES.map((route) => ({
+  loc: `https://browserkit.co.in/${route.slug}`,
+  priority: '0.85',
+  changefreq: 'monthly',
+}));
+
+const sitemapEntries = [
+  ...staticUrls,
+  ...programmaticUrls,
+].map(
+  (entry) =>
+    `  <url><loc>${entry.loc}</loc><lastmod>${todayDate}</lastmod><changefreq>${entry.changefreq}</changefreq><priority>${entry.priority}</priority></url>`
+);
+
+const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapEntries.join('\n')}
+</urlset>
+`;
+
+// Write to both dist/sitemap.xml and public/sitemap.xml
+fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml, 'utf8');
+const publicSitemapPath = path.resolve(__dirname, '../public/sitemap.xml');
+fs.writeFileSync(publicSitemapPath, sitemapXml, 'utf8');
+console.log(`[Sitemap] Successfully updated sitemap.xml with ${sitemapEntries.length} URLs (lastmod: ${todayDate}).`);
+
