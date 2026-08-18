@@ -159,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchOpen(true)}
-              className="w-full pl-9 pr-4 py-2 wobbly-pill bg-[#fafafa] dark:bg-[#27272a] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-xs text-[#2d2d2d] dark:text-[#f3ede2] placeholder-[#2d2d2d]/60 dark:placeholder-[#f3ede2]/60 focus:outline-none focus:border-[#2d5da1] transition-all font-medium"
+              className="w-full pl-9 pr-4 py-2 wobbly-pill bg-[#fafafa] dark:bg-[#27272a] border-[2px] border-[#2d2d2d] dark:border-[#f3ede2] text-xs text-[#2d2d2d] dark:text-[#f3ede2] placeholder-[#2d2d2d]/90 dark:placeholder-[#f3ede2]/90 focus:outline-none focus:ring-2 focus:ring-[#2d5da1] focus:border-[#2d5da1] transition-all font-bold"
             />
             {searchQuery && (
               <button
